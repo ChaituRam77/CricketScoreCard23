@@ -2,23 +2,17 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import DetailedScoreCardView from '../views/DetailScoreCardView.vue'
 import IntroduceScoreView from '../views/IntroduceScoreView.vue'
-import AppTeamA from '../teamViews/AppTeamA.vue'
-import AppTeamB from '../teamViews/AppTeamB.vue'
-
+import TeamWiseView from '../views/TeamWiseView.vue'
 
 const routes = [
+
   {
-    path: '/teamA',
-    name: 'teamA',
-    component: AppTeamA
+    path: '/teamView',
+    name: 'teamView',
+    component: TeamWiseView
   },
   {
-    path: '/teamB',
-    name: 'teamB',
-    component: AppTeamB
-  },
-  {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: HomeView
   },

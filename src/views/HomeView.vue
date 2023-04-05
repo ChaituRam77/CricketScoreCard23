@@ -27,10 +27,14 @@ import { computed } from '@vue/runtime-core'
       </thead>
 
       <tbody class="team" v-for="team in teamWiseTotalPoints" :key="team">
-        <tr @click="dynamicHeading(team.name)">
+        <!-- <tr @click="dynamicHeading(team.name)"> -->
+        <tr>
           <th scope="row">{{ team.no }}</th>
           <td>
-            <p>{{ team.name }}</p>
+        <router-link :to="'/teamView'">
+          {{ team.name }}
+        </router-link>
+            
           </td>
           <td>
             <p>{{ team.lastMatchPoints }}</p>
@@ -100,7 +104,9 @@ export default {
       greeting: "",
       matchWisePoints: [],
       // lastMatchInfo: "Updating..."
-      lastMatchInfo: {}
+      lastMatchInfo: {},
+      team: null,
+
     };
   },
   mounted() {
@@ -108,9 +114,10 @@ export default {
   },
   methods: {
     async fetchScores() {
-      let totalPoints = await getTeamWiseTotalPoints();
+      this.team = "TeamB"
+      let totalPoints = await getTeamWiseTotalPoints(this.team);
       console.log(totalPoints)
-      await fetchTeamWiseTotalPoints();
+      await fetchTeamWiseTotalPoints(this.team);
       this.teamWiseTotalPoints = totalPoints;
       this.lastMatchInfo = await getLastMatchInfo();
       console.log(this.lastMatchInfo)

@@ -72,9 +72,7 @@ export default {
       showlogs: null,
       useAPI: null,
       writeToDB: null,
-
       playersMap: new Map(),
-
       playersScore: new Map(),
       playersBowling: new Map(),
       playersCatchingStumping: new Map(),
@@ -316,7 +314,10 @@ export default {
     },
 
     async asignMatchPointsToOwner() {
-      this.showlogs = true
+      // let matchDetails = ["66169_CSKvsGT", "66173_PBKSvsKKR", "66176_LSGvsDC", "66183_RRvsSRH", "66190_MIvsRCB", "66197_CSKvsLSG"]
+      // this.matchID = "66169_CSKvsGT"
+      // this.writeToDB = true
+      // this.showlogs = true
       this.consoleLog(this.matchDetails);
       const ownersData = ["TeamA", "TeamB"];
       for (let i = 0; i < ownersData.length; i++) {
@@ -413,15 +414,10 @@ export default {
     },
 
     async resetOwnersDB() {
-      let matchDetails = [
-        "1TotalPoints"
-      //   ,
-      
-      // "66169_CSKvsGT","66173_PBKSvsKKR"
-    ]
+
+      let matchDetails = ["1TotalPoints","66169_CSKvsGT", "66173_PBKSvsKKR", "66176_LSGvsDC", "66183_RRvsSRH", "66190_MIvsRCB", "66197_CSKvsLSG"]
       // matchDetails = await getDocNmsFromColl("ApiScoreCard");
       let collectionArray = [
-        "ApiScoreCard",
         "TeamA_Darshan",
         "TeamA_Dots",
         "TeamA_JD",
@@ -450,10 +446,7 @@ export default {
             matchDetails[m]
           );
         }
-        // await deleteDocFromCollection(
-        //     collectionArray[index],
-        //     "1TotalPoints"
-        //   );
+    
         await setDocToCollection(
           collectionArray[index],
           "1TotalPoints",
@@ -523,7 +516,7 @@ export default {
       battingPoints =
         runs > 29
           ? runs > 49
-            ? runs + (runs > 99 ? 20 : 10)
+            ? runs + (runs > 99 ? 25 : 15)
             : runs + 5
           : runs;
       battingPoints =
@@ -968,235 +961,6 @@ export default {
         "**************************Updated******************************************"
       );
       alert("Updated successfully");
-    },
-
-    claculateTotal(scoreMap) {
-      let battingPoints = 0;
-      let bowlingPoints = 0;
-      let catchingPoints = 0;
-      let runOutPoints = 0;
-      let totalPoints = 0;
-      let runs = scoreMap.get(this.switchValues.runs);
-      battingPoints = runs > 49 ? runs + (runs > 99 ? 20 : 10) : runs;
-      battingPoints =
-        battingPoints +
-        scoreMap.get(this.switchValues.fours) * 1 +
-        scoreMap.get(this.switchValues.sixes) * 2;
-      // console.log("battingPoints : " + battingPoints);
-      let wickets = scoreMap.get(this.switchValues.Bowling);
-      bowlingPoints =
-        wickets > 2 ? wickets * 20 + (wickets > 4 ? 20 : 10) : wickets * 20;
-      bowlingPoints =
-        bowlingPoints + scoreMap.get(this.switchValues.BowledLbw) * 5;
-      // console.log("bowlingPoints : " + bowlingPoints);
-      catchingPoints = scoreMap.get(this.switchValues.CatchingStumping) * 10;
-      // console.log("catchingPoints : " + catchingPoints);
-      runOutPoints = scoreMap.get(this.switchValues.RunOuts) * 10;
-      // console.log("runOutPoints : " + runOutPoints);
-      totalPoints =
-        battingPoints +
-        bowlingPoints +
-        catchingPoints +
-        runOutPoints +
-        (scoreMap.get(this.switchValues.Substitute) == "Y" ? 2 : 0) +
-        (scoreMap.get(this.switchValues.mom) == "Y" ? 30 : 0);
-      // console.log("totalPoints : " + totalPoints);
-      return totalPoints;
-    },
-    async createFieldInDb(document, matchNm) {
-      const docRef = doc(db, "Owners", document);
-      await updateDoc(docRef, {
-        [matchNm]: { "1total": 0 },
-      }).catch((err) => {
-        console.log("error: " + err.message);
-      });
-    },
-
-    getValidScore(value) {
-      return value == undefined ? 0 : value;
-    },
-    addOutDescrition(outDesc) {
-      /**
-       * To Do :
-       * c player b player - Done
-       * c & b player
-       * bowled
-       * stumping
-       * run out 2players & direct hit
-       * different players - Done
-       * lbw
-       * hit wicket
-       */
-
-      if (
-        outDesc !== undefined &&
-        outDesc !== "not out" &&
-        outDesc !== "retd out" &&
-        outDesc !== "retd hurt"
-      ) {
-        let od = "" + outDesc;
-        let outDescValidation = 0;
-        od = od.trim();
-        // if (this.showlogs) console.log("DEBUG OD : " + od);
-        if (
-          !od.includes("c and b") &&
-          od.indexOf(" b ") !== -1 &&
-          od.substring(0, 2) == "c "
-        ) {
-          let bowler = od.substring(od.indexOf(" b ") + 3, od.length);
-          bowler = bowler.trim();
-          if (this.showlogs) console.log("bowler : " + bowler);
-          this.increamentMapValue(this.playersBowling, bowler, "N");
-          let catcher = od.substring(2, od.indexOf(" b "));
-          if (catcher.indexOf("(sub)") !== -1) {
-            catcher = catcher.replace("(sub)", "");
-            if (this.showlogs) console.log("substituteCatcher : " + catcher);
-            this.playersSubstitute.push(catcher);
-            let subScore = { runs: 0, sixes: 0, fours: 0 };
-            this.playersScore.set(catcher, new Map(Object.entries(subScore)));
-            console.log("PLAYER SCORE IS SET.");
-          }
-          if (this.showlogs) console.log("catcher : " + catcher);
-          this.increamentMapValue(this.playersCatchingStumping, catcher, "N");
-          outDescValidation++;
-        }
-        if (od.includes("c and b")) {
-          const player = od.substring(od.indexOf(" b ") + 3, od.length);
-          if (this.showlogs) console.log("c&B player : " + player);
-          this.increamentMapValue(this.playersBowling, player, "N");
-          this.increamentMapValue(this.playersCatchingStumping, player, "N");
-          if (this.showlogs) console.log("c&B player : " + player);
-          outDescValidation++;
-          if (this.showlogs)
-            console.log("DEBUG outDescValidation" + outDescValidation);
-        }
-        if (od.substring(0, 2) == "b ") {
-          const bowler = od.substring(od.indexOf("b ") + 2, od.length);
-          if (this.showlogs) console.log("playersBowlingBowled : " + bowler);
-          this.increamentMapValue(this.playersBowlingBowledLbw, bowler, "N");
-          if (this.showlogs) console.log("bowler : " + bowler);
-          this.increamentMapValue(this.playersBowling, bowler, "N");
-          outDescValidation++;
-        }
-        if (od.includes("lbw ")) {
-          const bowler = od.substring(od.indexOf(" b ") + 3, od.length);
-          if (this.showlogs) console.log("playersBowlingLbw : " + bowler);
-          this.increamentMapValue(this.playersBowlingBowledLbw, bowler, "N");
-          if (this.showlogs) console.log("bowler : " + bowler);
-          this.increamentMapValue(this.playersBowling, bowler, "N");
-          outDescValidation++;
-        }
-        if (od.includes("st ")) {
-          const keeper = od.substring(3, od.indexOf(" b"));
-          if (this.showlogs) console.log("keeper : " + keeper);
-          this.increamentMapValue(this.playersCatchingStumping, keeper, "N");
-          const bowler = od.substring(od.indexOf(" b ") + 3, od.length);
-          if (this.showlogs) console.log("bowler : " + bowler);
-          this.increamentMapValue(this.playersBowling, bowler, "N");
-          outDescValidation++;
-        }
-        if (od.includes("hit wkt")) {
-          const bowler = od.substring(od.indexOf(" b ") + 3, od.length);
-          if (this.showlogs) console.log("hit wicket bowler : " + bowler);
-          this.increamentMapValue(this.playersBowling, bowler, "N");
-          outDescValidation++;
-        }
-        if (od.includes("run out")) {
-          if (od.includes("/")) {
-            const thrower1 = od.substring(od.indexOf("(") + 1, od.indexOf("/"));
-            if (this.showlogs) console.log("thrower1 : " + thrower1);
-            this.increamentMapValue(this.playersRunOuts, thrower1, "Y");
-            const thrower2 = od.substring(od.indexOf("/") + 1, od.indexOf(")"));
-            if (this.showlogs) console.log("thrower2 : " + thrower2);
-            this.increamentMapValue(this.playersRunOuts, thrower2, "Y");
-            outDescValidation++;
-          } else {
-            const thrower = od.substring(od.indexOf("(") + 1, od.length - 1);
-            if (this.showlogs) console.log("thrower : " + thrower);
-            this.increamentMapValue(this.playersRunOuts, thrower, "N");
-            outDescValidation++;
-          }
-        }
-        if (outDescValidation == 0 || outDescValidation > 1) {
-          alert(
-            "Out Description - " + batsmen + " not handled! DB updated exited"
-          );
-          return false;
-        }
-        return true;
-      }
-    },
-    increamentMapValue(m, key, runoutFlag) {
-      const value = runoutFlag == "N" ? 1 : 0.5;
-      if (m.has(key)) {
-        m.set(key, m.get(key) + value);
-      } else if (m.size == 0) {
-        m.set(key, value);
-      } else {
-        m.set(key, value);
-      }
-    },
-    adjustNameNAssignToPlayerScore(playerMap, type) {
-      playerMap.forEach((values, keys) => {
-        const playerNm =
-          this.playersNickName.get(keys) !== undefined
-            ? this.playersNickName.get(keys)
-            : keys;
-        if (playerNm != keys) {
-          playerMap.set(playerNm, values);
-          playerMap.delete(keys);
-        }
-      });
-
-      for (const [keys, values] of playerMap.entries()) {
-        const playerNm =
-          this.globalNickNameMapForMatch.get(keys) !== undefined
-            ? this.globalNickNameMapForMatch.get(keys)
-            : keys;
-        if (playerNm != keys) {
-          console.log("Inside Delete : " + playerNm);
-          playerMap.set(playerNm, values);
-          playerMap.delete(keys);
-        }
-      }
-      playerMap.forEach((values, keys) => {
-        // console.log("keys : " + keys + " values : " + values);
-        switch (type) {
-          case this.switchValues.Bowling:
-            // console.log("inside bowl");
-            this.playersScore.get(keys).set(this.switchValues.Bowling, values);
-            break;
-          case this.switchValues.BowledLbw:
-            // console.log("inside bowledNlbw");
-            this.playersScore
-              .get(keys)
-              .set(this.switchValues.BowledLbw, values);
-            break;
-          case this.switchValues.CatchingStumping:
-            // console.log("inside catchNstump " + " values: " + values);
-            this.playersScore
-              .get(keys)
-              .set(this.switchValues.CatchingStumping, values);
-            break;
-          case this.switchValues.RunOuts:
-            // console.log(
-            //   "Player : " + keys + " inside RunOuts " + " values: " + values
-            // );
-            this.playersScore.get(keys).set(this.switchValues.RunOuts, values);
-            break;
-          case this.switchValues.Substitute:
-            console.log("this.playersScore.get(values)");
-            console.log(this.playersScore.get(values));
-            if (this.playersSubstitute.includes(values)) {
-              this.playersScore
-                .get(values)
-                .set(this.switchValues.Substitute, "N");
-            }
-            break;
-          default:
-            break;
-        }
-      });
     },
   },
 };

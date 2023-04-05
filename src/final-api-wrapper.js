@@ -15,7 +15,7 @@ import {
 
 let matchWisePoints = new Map();
 
-let collectionArrayA = [
+let teamCollectionArray = [
   "TeamA_Darshan",
   "TeamA_Dots",
   "TeamA_JD",
@@ -25,9 +25,6 @@ let collectionArrayA = [
   "TeamA_RK",
   "TeamA_Ragu",
   "TeamA_Ragul",
-];
-
-let collectionArrayB = [
   "TeamB_Anand",
   "TeamB_Chaitu",
   "TeamB_Dinesh",
@@ -71,28 +68,22 @@ export async function getMatches() {
 }
 
 export async function getLastMatchInfo() {
- 
   let listOfMatches = await getDocNmsFromColl("ApiScoreCard");
   let lastMatchData = listOfMatches[listOfMatches.length - 1].split("_")
   let lastMatchInfo = {
     id: lastMatchData[0],
     teams: lastMatchData[1],
-    matchNo: listOfMatches.length - 1,
+    matchNo: listOfMatches.length,
   }; 
   return lastMatchInfo;
 }
 
-export async function getLastMatchInfoOld() {
-  let allMatches = await getMatches();
-  return allMatches[allMatches.length - 1];
-}
-
-export async function getTeamWiseTotalPoints() {
+export async function getTeamWiseTotalPoints(team) {
   let teamWiseTotalPoints = [];
   let listOfMatches = await getDocNmsFromColl("ApiScoreCard");
-
-  for (let index = 0; index < collectionArrayA.length; index++) {
-    let ownerName = collectionArrayA[index]; //.replace("TeamA_","");
+  var teamArr = teamCollectionArray.filter(name => name.includes(team))
+  for (let index = 0; index < teamArr.length; index++) {
+    let ownerName = teamArr[index]; //.replace("TeamA_","");
     let totalPoints = await getFieldDataFromDoc(
       ownerName,
       "1TotalPoints",
@@ -103,8 +94,9 @@ export async function getTeamWiseTotalPoints() {
       "1TotalPoints",
       listOfMatches[listOfMatches.length - 1]
     );
+    const nameArr = ownerName.split("_")
     let teamScore = {
-      name: ownerName.replace("TeamA_", ""),
+      name: nameArr[1],
       lastMatchPoints: lastMatchTotal,
       totalPoints: totalPoints,
     };
@@ -173,13 +165,13 @@ export async function getTeamWiseTotalPointsOld() {
   return teamWiseTotalPoints;
 }
 
-export async function fetchTeamWiseTotalPoints() {
+export async function fetchTeamWiseTotalPoints(team) {
   let listOfMatches = await getDocNmsFromColl("ApiScoreCard");
-
-  for (let index = 0; index < collectionArrayA.length; index++) {
-    let ownerName = collectionArrayA[index];
-
-    let owner = ownerName.replace("TeamA_", "");
+  var teamArr = teamCollectionArray.filter(name => name.includes(team))
+  for (let index = 0; index < teamArr.length; index++) {
+    let ownerName = teamArr[index];
+    const nameArr = ownerName.split("_")
+    let owner = nameArr[1]
     matchWisePoints.set(owner, []);
 
     for (let m = 0; m < listOfMatches.length; m++) {

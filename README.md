@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-# CricketScoreCard23
-=======
+
 # ipl-scorecard
 
 ## Project setup

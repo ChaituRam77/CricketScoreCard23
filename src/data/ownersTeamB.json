@@ -128,7 +128,8 @@
 {"id" :12305,"name" : "Riyan Parag", "category" :"Batsman","team" : "RR", "auctionPrice":4},
 {"id" :10693,"name" : "Glenn Phillips", "category" :"Wicket-keeper","team" : "SRH", "auctionPrice":5},
 {"id" :19473,"name" : "Aman Khan", "category" :"Bowler","team" : "DC", "auctionPrice":2},
-{"id" :14172,"name" : "Yash Dayal", "category" :"Bowler","team" : "GT", "auctionPrice":5}
+{"id" :14172,"name" : "Yash Dayal", "category" :"Bowler","team" : "GT", "auctionPrice":5},
+{"id" :9456,"name" : "Matthew Short", "category" :"Batsman","team" : "PBKS", "auctionPrice":5}
    ],"Rama" :[{"id" :8733,"name" : "KL Rahul", "category" :"Wicket-keeper","team" : "LSG", "auctionPrice":26},
    {"id" :10420,"name" : "Sam Curran", "category" :"All-Rounder","team" : "PBKS", "auctionPrice":25},
    {"id" :10808,"name" : "Mohammad Siraj", "category" :"Bowler","team" : "RCB", "auctionPrice":18},
