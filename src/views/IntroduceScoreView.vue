@@ -4,7 +4,7 @@
       <div class="col-md-6 offser-md-3">
         <h2>Introduce match details</h2>
       </div>
-      <form @submit.prevent="test">
+      <form @submit.prevent="validsecretkeyAndProceed">
         <div class="form-group row">
           <label for="inputMatchID" class="col-sm-2 col-form-label"
             >Match ID</label
@@ -280,6 +280,9 @@ export default {
           );
         }
       await this.asignMatchPointsToOwner();
+
+      alert(this.matchID +" scores updated")
+
     },
 
     consoleLog(valueToprint) {
@@ -610,19 +613,19 @@ export default {
     },
     async validsecretkeyAndProceed() {
       if (this.secretKey == "HailKing") {
-        this.showlogs = true;
-        this.useAPI = true;
-        this.writeToDB = true;
-        this.matchNm = this.matchID + "_" + this.team1 + "vs" + this.team2;
-        let matchExistsInDB = await getFieldDataFromDoc(
-          "ApiScoreCard",
-          this.matchNm
-        );
+        // this.showlogs = true;
+        // this.useAPI = true;
+        // this.writeToDB = true;
+        // this.matchNm = this.matchID + "_" + this.team1 + "vs" + this.team2;
+        // let matchExistsInDB = await getFieldDataFromDoc(
+        //   "ApiScoreCard",
+        //   this.matchNm
+        // );
         //if (this.writeToDB && matchExistsInDB !== undefined) {
         //  alert("Match ID already introduced!!!");
         //  return undefined;
         // }
-        this.introduceMatchScore();
+        this.test();
       } else {
         alert("Invalid Secret Key");
         return undefined;

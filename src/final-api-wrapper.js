@@ -78,7 +78,7 @@ export async function getLastMatchInfo() {
   return lastMatchInfo;
 }
 
-export async function getTeamWiseTotalPoints(team) {
+export async function getTeamWiseTotalPoints(team, forDB) {
   let teamWiseTotalPoints = [];
   let listOfMatches = await getDocNmsFromColl("ApiScoreCard");
   var teamArr = teamCollectionArray.filter(name => name.includes(team))
@@ -108,7 +108,7 @@ export async function getTeamWiseTotalPoints(team) {
     (a, b) => parseFloat(b.totalPoints) - parseFloat(a.totalPoints)
   );
   for (const [i] of teamWiseTotalPoints.entries()) {
-    if (i < 3) {
+    if (i < 3 && !forDB) {
       teamWiseTotalPoints[i].no = "💵";
     } else {
       teamWiseTotalPoints[i].no = i + 1;

@@ -97,6 +97,10 @@ import {
   getLastMatchInfo
 } from "../final-api-wrapper";
 
+import {
+  addFieldToDB
+} from "../firebase-config";
+
 export default {
   data() {
     return {
@@ -112,10 +116,21 @@ export default {
   mounted() {
     this.fetchScores();
   },
+//   created(){
+//     console.log("HomeView : "+this.$route.teamId)
+// },
   methods: {
     async fetchScores() {
       this.team = "TeamB"
-      let totalPoints = await getTeamWiseTotalPoints(this.team);
+      let totalPoints = await getTeamWiseTotalPoints(this.team, true);
+
+      await addFieldToDB(
+              "AuctionTeams",
+              "TeamB_Standings",
+              "8_66208_PBKSvsRR",
+              totalPoints
+            );
+
       console.log(totalPoints)
       await fetchTeamWiseTotalPoints(this.team);
       this.teamWiseTotalPoints = totalPoints;
