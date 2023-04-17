@@ -69,24 +69,28 @@ export async function getMatches() {
 
 export async function getLastMatchInfo() {
   let listOfMatches = await getDocNmsFromColl("ApiScoreCard");
-  let lastMatchData = listOfMatches[listOfMatches.length - 1].split("_")
+  let lastMatchData = listOfMatches[listOfMatches.length - 1].split("_");
   let lastMatchInfo = {
     id: lastMatchData[0],
     teams: lastMatchData[1],
     matchNo: listOfMatches.length,
-  }; 
+  };
   return lastMatchInfo;
 }
 
 export async function getTeamWiseTotalPoints(team, forDB) {
   let teamWiseTotalPoints = [];
   let listOfMatches = await getDocNmsFromColl("ApiScoreCard");
-  let lastMatchScorecard = await getFieldDataFromDoc("AuctionTeams",team+"_Standings",listOfMatches.length - 1 +"_"+listOfMatches[listOfMatches.length - 2])
-  let lastMatchRankMap = new Map()
+  let lastMatchScorecard = await getFieldDataFromDoc(
+    "AuctionTeams",
+    team + "_Standings",
+    listOfMatches.length - 1 + "_" + listOfMatches[listOfMatches.length - 2]
+  );
+  let lastMatchRankMap = new Map();
   for (const [i] of lastMatchScorecard.entries()) {
-    lastMatchRankMap.set(lastMatchScorecard[i].name,lastMatchScorecard[i].no)
+    lastMatchRankMap.set(lastMatchScorecard[i].name, lastMatchScorecard[i].no);
   }
-  var teamArr = teamCollectionArray.filter(name => name.includes(team))
+  var teamArr = teamCollectionArray.filter((name) => name.includes(team));
   for (let index = 0; index < teamArr.length; index++) {
     let ownerName = teamArr[index]; //.replace("TeamA_","");
     let totalPoints = await getFieldDataFromDoc(
@@ -99,7 +103,8 @@ export async function getTeamWiseTotalPoints(team, forDB) {
       "1TotalPoints",
       listOfMatches[listOfMatches.length - 1]
     );
-    const nameArr = ownerName.split("_")
+    // await new Promise((r) => setTimeout(r, 2000));
+    const nameArr = ownerName.split("_");
     let teamScore = {
       name: nameArr[1],
       lastMatchPoints: lastMatchTotal,
@@ -107,21 +112,27 @@ export async function getTeamWiseTotalPoints(team, forDB) {
     };
     teamWiseTotalPoints.push(teamScore);
   }
-
+  console.log("teamWiseTotalPoints 1 : " + JSON.stringify(teamWiseTotalPoints));
   teamWiseTotalPoints.sort(
     (a, b) => parseFloat(b.totalPoints) - parseFloat(a.totalPoints)
   );
-  let rank
+  // console.log("teamWiseTotalPoints 2 : " + JSON.stringify(teamWiseTotalPoints));
+  let rank;
   for (const [i] of teamWiseTotalPoints.entries()) {
     if (i < 3 && !forDB) {
       teamWiseTotalPoints[i].no = "💵";
     } else {
       teamWiseTotalPoints[i].no = i + 1;
       rank = lastMatchRankMap.get(teamWiseTotalPoints[i].name) - (i + 1);
-      teamWiseTotalPoints[i].rankChange = rank >0 ?  "⬆"+ rank : rank < 0 ? "⬇"+ rank : "➖"
+      // if (!forDB)
+      teamWiseTotalPoints[i].rankChange =
+        rank > 0 ? "⬆" + rank : rank < 0 ? "⬇" + rank : "➖";
+      // else
+      //   teamWiseTotalPoints[i].rankChange =
+      //     rank > 0 ? "I" + rank : rank < 0 ? "D" + rank : "N";
     }
   }
-  // console.log("teamWiseTotalPoints : "+teamWiseTotalPoints);
+  // console.log("teamWiseTotalPoints 3 : " + JSON.stringify(teamWiseTotalPoints));
 
   return teamWiseTotalPoints;
 }
@@ -176,11 +187,11 @@ export async function getTeamWiseTotalPointsOld() {
 
 export async function fetchTeamWiseTotalPoints(team) {
   let listOfMatches = await getDocNmsFromColl("ApiScoreCard");
-  var teamArr = teamCollectionArray.filter(name => name.includes(team))
+  var teamArr = teamCollectionArray.filter((name) => name.includes(team));
   for (let index = 0; index < teamArr.length; index++) {
     let ownerName = teamArr[index];
-    const nameArr = ownerName.split("_")
-    let owner = nameArr[1]
+    const nameArr = ownerName.split("_");
+    let owner = nameArr[1];
     matchWisePoints.set(owner, []);
 
     for (let m = 0; m < listOfMatches.length; m++) {
@@ -209,7 +220,7 @@ export async function fetchTeamWiseTotalPoints(team) {
       .sort((a, b) => parseFloat(a.matchNo) - parseFloat(b.matchNo));
   }
 
-  console.log("matchWisePoints : "+matchWisePoints);
+  console.log("matchWisePoints : " + matchWisePoints);
 }
 
 export async function fetchTeamWiseTotalPointsOld() {

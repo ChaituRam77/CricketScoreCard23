@@ -117,6 +117,7 @@ export default {
         "TeamB_Rama",
         "TeamB_Vinit",
       ],
+      recentMatchOwnerPoints: new Map(),
     };
   },
   methods: {
@@ -380,7 +381,11 @@ export default {
               " newTotal : " +
               newOverAllPoints
           );
-
+          this.recentMatchOwnerPoints.set(key, {
+            points: totalPointsforMatch,
+            exisitingOverAllPoints: ownerOverAllPoints,
+            newTotal: newOverAllPoints,
+          });
           playersMatchMap.set("1total", totalPointsforMatch);
 
           if (this.writeToDB) {
@@ -403,11 +408,16 @@ export default {
             );
           }
         });
+
+        console.log(
+          "this.recentMatchOwnerPoints : " +
+            [...this.recentMatchOwnerPoints.entries()]
+        );
       }
     },
 
     async assignScoreCardToDB() {
-      this.writeToDB
+      this.writeToDB;
       debugPoint("assignScoreCardToDB()");
       let ownersData = ["TeamA", "TeamB"];
       let recentMatchInfo = await getLastMatchInfo();
@@ -415,20 +425,20 @@ export default {
         this.consoleLog("Team : " + ownersData[i]);
         debugPoint("updateFieldToDB");
         let totalPoints = await getTeamWiseTotalPoints(ownersData[i], true);
-        let totalPointsArr = [];
-        for(const[t] of totalPoints.entries()){
-          let ownerPoints = {
-            lastMatchPoints:totalPoints[t].lastMatchPoints,
-            name:totalPoints[t].name,
-            totalPoints:totalPoints[t].totalPoints,
-            no:totalPoints[t].no,
-            rankChange:totalPoints[t].rankChange
-          }
-          totalPointsArr.push(ownerPoints)
-        }
+        // let totalPointsArr = [];
+        // for (const [t] of totalPoints.entries()) {
+        //   let ownerPoints = {
+        //     lastMatchPoints: totalPoints[t].lastMatchPoints,
+        //     name: totalPoints[t].name,
+        //     totalPoints: totalPoints[t].totalPoints,
+        //     no: totalPoints[t].no,
+        //     rankChange: totalPoints[t].rankChange,
+        //   };
+        //   totalPointsArr.push(ownerPoints);
+        // }
         // const totalPointsArr = totalPoints.map((obj)=> {return Object.assign({}, obj)});
         // totalPointsArr = totalPoints;
-        console.log("totalPointsArr : " + JSON.stringify(totalPointsArr));
+        // console.log("totalPointsArr : " + JSON.stringify(totalPoints));
         if (this.writeToDB) {
           await addFieldToDB(
             "AuctionTeams",
@@ -438,7 +448,7 @@ export default {
               recentMatchInfo.id +
               "_" +
               recentMatchInfo.teams,
-            totalPointsArr
+            JSON.parse(JSON.stringify(totalPoints))
           );
         }
       }
@@ -486,7 +496,7 @@ export default {
     },
 
     async cleanMatchScoreFromDB() {
-      let matchScoreToDelete = "66253_PBKSvsGT";
+      let matchScoreToDelete = "66274_GTvsRR";
       await deleteDocFromCollection("ApiScoreCard", matchScoreToDelete);
       // var teamArr = this.teamCollectionArray.filter((name) =>
       //   name.includes("TeamA")

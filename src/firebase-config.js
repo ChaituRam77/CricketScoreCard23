@@ -12,7 +12,7 @@ import {
   setDoc,
   addDoc,
   Timestamp,
-  WriteResult
+  WriteResult,
 } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyCy22SFvFcB0dAevkEEU6kdj4BsuD6llaE",
@@ -110,23 +110,39 @@ export async function deleteValueFromDoc(collNm, docNm, fieldNm) {
   console.log("deleteValueFromDoc");
   try {
     const ownerScoresdocRef = doc(db, collNm, docNm);
-  await updateDoc(ownerScoresdocRef, {
-    [fieldNm]: deleteField(),
-  });
-  console.log("Deleted field " + fieldNm + " from doc "+ docNm +" of collectioin " + collNm + " !!! ");
+    await updateDoc(ownerScoresdocRef, {
+      [fieldNm]: deleteField(),
+    });
+    console.log(
+      "Deleted field " +
+        fieldNm +
+        " from doc " +
+        docNm +
+        " of collectioin " +
+        collNm +
+        " !!! "
+    );
   } catch (error) {
     console.log(
-      "Error : deleteValueFromDoc(" + collNm + " , " + docNm  + " , " + fieldNm +") : " + error
+      "Error : deleteValueFromDoc(" +
+        collNm +
+        " , " +
+        docNm +
+        " , " +
+        fieldNm +
+        ") : " +
+        error
     );
   }
-  
 }
 
 export async function deleteDocFromCollection(collNm, docNm) {
   console.log("deleteDocFromCollection");
   try {
     await deleteDoc(doc(db, collNm, docNm));
-    console.log("Deleted doc " + docNm + " from collectioin " + collNm + " !!! ");
+    console.log(
+      "Deleted doc " + docNm + " from collectioin " + collNm + " !!! "
+    );
   } catch (error) {
     console.log(
       "deleteDocFromCollection(" + collNm + " , " + docNm + ") : " + error
@@ -151,7 +167,7 @@ export async function addFieldToDB(
   fieldNm,
   fieldObj
 ) {
-  console.log("fieldNm : "+fieldNm+" fieldObj "+JSON.stringify(fieldObj))
+  // console.log("fieldNm : " + fieldNm + " fieldObj " + JSON.stringify(fieldObj));
   const docRef = doc(db, collectionNm, documentNm);
   // const obj = Object.fromEntries(fieldObj);
   await setDoc(
@@ -201,7 +217,6 @@ export async function updateFieldToDB(
   fieldNm,
   fieldObj
 ) {
-  
   const docRef = doc(db, collectionNm, documentNm);
   // const obj = Object.fromEntries(fieldObj);
   await updateDoc(
@@ -211,14 +226,20 @@ export async function updateFieldToDB(
     },
     { merge: true }
   ).catch((err) => {
-    console.log("updateFieldToDB("+  collectionNm +","+
-    documentNm+","+
-    fieldNm+","+
-    fieldObj+ ") error: " + err.message);
+    console.log(
+      "updateFieldToDB(" +
+        collectionNm +
+        "," +
+        documentNm +
+        "," +
+        fieldNm +
+        "," +
+        fieldObj +
+        ") error: " +
+        err.message
+    );
   });
 }
-
-
 
 export async function addDocToCollection(
   collectionNm,
@@ -228,15 +249,11 @@ export async function addDocToCollection(
 ) {
   const docRef = doc(db, collectionNm, documentNm);
   // const obj = Object.fromEntries(fieldObj);
-  await setDoc(
-    docRef,
-    {
-      [fieldNm]: fieldObj,
-    }
-  ).catch((err) => {
+  await setDoc(docRef, {
+    [fieldNm]: fieldObj,
+  }).catch((err) => {
     console.log("error: " + err.message);
   });
-  
 }
 
 export async function setDocToCollection(
@@ -258,25 +275,21 @@ export async function setDocToCollection(
   });
 }
 
-  export async function updateDocToCollection(
-    collectionNm,
-    documentNm,
-    fieldNm,
-    fieldObj
-  ) {
-    const docRef = doc(db, collectionNm, documentNm);
-    // const obj = Object.fromEntries(fieldObj);
-    await updateDoc(
-      docRef,
-      {
-        [fieldNm]: fieldObj,
-      }
-    ).catch((err) => {
-      console.log("error: " + err.message);
-    });
-  
+export async function updateDocToCollection(
+  collectionNm,
+  documentNm,
+  fieldNm,
+  fieldObj
+) {
+  const docRef = doc(db, collectionNm, documentNm);
+  // const obj = Object.fromEntries(fieldObj);
+  await updateDoc(docRef, {
+    [fieldNm]: fieldObj,
+  }).catch((err) => {
+    console.log("error: " + err.message);
+  });
 }
 
-export function debugPoint(msg){
-  console.log("Debug point from "+msg)
+export function debugPoint(msg) {
+  console.log("Debug point from " + msg);
 }
