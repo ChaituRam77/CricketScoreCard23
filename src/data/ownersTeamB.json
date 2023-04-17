@@ -20,6 +20,7 @@
     "Chaitu" :[{"id" :7915,"name" : "Suryakumar Yadav", "category" :"Batsman","team" : "MI", "auctionPrice":32},
     {"id" :2258,"name" : "Jos Buttler", "category" :"Wicket-keeper","team" : "RR", "auctionPrice":36},
     {"id" :6326,"name" : "Kane Williamson", "category" :"Batsman","team" : "GT", "auctionPrice":6},
+{"id" :8422,"name" : "Dasun Shanaka", "category" :"All-Rounder","team" : "GT", "auctionPrice":0},
     {"id" :8383,"name" : "Mark Wood", "category" :"Bowler","team" : "LSG", "auctionPrice":13},
     {"id" :8175,"name" : "Harshal Patel", "category" :"Bowler","team" : "RCB", "auctionPrice":8},
     {"id" :8313,"name" : "Jason Holder", "category" :"All-Rounder","team" : "RR", "auctionPrice":5},
@@ -76,12 +77,14 @@
 {"id" :12087,"name" : "Rahul Chahar", "category" :"Bowler","team" : "PBKS", "auctionPrice":9},
 {"id" :1836,"name" : "Manish Pandey", "category" :"Batsman","team" : "DC", "auctionPrice":5},
 {"id" :544,"name" : "Shakib Al Hasan", "category" :"All-Rounder","team" : "KKR", "auctionPrice":3},
+{"id" :6534,"name" : "Jason Roy", "category" :"Batsman","team" : "KKR", "auctionPrice":0},
 {"id" :14504,"name" : "Tilak Varma", "category" :"Batsman","team" : "MI", "auctionPrice":7},
 {"id" :8349,"name" : "Reece Topley", "category" :"Bowler","team" : "RCB", "auctionPrice":3},
 {"id" :14565,"name" : "Marco Jansen", "category" :"All-Rounder","team" : "SRH", "auctionPrice":4},
 {"id" :18504,"name" : "Maheesh Theekshana", "category" :"Bowler","team" : "CSK", "auctionPrice":3},
 {"id" :9354,"name" : "Sikandar Raza", "category" :"All-Rounder","team" : "PBKS", "auctionPrice":2},
-{"id" :14798,"name" : "Donovan Ferreira", "category" :"Wicket-keeper","team" : "RR", "auctionPrice":1}
+{"id" :14798,"name" : "Donovan Ferreira", "category" :"Wicket-keeper","team" : "RR", "auctionPrice":1},
+{"id" :1692,"name" : "Wayne Parnell", "category" :"All-Rounder","team" : "RCB", "auctionPrice":0}
    ],"Praneeth" :[
     {"id" :1739,"name" : "David Warner", "category" :"Batsman","team" : "DC", "auctionPrice":28},
 {"id" :10738,"name" : "Rashid Khan", "category" :"All-Rounder","team" : "GT", "auctionPrice":27},
@@ -139,6 +142,7 @@
    {"id" :13213,"name" : "Rahmanullah Gurbaz", "category" :"Wicket-keeper","team" : "KKR", "auctionPrice":3},
    {"id" :1858,"name" : "Umesh Yadav", "category" :"Bowler","team" : "KKR", "auctionPrice":8},
    {"id" :22601,"name" : "Raj Bawa", "category" :"Bowler","team" : "PBKS", "auctionPrice":3},
+   {"id" :22141,"name" : "Gurnoor Brar", "category" :"Bowler","team" : "PBKS", "auctionPrice":0},
    {"id" :13252,"name" : "Lalit Yadav", "category" :"All-Rounder","team" : "DC", "auctionPrice":2},
    {"id" :6319,"name" : "Mandeep Singh", "category" :"Batsman","team" : "KKR", "auctionPrice":1},
    {"id" :13907,"name" : "Ayush Badoni", "category" :"All-Rounder","team" : "LSG", "auctionPrice":2},

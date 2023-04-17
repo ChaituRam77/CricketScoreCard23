@@ -1,19 +1,19 @@
 <template>
   <h1 class='fs-3 app-title'><strong>IPL 2023 Points Table</strong></h1>
   <nav>
-    <!-- <router-link to="/home">Standings</router-link> &nbsp;&nbsp; -->
-    <router-link to="/home">Standings</router-link> &nbsp;&nbsp;
-    <!-- <router-link :to="{ name: 'home', params: { teamId: team.id }}">Standings</router-link> -->
-    <router-link to="/detailedScoreCard">Playerwise Scores</router-link> &nbsp;&nbsp;&nbsp;
+    <router-link :to="teamLink">Standings</router-link> &nbsp;&nbsp;
+    <router-link to="/detailedScoreCard">Teams</router-link> &nbsp;&nbsp;&nbsp;
     <router-link to="/introduceScore"><i class="bi bi-three-dots-vertical"></i></router-link>
   </nav>
   <router-view/>
 </template>
 <script>
 export default{
-//   created(){
-//     console.log(this.$route.teamId)
-// },
+computed:{
+  teamLink(){
+    return '/home/' + this.$route.params.teamId ;
+  }
+}
 };
  
 </script>

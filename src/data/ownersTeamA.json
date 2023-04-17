@@ -70,8 +70,10 @@
 {"id" :7915,"name" : "Suryakumar Yadav", "category" :"Batsman","team" : "MI", "auctionPrice":17},
 {"id" :1413,"name" : "Virat Kohli", "category" :"Batsman","team" : "RCB", "auctionPrice":35},
 {"id" :6326,"name" : "Kane Williamson", "category" :"Batsman","team" : "GT", "auctionPrice":6},
+{"id" :8422,"name" : "Dasun Shanaka", "category" :"All-Rounder","team" : "GT", "auctionPrice":0},
 {"id" :2276,"name" : "Sunil Narine", "category" :"Bowler","team" : "KKR", "auctionPrice":16},
 {"id" :544,"name" : "Shakib Al Hasan", "category" :"All-Rounder","team" : "KKR", "auctionPrice":3},
+{"id" :6534,"name" : "Jason Roy", "category" :"Batsman","team" : "KKR", "auctionPrice":0},
 {"id" :1858,"name" : "Umesh Yadav", "category" :"Bowler","team" : "KKR", "auctionPrice":3},
 {"id" :8651,"name" : "Dwaine Pretorius", "category" :"All-Rounder","team" : "CSK", "auctionPrice":1},
 {"id" :18504,"name" : "Maheesh Theekshana", "category" :"Bowler","team" : "CSK", "auctionPrice":1},
@@ -88,8 +90,8 @@
 {"id" :11595,"name" : "R Sai Kishore", "category" :"Bowler","team" : "GT", "auctionPrice":1},
 {"id" :8589,"name" : "David Wiese", "category" :"All-Rounder","team" : "KKR", "auctionPrice":1},
 {"id" :7773,"name" : "Jason Behrendorff", "category" :"Bowler","team" : "MI", "auctionPrice":1},
-{"id" :10636,"name" : "Rajat Patidar", "category" :"Batsman","team" : "RCB", "auctionPrice":1}
-
+{"id" :10636,"name" : "Rajat Patidar", "category" :"Batsman","team" : "RCB", "auctionPrice":1},
+{"id" :10486,"name" : "Vijaykumar Vyshak", "category" :"Bowler","team" : "RCB", "auctionPrice":0}
     ],
     "RK" :[
         {"id" :11808,"name" : "Shubman Gill", "category" :"Batsman","team" : "GT", "auctionPrice":30},

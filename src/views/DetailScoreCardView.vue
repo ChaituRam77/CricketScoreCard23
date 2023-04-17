@@ -1,160 +1,53 @@
-import { computed } from '@vue/runtime-core'
-
 <template>
-  <div v-if="teamWiseTotalPoints.length == 0">
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <div
-      class="spinner-border"
-      style="width: 3rem; height: 3rem"
-      role="status"
-    ></div>
-  </div>
-  <div class="container well" v-else>
-    <table class="table table-borderless table-sm table-hover" id="scoresTable">
-      <thead>
-        <tr class="bg-secondary bg-gradient text-white">
-          <th scope="col">#</th>
-          <th scope="col">Team</th>
-          <th scope="col">{{ this.lastMatchInfo.teams }} (M{{ this.lastMatchInfo.matchNo }})</th>
-          <!-- <th scope="col">{{ this.lastMatchInfo.teams }}</th> -->
-          <th scope="col">Points</th>
-        </tr>
-      </thead>
-
-      <tbody class="team" v-for="team in teamWiseTotalPoints" :key="team">
-        <!-- <tr @click="dynamicHeading(team.name)"> -->
-        <tr>
-          <th scope="row">{{ team.no }}</th>
-          <td>
-        <router-link :to="'/teamView'">
-          {{ team.name }}
-        </router-link>
-            
-          </td>
-          <td>
-            <p>{{ team.lastMatchPoints }}</p>
-          </td>
-          <td>
-            <p>{{ team.totalPoints }}</p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <br />
-  <div
-    class="container well"
-    v-if="matchWisePoints.length == 0 && teamWiseTotalPoints.length == 0"
-  ></div>
-  <div
-    class="container well"
-    v-else-if="matchWisePoints.length == 0 && teamWiseTotalPoints.length > 0"
-  >
-    <h4><i>Click team name to view match-wise 👆</i></h4>
-  </div>
-  <div class="container well" v-else>
-    <h4>{{ greeting }}</h4>
-    <br />
-    <table
-      class="table table-borderless table-sm table-hover"
-      id="matchWiseScoresTable"
-    >
-      <thead>
-        <tr class="bg-primary bg-gradient text-white">
-          <th scope="col">#</th>
-          <th scope="col">Match</th>
-          <th scope="col">Points</th>
-        </tr>
-      </thead>
-
-      <tbody class="match" v-for="match in matchWisePoints" :key="match">
-        <tr>
-          <td>
-            <p>{{ match.matchNo }}</p>
-          </td>
-          <td>
-            <p>{{ match.matchVs }}</p>
-          </td>
-          <td>
-            <p>{{ match.points }}</p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="btn-group">
+  <div class="dropdown">
+    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Select owner
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="#">Action</a></li>
+    <li><a class="dropdown-item" href="#">Another action</a></li>
+    <li><a class="dropdown-item" href="#">Something else here</a></li>
+  </ul>
+</div>
+<div class="dropdown">
+    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Small button
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="#">Action</a></li>
+    <li><a class="dropdown-item" href="#">Another action</a></li>
+    <li><a class="dropdown-item" href="#">Something else here</a></li>
+  </ul>
+</div>
+</div>
 </template>
-
 <script>
-import {
-  getMatchWisePoints,
-  fetchTeamWiseTotalPoints,
-  getTeamWiseTotalPoints,
-  getLastMatchInfo
-} from "../final-api-wrapper";
-
-import {
-  addFieldToDB
-} from "../firebase-config";
 
 export default {
   data() {
     return {
-      teamWiseTotalPoints: [],
-      greeting: "",
-      matchWisePoints: [],
-      // lastMatchInfo: "Updating..."
-      lastMatchInfo: {},
-      team: null,
-
-    };
+      teams: [],
+      matches: [],
+      teamInDisplay: 'Select Team',
+      matchInDisplay: 'Select Match',
+    }
   },
   mounted() {
-    this.fetchScores();
+    // this.fetchMatches();
   },
-//   created(){
-//     console.log("HomeView : "+this.$route.teamId)
-// },
   methods: {
-    async fetchScores() {
-      this.team = "TeamA"
-      let totalPoints = await getTeamWiseTotalPoints(this.team, true);
-
-      await addFieldToDB(
-              "AuctionTeams",
-              "TeamB_Standings",
-              "8_66208_PBKSvsRR",
-              totalPoints
-            );
-
-      console.log(totalPoints)
-      await fetchTeamWiseTotalPoints(this.team);
-      this.teamWiseTotalPoints = totalPoints;
-      this.lastMatchInfo = await getLastMatchInfo();
-      console.log(this.lastMatchInfo)
-    },
-    dynamicHeading(name) {
-      this.greeting = `${name.toUpperCase()} team match-wise points`;
-      this.updateMatchWisePoints(name);
-    },
-    updateMatchWisePoints(teamName) {
-      let points = getMatchWisePoints(teamName);
-      this.matchWisePoints = points;
-    },
-  },
-};
+    
+  }
+}
 </script>
 
 <style>
-div {
-  margin-bottom: 10px;
+.dropdown {
+  margin-left: 16px;
+  margin-right: 16px;
+  padding: 20px 0px;
+  left:auto; /* added */
 }
 
-.well {
-  background: none;
-}
 </style>

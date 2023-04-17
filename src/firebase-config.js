@@ -11,6 +11,8 @@ import {
   updateDoc,
   setDoc,
   addDoc,
+  Timestamp,
+  WriteResult
 } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyCy22SFvFcB0dAevkEEU6kdj4BsuD6llaE",
@@ -20,7 +22,6 @@ const firebaseConfig = {
   messagingSenderId: "1055907934943",
   appId: "1:1055907934943:web:3fc28364f48a05f92eef6a",
 };
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore();
@@ -44,7 +45,7 @@ export async function getAllDocs() {
 }
 
 export async function getDocNmsFromColl(collNm) {
-  console.log("getDocNmsFromCollection() : ");
+  // console.log("getDocNmsFromCollection() : ");
   try {
     let docNms = [];
     const coll = collection(db, collNm);
@@ -52,7 +53,7 @@ export async function getDocNmsFromColl(collNm) {
     docSnaps.docs.map((doc) => {
       docNms.push(doc.id);
     });
-    console.log(docNms);
+    // console.log(docNms);
     return docNms;
   } catch (error) {
     console.log("getDocNmsFromCollection() error : " + error.message);
@@ -105,19 +106,27 @@ export async function deleteOwnerDocs() {
   }
   console.log("Deleted");
 }
-export async function deleteValueFromDoc(docNm, fieldNm) {
+export async function deleteValueFromDoc(collNm, docNm, fieldNm) {
   console.log("deleteValueFromDoc");
-  const ownerScoresdocRef = doc(db, "Owners", docNm);
+  try {
+    const ownerScoresdocRef = doc(db, collNm, docNm);
   await updateDoc(ownerScoresdocRef, {
     [fieldNm]: deleteField(),
   });
+  console.log("Deleted field " + fieldNm + " from doc "+ docNm +" of collectioin " + collNm + " !!! ");
+  } catch (error) {
+    console.log(
+      "Error : deleteValueFromDoc(" + collNm + " , " + docNm  + " , " + fieldNm +") : " + error
+    );
+  }
+  
 }
 
 export async function deleteDocFromCollection(collNm, docNm) {
   console.log("deleteDocFromCollection");
   try {
     await deleteDoc(doc(db, collNm, docNm));
-    console.log("Deleted doc " + docNm + " from collectioin" + collNm + " !!!");
+    console.log("Deleted doc " + docNm + " from collectioin " + collNm + " !!! ");
   } catch (error) {
     console.log(
       "deleteDocFromCollection(" + collNm + " , " + docNm + ") : " + error
@@ -142,12 +151,34 @@ export async function addFieldToDB(
   fieldNm,
   fieldObj
 ) {
+  console.log("fieldNm : "+fieldNm+" fieldObj "+JSON.stringify(fieldObj))
   const docRef = doc(db, collectionNm, documentNm);
   // const obj = Object.fromEntries(fieldObj);
   await setDoc(
     docRef,
     {
       [fieldNm]: fieldObj,
+    },
+    { merge: true }
+  ).catch((err) => {
+    console.log("error: " + err.message);
+  });
+}
+
+export async function addMapFieldToDoc(
+  collectionNm,
+  documentNm,
+  fieldNm,
+  fieldObjMap
+) {
+  const docRef = doc(db, collectionNm, documentNm);
+  // const obj = Object.fromEntries(fieldObj);
+  const obj = Object.fromEntries(fieldObjMap);
+
+  await setDoc(
+    docRef,
+    {
+      [fieldNm]: obj,
     },
     { merge: true }
   ).catch((err) => {
@@ -170,6 +201,7 @@ export async function updateFieldToDB(
   fieldNm,
   fieldObj
 ) {
+  
   const docRef = doc(db, collectionNm, documentNm);
   // const obj = Object.fromEntries(fieldObj);
   await updateDoc(
@@ -179,9 +211,13 @@ export async function updateFieldToDB(
     },
     { merge: true }
   ).catch((err) => {
-    console.log("error: " + err.message);
+    console.log("updateFieldToDB("+  collectionNm +","+
+    documentNm+","+
+    fieldNm+","+
+    fieldObj+ ") error: " + err.message);
   });
 }
+
 
 
 export async function addDocToCollection(
@@ -239,4 +275,8 @@ export async function setDocToCollection(
       console.log("error: " + err.message);
     });
   
+}
+
+export function debugPoint(msg){
+  console.log("Debug point from "+msg)
 }

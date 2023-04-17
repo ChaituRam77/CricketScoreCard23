@@ -12,7 +12,7 @@ const routes = [
     component: TeamWiseView
   },
   {
-    path: '/home',
+    path: '/home/:teamId',
     name: 'home',
     component: HomeView
   },

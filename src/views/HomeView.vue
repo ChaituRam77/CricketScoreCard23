@@ -20,7 +20,9 @@ import { computed } from '@vue/runtime-core'
         <tr class="bg-secondary bg-gradient text-white">
           <th scope="col">#</th>
           <th scope="col">Team</th>
-          <th scope="col">{{ this.lastMatchInfo.teams }} (M{{ this.lastMatchInfo.matchNo }})</th>
+          <th scope="col">
+            {{ this.lastMatchInfo.teams }} (M{{ this.lastMatchInfo.matchNo }})
+          </th>
           <!-- <th scope="col">{{ this.lastMatchInfo.teams }}</th> -->
           <th scope="col">Points</th>
         </tr>
@@ -29,12 +31,11 @@ import { computed } from '@vue/runtime-core'
       <tbody class="team" v-for="team in teamWiseTotalPoints" :key="team">
         <!-- <tr @click="dynamicHeading(team.name)"> -->
         <tr>
-          <th scope="row">{{ team.no }}</th>
+          <th scope="row">{{ team.no }} {{ team.rankChange }}</th>
           <td>
-        <router-link :to="'/teamView'">
-          {{ team.name }}
-        </router-link>
-            
+            <router-link :to="'/teamView'">
+              {{ team.name }}
+            </router-link>
           </td>
           <td>
             <p>{{ team.lastMatchPoints }}</p>
@@ -94,12 +95,10 @@ import {
   getMatchWisePoints,
   fetchTeamWiseTotalPoints,
   getTeamWiseTotalPoints,
-  getLastMatchInfo
+  getLastMatchInfo,
 } from "../final-api-wrapper";
 
-import {
-  addFieldToDB
-} from "../firebase-config";
+import { getFieldDataFromDoc, debugPoint } from "../firebase-config";
 
 export default {
   data() {
@@ -110,32 +109,48 @@ export default {
       // lastMatchInfo: "Updating..."
       lastMatchInfo: {},
       team: null,
-
     };
   },
   mounted() {
-    this.fetchScores();
+    this.fetchScoresNew();
   },
-//   created(){
-//     console.log("HomeView : "+this.$route.teamId)
-// },
+  created() {
+    this.team = this.$route.params.teamId;
+    console.log("Team : " + this.team);
+  },
   methods: {
     async fetchScores() {
-      this.team = "TeamB"
       let totalPoints = await getTeamWiseTotalPoints(this.team, true);
-
-      await addFieldToDB(
-              "AuctionTeams",
-              "TeamB_Standings",
-              "8_66208_PBKSvsRR",
-              totalPoints
-            );
-
-      console.log(totalPoints)
+      console.log("totalPoints : " + totalPoints);
       await fetchTeamWiseTotalPoints(this.team);
       this.teamWiseTotalPoints = totalPoints;
       this.lastMatchInfo = await getLastMatchInfo();
-      console.log(this.lastMatchInfo)
+
+      console.log(this.lastMatchInfo);
+    },
+    async fetchScoresNew() {
+      this.lastMatchInfo = await getLastMatchInfo();
+      let totalPoints = await getFieldDataFromDoc(
+        "AuctionTeams",
+        this.team + "_Standings",
+        this.lastMatchInfo.matchNo +
+          "_" +
+          this.lastMatchInfo.id +
+          "_" +
+          this.lastMatchInfo.teams
+      );
+
+      // debugPoint("sort check")
+
+      totalPoints.sort(
+        (a, b) => parseFloat(b.totalPoints) - parseFloat(a.totalPoints)
+      );
+
+      // debugPoint("totalPoints : " + JSON.stringify(totalPoints));
+      // await fetchTeamWiseTotalPoints(this.team);
+      this.teamWiseTotalPoints = totalPoints;
+
+      // debugPoint(this.lastMatchInfo);
     },
     dynamicHeading(name) {
       this.greeting = `${name.toUpperCase()} team match-wise points`;

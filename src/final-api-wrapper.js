@@ -81,6 +81,11 @@ export async function getLastMatchInfo() {
 export async function getTeamWiseTotalPoints(team, forDB) {
   let teamWiseTotalPoints = [];
   let listOfMatches = await getDocNmsFromColl("ApiScoreCard");
+  let lastMatchScorecard = await getFieldDataFromDoc("AuctionTeams",team+"_Standings",listOfMatches.length - 1 +"_"+listOfMatches[listOfMatches.length - 2])
+  let lastMatchRankMap = new Map()
+  for (const [i] of lastMatchScorecard.entries()) {
+    lastMatchRankMap.set(lastMatchScorecard[i].name,lastMatchScorecard[i].no)
+  }
   var teamArr = teamCollectionArray.filter(name => name.includes(team))
   for (let index = 0; index < teamArr.length; index++) {
     let ownerName = teamArr[index]; //.replace("TeamA_","");
@@ -103,17 +108,21 @@ export async function getTeamWiseTotalPoints(team, forDB) {
     teamWiseTotalPoints.push(teamScore);
   }
 
-  console.log(teamWiseTotalPoints);
   teamWiseTotalPoints.sort(
     (a, b) => parseFloat(b.totalPoints) - parseFloat(a.totalPoints)
   );
+  let rank
   for (const [i] of teamWiseTotalPoints.entries()) {
     if (i < 3 && !forDB) {
       teamWiseTotalPoints[i].no = "💵";
     } else {
       teamWiseTotalPoints[i].no = i + 1;
+      rank = lastMatchRankMap.get(teamWiseTotalPoints[i].name) - (i + 1);
+      teamWiseTotalPoints[i].rankChange = rank >0 ?  "⬆"+ rank : rank < 0 ? "⬇"+ rank : "➖"
     }
   }
+  // console.log("teamWiseTotalPoints : "+teamWiseTotalPoints);
+
   return teamWiseTotalPoints;
 }
 
@@ -200,7 +209,7 @@ export async function fetchTeamWiseTotalPoints(team) {
       .sort((a, b) => parseFloat(a.matchNo) - parseFloat(b.matchNo));
   }
 
-  console.log(matchWisePoints);
+  console.log("matchWisePoints : "+matchWisePoints);
 }
 
 export async function fetchTeamWiseTotalPointsOld() {
