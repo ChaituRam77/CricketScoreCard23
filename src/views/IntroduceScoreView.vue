@@ -418,6 +418,7 @@ export default {
         let totalPointsArr = [];
         for(const[t] of totalPoints.entries()){
           let ownerPoints = {
+            lastMatchPoints:totalPoints[t].lastMatchPoints,
             name:totalPoints[t].name,
             totalPoints:totalPoints[t].totalPoints,
             no:totalPoints[t].no,
