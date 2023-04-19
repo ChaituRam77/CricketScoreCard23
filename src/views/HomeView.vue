@@ -33,7 +33,7 @@ import { computed } from '@vue/runtime-core'
         <tr>
           <th scope="row">{{ team.no }} {{ team.rankChange }}</th>
           <td>
-            <router-link :to="'/teamView'">
+            <router-link name = "test" :to="teamLink(team.name)">
               {{ team.name }}
             </router-link>
           </td>
@@ -119,6 +119,11 @@ export default {
     console.log("Team : " + this.team);
   },
   methods: {
+    teamLink(teamNm){
+    // console.log("team.name : "+teamNm)
+    return '/teamView/' + this.$route.params.teamId +'/'+teamNm;
+
+  },
     async fetchScores() {
       let totalPoints = await getTeamWiseTotalPoints(this.team, true);
       console.log("totalPoints : " + totalPoints);

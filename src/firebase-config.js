@@ -59,11 +59,18 @@ export async function getDocNmsFromColl(collNm) {
     console.log("getDocNmsFromCollection() error : " + error.message);
   }
 }
-export async function getDataFromDoc(docNm) {
-  const collection = collection(db, "TeamA_Dots");
+export async function getDataFromDoc(collectionNm,docNm) {
   try {
-    let docDataMap = new Map(Object.entries((await getAllDocs()).get(docNm)));
-    return docDataMap;
+    const coll = collection(db, collectionNm);
+    const docSnaps = await getDocs(coll);
+    let docMap = new Map();
+    docSnaps.docs.map((doc) => {
+      if (doc.id == docNm) {
+        docMap.set(doc.id, doc.data());
+      }
+    });
+    let fieldMap = new Map(Object.entries(docMap.get(docNm)));
+    return fieldMap
   } catch (error) {
     console.log("getDataFromDoc() Error : " + error.message);
   }

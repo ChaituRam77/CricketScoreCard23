@@ -7,14 +7,14 @@ import TeamWiseView from '../views/TeamWiseView.vue'
 const routes = [
 
   {
-    path: '/teamView',
-    name: 'teamView',
-    component: TeamWiseView
-  },
-  {
     path: '/home/:teamId',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/teamView/:teamId/:ownerId',
+    name: 'teamView',
+    component: TeamWiseView
   },
   {
     path: '/detailedScoreCard',

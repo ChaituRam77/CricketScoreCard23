@@ -220,53 +220,42 @@ export async function fetchTeamWiseTotalPoints(team) {
       .sort((a, b) => parseFloat(a.matchNo) - parseFloat(b.matchNo));
   }
 
-  console.log("matchWisePoints : " + matchWisePoints);
+  console.log("matchWisePoints : " +matchWisePoints);
+
+  return matchWisePoints
 }
 
-export async function fetchTeamWiseTotalPointsOld() {
-  const docRef = collection(db, "Owners");
-  const docSnaps = await getDocs(docRef);
-  let ownerDocsMap = new Map();
-
-  docSnaps.docs.map((doc) => ownerDocsMap.set(doc.id, doc.data()));
-
-  let ownerTeamsMap = new Map(Object.entries(ownerDocsMap.get("teams")));
-  let ownersArr = ownerTeamsMap.get("Names");
-
-  for (let i = 0; i < ownersArr.length; i++) {
-    let ownerMatchScoresMap = new Map();
-    const owner = ownersArr[i];
-    // console.log("owner : " + owner);
-    const matchScoresdocRef = doc(db, "Owners", owner);
-    ownerMatchScoresMap = new Map(
-      Object.entries((await getDoc(matchScoresdocRef)).data())
-    );
-
-    ownerMatchScoresMap.delete("1total");
-    matchWisePoints.set(owner, []);
-
-    for (let [match, value] of ownerMatchScoresMap) {
-      let matchScoresMap = new Map(Object.entries(value));
+export async function fetchOwnerMatchWisePoints(ownerName) {
+  var ownerDbCollNm = teamCollectionArray.filter((name) => name.includes(ownerName));
+  let listOfMatches = await getDataFromDoc(ownerDbCollNm[0],"1TotalPoints");
+  let matchNo = 0
+  let matchWisePoints = []
+  // listOfMatches.forEach( (value, key) => {
+    for (let [key, value] of listOfMatches) {
+      if(key == "1total"){
+        continue;
+      }
+      let match = key
       let matchInfo = match.split("_");
       let matchId = matchInfo[0];
       let matchVs = matchInfo[1];
-      let matchNo = (matchId - 45881) / 5;
-      let teamTotalPoints = matchScoresMap.get("1total");
-      let matchWiseTeamPoints = {
+      // let matchNo = listOfMatches.indexOf(listOfMatches[m]) + 1;
+       matchNo = matchNo + 1
+      let ownerMatchPoints = {
         matchId: matchId,
         matchVs: matchVs,
         matchNo: matchNo,
-        points: teamTotalPoints == undefined ? "---" : teamTotalPoints,
+        points: value,
       };
-
-      matchWisePoints.get(owner).push(matchWiseTeamPoints);
-    }
-    matchWisePoints
-      .get(owner)
-      .sort((a, b) => parseFloat(a.matchNo) - parseFloat(b.matchNo));
+      matchWisePoints.push(ownerMatchPoints)
   }
-  console.log(matchWisePoints);
+  // );
+
+  // console.log("matchWisePoints : " +matchWisePoints);
+
+  return matchWisePoints
 }
+
 
 export function getMatchWisePoints(teamName) {
   // console.log(`Get match wise points for team ${teamName}`)
