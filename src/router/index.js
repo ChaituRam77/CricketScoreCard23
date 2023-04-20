@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import DetailedScoreCardView from '../views/DetailScoreCardView.vue'
 import IntroduceScoreView from '../views/IntroduceScoreView.vue'
 import TeamWiseView from '../views/TeamWiseView.vue'
+import MatchWiseView from '../views/MatchWiseView.vue'
 
 const routes = [
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/teamView/:teamId/:ownerId',
     name: 'teamView',
     component: TeamWiseView
+  },
+  {
+    path: '/matchView/:teamId/:ownerId/:matchId',
+    name: 'matchView',
+    component: MatchWiseView
   },
   {
     path: '/detailedScoreCard',

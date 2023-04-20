@@ -256,6 +256,36 @@ export async function fetchOwnerMatchWisePoints(ownerName) {
   return matchWisePoints
 }
 
+export async function fetchOwnerMatchPlayerWisePoints(ownerName,matchName) {
+  var ownerDbCollNm = teamCollectionArray.filter((name) => name.includes(ownerName));
+  let playerPointsMap = await getDataFromDoc(ownerDbCollNm[0],matchName);
+  let playerWisePoints = []
+  for (let [key, value] of playerPointsMap) {
+  if(key == "1total"){
+    continue;
+  }
+  let playerscore=  {
+    name: value.bName,
+    total: value.atotal,
+    bowledNlbw: value.bowledNlbw,
+    catch: value.catch,
+    directhit: value.directhit,
+    fours: value.fours,
+    hitwkt: value.hitwkt,
+    in11: value.in11,
+    maiden: value.maiden,
+    potm: value.potm,
+    runout: value.runout,
+    runs: value.runs,
+    sixes: value.sixes,
+    wickets: value.wickets,
+    stump: value.stump,
+  }
+  playerWisePoints.push(playerscore)
+}
+  return playerWisePoints
+}
+
 
 export function getMatchWisePoints(teamName) {
   // console.log(`Get match wise points for team ${teamName}`)

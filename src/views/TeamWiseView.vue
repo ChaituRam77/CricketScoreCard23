@@ -29,7 +29,9 @@
             <p>{{ match.matchVs }}</p>
           </td>
           <td>
-            <p>{{ match.points }}</p>
+            <router-link :to="matchLink(match.matchId,match.matchVs)">
+              {{ match.points }}
+            </router-link>
           </td>
         </tr>
       </tbody>
@@ -51,6 +53,11 @@ export default {
     this.updateMatchWisePoints();
   },
   methods: {
+    matchLink(matchId,matchVs){
+    // console.log("team.name : "+teamNm)
+    return '/matchView/' + this.$route.params.teamId +'/'+this.ownerId +'/'+matchId+"_"+matchVs;
+
+  },
     async updateMatchWisePoints() {
       let points = await fetchOwnerMatchWisePoints(this.ownerId);
       this.matchWisePoints = points;

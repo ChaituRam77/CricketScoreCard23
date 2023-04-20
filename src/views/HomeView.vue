@@ -33,7 +33,7 @@ import { computed } from '@vue/runtime-core'
         <tr>
           <th scope="row">{{ team.no }} {{ team.rankChange }}</th>
           <td>
-            <router-link name = "test" :to="teamLink(team.name)">
+            <router-link :to="teamLink(team.name)">
               {{ team.name }}
             </router-link>
           </td>
