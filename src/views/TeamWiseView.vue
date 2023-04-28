@@ -54,15 +54,16 @@ export default {
   },
   methods: {
     matchLink(matchId,matchVs){
-    // console.log("team.name : "+teamNm)
     return '/matchView/' + this.$route.params.teamId +'/'+this.ownerId +'/'+matchId+"_"+matchVs;
 
   },
     async updateMatchWisePoints() {
       let points = await fetchOwnerMatchWisePoints(this.ownerId);
+      points.sort(
+        (a, b) => parseFloat(a.matchNo) - parseFloat(b.matchNo)
+      );
       this.matchWisePoints = points;
       debugPoint("matchWisePoints");
-      //   console.log(this.matchWisePoints);
     },
     directToHome(){
         this.$router.push('/home/'+this.$route.params.teamId)

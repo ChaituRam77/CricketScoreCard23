@@ -2,8 +2,8 @@
   <h1 class='fs-3 app-title'><strong>IPL 2023 Points Table</strong></h1>
   <nav>
     <router-link :to="teamLink">Standings</router-link> &nbsp;&nbsp;
-    <router-link to="/detailedScoreCard">Teams</router-link> &nbsp;&nbsp;&nbsp;
-    <router-link to="/introduceScore"><i class="bi bi-three-dots-vertical"></i></router-link>
+    <router-link :to="detailsLink">Teams</router-link> &nbsp;&nbsp;&nbsp;
+    <router-link :to="introduceLink"><i class="bi bi-three-dots-vertical"></i></router-link>
   </nav>
   <router-view/>
 </template>
@@ -12,6 +12,12 @@ export default{
 computed:{
   teamLink(){
     return '/home/' + this.$route.params.teamId ;
+  },
+  detailsLink(){
+    return '/'+ this.$route.params.teamId +'/detailsView';
+  },
+  introduceLink(){
+    return '/'+ this.$route.params.teamId +'/introduceScore';
   }
 }
 };

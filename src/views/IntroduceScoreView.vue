@@ -496,7 +496,7 @@ export default {
     },
 
     async cleanMatchScoreFromDB() {
-      let matchScoreToDelete = "66274_GTvsRR";
+      let matchScoreToDelete = "66285_MIvsSRH";
       await deleteDocFromCollection("ApiScoreCard", matchScoreToDelete);
       // var teamArr = this.teamCollectionArray.filter((name) =>
       //   name.includes("TeamA")

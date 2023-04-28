@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import DetailedScoreCardView from '../views/DetailScoreCardView.vue'
+import DetailsView from '../views/DetailsView.vue'
 import IntroduceScoreView from '../views/IntroduceScoreView.vue'
 import TeamWiseView from '../views/TeamWiseView.vue'
 import MatchWiseView from '../views/MatchWiseView.vue'
@@ -23,15 +23,15 @@ const routes = [
     component: MatchWiseView
   },
   {
-    path: '/detailedScoreCard',
-    name: 'detailedScoreCard',
+    path: '/:teamId/detailsView',
+    name: 'detailsView',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: DetailedScoreCardView
+    component: DetailsView
   },
   {
-    path: '/introduceScore',
+    path: '/:teamId/introduceScore',
     name: 'introduceScore',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route

@@ -37,6 +37,11 @@ let teamCollectionArray = [
   "TeamB_Vinit",
 ];
 
+export function getOwnersOfTeam(teanName){
+
+ return teamCollectionArray.filter((name) => name.includes(teanName));
+
+}
 export async function getOwnerNames() {
   const DOC_REFERENCE = collection(db, "Owners");
   const DOC_SNAPSHOT = await getDocs(DOC_REFERENCE);
@@ -98,11 +103,25 @@ export async function getTeamWiseTotalPoints(team, forDB) {
       "1TotalPoints",
       "1total"
     );
+    let recentMatchId = listOfMatches[listOfMatches.length - 1]
+    console.log("recentMatchId : "+recentMatchId)
     let lastMatchTotal = await getFieldDataFromDoc(
       ownerName,
       "1TotalPoints",
-      listOfMatches[listOfMatches.length - 1]
+      recentMatchId
     );
+    console.log("ownerName : "+ownerName+" totalPoints : "+lastMatchTotal)
+    let loopExitCount = 0
+    while(lastMatchTotal==null && loopExitCount<10){
+      lastMatchTotal = await getFieldDataFromDoc(
+        ownerName,
+        "1TotalPoints",
+        recentMatchId
+      );
+      loopExitCount++
+      console.log("loopExitCount : "+loopExitCount+"ownerName : "+ownerName+" totalPoints : "+lastMatchTotal)
+
+    }
     // await new Promise((r) => setTimeout(r, 2000));
     const nameArr = ownerName.split("_");
     let teamScore = {
