@@ -13,6 +13,9 @@ import {
   addDoc,
   Timestamp,
   WriteResult,
+  query,
+  where,
+  getDocsFromCache,
 } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyCy22SFvFcB0dAevkEEU6kdj4BsuD6llaE",
@@ -24,8 +27,7 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore();
-const ownersCollection = collection(db, "AuctionTeams");
+const db = getFirestore(app);
 export default db;
 
 export async function getAllDocs() {
@@ -59,7 +61,7 @@ export async function getDocNmsFromColl(collNm) {
     console.log("getDocNmsFromCollection() error : " + error.message);
   }
 }
-export async function getDataFromDoc(collectionNm,docNm) {
+export async function getDataFromDoc(collectionNm, docNm) {
   try {
     const coll = collection(db, collectionNm);
     const docSnaps = await getDocs(coll);
@@ -70,17 +72,39 @@ export async function getDataFromDoc(collectionNm,docNm) {
       }
     });
     let fieldMap = new Map(Object.entries(docMap.get(docNm)));
-    return fieldMap
+    return fieldMap;
   } catch (error) {
-    console.log("getDataFromDoc() Error : " + error.message);
+    console.log("getDataFromDoc("+collectionNm+" , "+ docNm+") Error : " + error.message);
   }
 }
 
+export async function checkDocExistsInColl(collectionNm, docNm) {
+  try {
+    let docExists = false;
+    const coll = collection(db, collectionNm);
+    const docSnaps = await getDocs(coll);
+    docSnaps.docs.map((doc) => {
+      if (doc.id == docNm) {
+        docExists = true;
+      }
+    });
+    return docExists;
+  } catch (error) {
+    console.log("checkDocExistsInColl() Error : " + error.message);
+  }
+}
+export async function addDocifNotExists(collectionNm, docNm) {
+  try {
+    db.collection(collectionNm).doc(docNm).set({ foo: "bar" }, { merge: true });
+  } catch (error) {
+    console.log("addDocifNotExists() error : " + error.message);
+  }
+}
 export async function getFieldDataFromDoc(collectionNm, docNm, fieldNm) {
   // console.log("getFieldDataFromDoc() : ");
   try {
-    const coll = collection(db, collectionNm);
-    const docSnaps = await getDocs(coll);
+    const colRef = collection(db, collectionNm);
+    const docSnaps = await getDocs(colRef);
     let docMap = new Map();
     docSnaps.docs.map((doc) => {
       if (doc.id == docNm) {
@@ -88,8 +112,8 @@ export async function getFieldDataFromDoc(collectionNm, docNm, fieldNm) {
       }
     });
     let fieldMap = new Map(Object.entries(docMap.get(docNm)));
-    // console.log(docMap.get(docNm));
-    // console.log(fieldMap.get(fieldNm));
+    // console.log("getFieldDataFromDoc() docMap - "+docMap.get(docNm));
+    // console.log("getFieldDataFromDoc() fieldMap - "+fieldMap.get(fieldNm));
     return fieldMap.get(fieldNm);
   } catch (error) {
     console.log("getFieldDataFromDoc() error : " + error.message);
@@ -269,6 +293,10 @@ export async function setDocToCollection(
   fieldNm,
   fieldObj
 ) {
+  try {
+  //   console.log("Inside setDocToCollection() colNm : "+collectionNm+" documentNm : "+documentNm
+  // +" fieldNm : "+fieldNm
+  // +" fieldObj : "+fieldObj)
   const docRef = doc(db, collectionNm, documentNm);
   // const obj = Object.fromEntries(fieldObj);
   await setDoc(
@@ -278,8 +306,13 @@ export async function setDocToCollection(
     },
     { merge: true }
   ).catch((err) => {
-    console.log("error: " + err.message);
+    console.log(" setDocToCollection() error: " + err.message);
   });
+  } catch (error) {
+    console.log(" setDocToCollection() catch error: " + error.message);
+    
+  }
+  
 }
 
 export async function updateDocToCollection(
@@ -298,5 +331,12 @@ export async function updateDocToCollection(
 }
 
 export function debugPoint(msg) {
-  console.log("Debug point from " + msg);
+  // if(msg.includes("run out")){
+     console.log("Debug point from " + msg);
+  // }
+}
+export function newdebugPoint(msg) {
+  // if(msg.includes("run out")){
+     console.log("Debug point from " + msg);
+  // }
 }

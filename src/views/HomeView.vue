@@ -1,6 +1,18 @@
 import { computed } from '@vue/runtime-core'
 
 <template>
+  <div id="matchDiv">
+    <select
+      id="matchDropDown"
+      v-model="showScoreCardOfMatch"
+      @change="getScoreCardOfMatch"
+      style="text-align: center; font-weight: bold"
+    >
+      <option v-for="match in matchDetailsArr" :value="match">
+        {{ match }}
+      </option>
+    </select>
+  </div>
   <div v-if="teamWiseTotalPoints.length == 0">
     <br />
     <br />
@@ -20,21 +32,17 @@ import { computed } from '@vue/runtime-core'
         <tr class="bg-secondary bg-gradient text-white">
           <th scope="col">#</th>
           <th scope="col">Team</th>
-          <th scope="col">
-            {{ this.lastMatchInfo.teams }} (M{{ this.lastMatchInfo.matchNo }})
-          </th>
-          <!-- <th scope="col">{{ this.lastMatchInfo.teams }}</th> -->
-          <th scope="col">Points</th>
+          <th scope="col">Match Points</th>
+          <th scope="col">Overall Points</th>
         </tr>
       </thead>
 
       <tbody class="team" v-for="team in teamWiseTotalPoints" :key="team">
-        <!-- <tr @click="dynamicHeading(team.name)"> -->
         <tr>
           <th scope="row">{{ team.no }} {{ team.rankChange }}</th>
           <td>
             <router-link :to="teamLink(team.name)">
-              {{ team.name }}
+              <a>{{ team.name }}</a>
             </router-link>
           </td>
           <td>
@@ -56,37 +64,7 @@ import { computed } from '@vue/runtime-core'
     class="container well"
     v-else-if="matchWisePoints.length == 0 && teamWiseTotalPoints.length > 0"
   >
-    <h4><i>Click team name to view match-wise 👆</i></h4>
-  </div>
-  <div class="container well" v-else>
-    <h4>{{ greeting }}</h4>
-    <br />
-    <table
-      class="table table-borderless table-sm table-hover"
-      id="matchWiseScoresTable"
-    >
-      <thead>
-        <tr class="bg-primary bg-gradient text-white">
-          <th scope="col">#</th>
-          <th scope="col">Match</th>
-          <th scope="col">Points</th>
-        </tr>
-      </thead>
-
-      <tbody class="match" v-for="match in matchWisePoints" :key="match">
-        <tr>
-          <td>
-            <p>{{ match.matchNo }}</p>
-          </td>
-          <td>
-            <p>{{ match.matchVs }}</p>
-          </td>
-          <td>
-            <p>{{ match.points }}</p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <h4><i>Click on team name to view match-wise points 👆</i></h4>
   </div>
 </template>
 
@@ -98,43 +76,77 @@ import {
   getLastMatchInfo,
 } from "../final-api-wrapper";
 
-import { getFieldDataFromDoc, debugPoint } from "../firebase-config";
+import {
+  getFieldDataFromDoc,
+  getDocNmsFromColl,
+  debugPoint,
+} from "../firebase-config";
 
 export default {
   data() {
     return {
+      apiScoreCardCollection: "ApiScoreCardNew",
       teamWiseTotalPoints: [],
       greeting: "",
       matchWisePoints: [],
       // lastMatchInfo: "Updating..."
       lastMatchInfo: {},
       team: null,
+      matchDetailsArr: [],
+      allMatchDetailsArr: [],
+      showScoreCardOfMatch: "recentMatch",
     };
   },
   mounted() {
-    this.fetchScoresNew();
+    this.mountMeethods();
   },
   created() {
-    this.team = this.$route.params.teamId;
+    let team = this.$route.params.teamId;
+    if (team == "auction") {
+      this.team = "TeamA";
+    }
+    if (team == "scores") {
+      this.team = "TeamB";
+    }
     console.log("Team : " + this.team);
   },
   methods: {
-    teamLink(teamNm){
-    // console.log("team.name : "+teamNm)
-    return '/teamView/' + this.$route.params.teamId +'/'+teamNm;
-
-  },
-    async fetchScores() {
-      let totalPoints = await getTeamWiseTotalPoints(this.team, true);
-      console.log("totalPoints : " + totalPoints);
-      await fetchTeamWiseTotalPoints(this.team);
-      this.teamWiseTotalPoints = totalPoints;
-      this.lastMatchInfo = await getLastMatchInfo();
-
-      console.log(this.lastMatchInfo);
+    async mountMeethods(){
+      await this.getListOfMatches();
+      await this.fetchScoresNew();
+    },
+    async getListOfMatches() {
+      let lastMatch = null;
+      this.allMatchDetailsArr = await getDocNmsFromColl(
+        this.apiScoreCardCollection
+      );
+      this.allMatchDetailsArr.sort();
+      for (const m in this.allMatchDetailsArr) {
+        let matchInfo = this.allMatchDetailsArr[m].split("_");
+        this.matchDetailsArr.push(
+          "Match No: " + matchInfo[0] + " " + matchInfo[2]
+        );
+        if (m == this.allMatchDetailsArr.length-1) {
+          lastMatch = matchInfo;
+        }
+      }
+      this.lastMatchInfo = {
+        matchNo: lastMatch[0],
+        id: lastMatch[1],
+        teams: lastMatch[2],
+      };
+    },
+    teamLink(teamNm) {
+      // console.log("team.name : "+teamNm)
+      return "/" + this.$route.params.teamId + "/teamView/" + teamNm;
     },
     async fetchScoresNew() {
-      this.lastMatchInfo = await getLastMatchInfo();
+      // this.lastMatchInfo = await getLastMatchInfo();
+      this.showScoreCardOfMatch =
+        "Match No: " +
+        this.lastMatchInfo.matchNo +
+        " " +
+        this.lastMatchInfo.teams;
       let totalPoints = await getFieldDataFromDoc(
         "AuctionTeams",
         this.team + "_Standings",
@@ -144,8 +156,6 @@ export default {
           "_" +
           this.lastMatchInfo.teams
       );
-
-      // debugPoint("sort check")
 
       totalPoints.sort(
         (a, b) => parseFloat(b.totalPoints) - parseFloat(a.totalPoints)
@@ -157,6 +167,32 @@ export default {
 
       // debugPoint(this.lastMatchInfo);
     },
+    async getScoreCardOfMatch() {
+      let matchInfoNeeded = null;
+      let matchInfoNo = this.showScoreCardOfMatch.substring(
+        this.showScoreCardOfMatch.indexOf("Match No: "),
+        2
+      );
+      for (const m in this.allMatchDetailsArr) {
+        let match = this.allMatchDetailsArr[m].split("_");
+        if ((matchInfoNo = match[0])) {
+          matchInfoNeeded = match;
+          break;
+        }
+      }
+      if (matchInfoNeeded == null) {
+        alert("Technical Error!!");
+        return undefined;
+      }
+      console.log()
+      this.lastMatchInfo = {
+        matchNo: matchInfoNeeded[0],
+        id: matchInfoNeeded[1],
+        teams: matchInfoNeeded[2],
+      };
+      this.fetchScoresNew()
+    },
+
     dynamicHeading(name) {
       this.greeting = `${name.toUpperCase()} team match-wise points`;
       this.updateMatchWisePoints(name);
@@ -176,5 +212,42 @@ div {
 
 .well {
   background: none;
+}
+
+.team-row:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.team-row th,
+.team-row td {
+  padding: 10px;
+  text-align: center;
+}
+
+.team-row th {
+  font-weight: bold;
+}
+
+.team-row td {
+  font-weight: normal;
+}
+
+#matchDiv {
+  margin-bottom: 30px;
+}
+
+#matchDropDown {
+  font-size: 16px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 300px;
+}
+
+#matchDropDown option {
+  background-color: #ffffff;
+  /* color: #333333; */
+  color: #efe8e85d;
 }
 </style>

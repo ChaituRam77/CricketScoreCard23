@@ -478,6 +478,8 @@
             "team": "MI",
             "auctionPrice": 13
         },
+{"id" :6532,"name" : "Chris Jordan", "category" :"Bowler","team" : "MI", "auctionPrice":0},
+
         {
             "id": 12087,
             "name": "Rahul Chahar",
@@ -885,6 +887,8 @@
             "team": "LSG",
             "auctionPrice": 26
         },
+    {"id" :8257,"name" : "Karun Nair", "category" :"Battsman","team" : "LSG", "auctionPrice":0},
+
         {
             "id": 10420,
             "name": "Sam Curran",

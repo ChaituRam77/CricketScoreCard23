@@ -3,7 +3,7 @@
   <nav>
     <router-link :to="teamLink">Standings</router-link> &nbsp;&nbsp;
     <router-link :to="detailsLink">Teams</router-link> &nbsp;&nbsp;&nbsp;
-    <router-link :to="introduceLink"><i class="bi bi-three-dots-vertical"></i></router-link>
+    <!-- <router-link :to="introduceLink"><i class="bi bi-three-dots-vertical"></i></router-link> -->
   </nav>
   <router-view/>
 </template>
@@ -11,14 +11,14 @@
 export default{
 computed:{
   teamLink(){
-    return '/home/' + this.$route.params.teamId ;
+    return '/'+ this.$route.params.teamId +'/home';
   },
   detailsLink(){
     return '/'+ this.$route.params.teamId +'/detailsView';
   },
-  introduceLink(){
-    return '/'+ this.$route.params.teamId +'/introduceScore';
-  }
+  // introduceLink(){
+  //   return '/'+ this.$route.params.teamId +'/introduceScore';
+  // }
 }
 };
  

@@ -1,13 +1,11 @@
 <template>
   <div class="container well">
     <!-- <h4>{{ this.$route.params.ownerId }} team match-wise points</h4> -->
-
-    <button style="display: inline-block; margin-right: 50px" v-on:click="directToHome">Back</button>
-    <h4 style="display: inline-block">
-      {{ this.$route.params.ownerId }} team match-wise points
-    </h4>
-
-    <br />
+    <div id="teamWiseDiv" >
+      <button v-on:click="directToHome">&lt Home</button>
+      <h2>{{ this.$route.params.ownerId }}'s team match-wise points</h2>
+    </div>
+   <div><p> <i>Click on match points to view player-wise calculation 👆</i></p></div>
     <table
       class="table table-borderless table-sm table-hover"
       id="matchWiseScoresTable"
@@ -29,7 +27,7 @@
             <p>{{ match.matchVs }}</p>
           </td>
           <td>
-            <router-link :to="matchLink(match.matchId,match.matchVs)">
+            <router-link :to="matchLink(match.matchKey)">
               {{ match.points }}
             </router-link>
           </td>
@@ -53,8 +51,9 @@ export default {
     this.updateMatchWisePoints();
   },
   methods: {
-    matchLink(matchId,matchVs){
-    return '/matchView/' + this.$route.params.teamId +'/'+this.ownerId +'/'+matchId+"_"+matchVs;
+    matchLink(matchKey){
+    return '/'+this.$route.params.teamId+'/matchView' +'/'+this.ownerId +'/'+matchKey;
+    // '/:teamId/matchView/:ownerId/:matchId'
 
   },
     async updateMatchWisePoints() {
@@ -66,8 +65,33 @@ export default {
       debugPoint("matchWisePoints");
     },
     directToHome(){
-        this.$router.push('/home/'+this.$route.params.teamId)
+        this.$router.push('/'+this.$route.params.teamId+ '/home')
     }
   },
 };
 </script>
+<style>
+#teamWiseDiv {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#teamWiseDiv button {
+  display: inline-block;
+  margin-right: 50px;
+  padding: 5px 20px;
+  background-color: #0168d0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+#teamWiseDiv h2 {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+</style>

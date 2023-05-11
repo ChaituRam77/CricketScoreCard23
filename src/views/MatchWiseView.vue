@@ -1,10 +1,12 @@
 <template>
   <div class="container well">
-    <button style="display: inline-block; margin-right: 50px" v-on:click="directToHome">Back</button>
-    <button style="display: inline-block; margin-right: 50px" v-on:click="directToTeamWise">Back</button>
-    <h4 style="display: inline-block">
-      {{ this.$route.params.matchId }} points
-    </h4>
+    <div id="matchWiseDiv" >
+    <button v-on:click="directToHome">&lt &lt Home</button>
+    <button v-on:click="directToTeamWise">&lt Back</button>
+    <h2 style="display: inline-block">
+      {{ matchMessage(this.$route.params.matchId) }}
+    </h2>
+    </div>
 
     <br />
     <table
@@ -97,11 +99,39 @@ export default {
       this.playerWisePoints = await fetchOwnerMatchPlayerWisePoints(this.ownerId,this.matchId);
     },
     directToHome(){
-        this.$router.push('/home/'+this.$route.params.teamId)
+        this.$router.push('/'+this.$route.params.teamId+'/home')
     },
     directToTeamWise(){
-        this.$router.push('/teamView/'+this.$route.params.teamId+'/'+this.ownerId)
+        this.$router.push('/'+this.$route.params.teamId+'/teamView/'+this.ownerId)
+    },
+    matchMessage(matchInfo){
+      let matchData = matchInfo.split("_")
+      return "Showing Match No "+matchData[0]+ " "+matchData[2]+" points"
     }
   },
 };
 </script>
+<style>
+#matchWiseDiv {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#matchWiseDiv button {
+  display: inline-block;
+  margin-right: 20px;
+  padding: 5px 15px;
+  background-color: #0168d0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+#matchWiseDiv h2 {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 16px;
+}
+</style>

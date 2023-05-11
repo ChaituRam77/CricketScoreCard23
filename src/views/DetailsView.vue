@@ -1,69 +1,122 @@
 <template>
-  <div class="btn-group">
-    <div class="dropdown">
-        Select Option
-      <ul class="dropdown-menu">
-        <li><a class="dropdown-item">Show Team</a></li>
-      </ul>
-    </div>
-    <div class="dropdown">
-    <button
-      class="btn btn-secondary dropdown"
-      type="button" id="dropdownMenuButton1"
-      data-bs-toggle="dropdown"
-      aria-expanded="false">
-      {{ selectedOwner || 'Select owner' }}
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" role="menu">
-      <li v-for="owner in ownersTeam" :key="owner">
-        <a class="dropdown-item" @click="onOwnerSelect(owner)">{{owner}}</a>
-      </li>
-    </ul>
+  <div id="app">
+    <select v-model="selectedOwner" class="dropdown" @change="getOwnersTeam">
+      <option selected>Select owner</option>
+      <option v-for="owner in teamOwners" :key="owner">{{ owner }}</option>
+    </select>
   </div>
+  <div class="table-container" v-if="selectedOwner">
+    <div class="container well">
+    <h4><i>Showing {{ selectedOwner }}'s auction team</i></h4>
+  </div>
+    <table
+      class="table table-borderless table-sm table-hover"
+      id="ownersTeamTable" v-if="selectedOwner"
+    >
+      <thead>
+        <tr class="bg-primary bg-gradient text-white">
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Category</th>
+          <th scope="col">Team</th>
+          <th scope="col">AuctionPrice</th>
+        </tr>
+      </thead>
+
+      <tbody class="player" v-for="player in ownerTeamArr" :key="player">
+        <tr>
+          <td>
+            <p>{{ ownerTeamArr.indexOf(player) +1 }}</p>
+          </td>
+          <td>
+            <p>{{ player.name }}</p>
+          </td>
+          <td>
+            <p>{{ player.category }}</p>
+          </td>
+          <td>
+            <p>{{ player.team }}</p>
+          </td>
+          <td>
+            <p>{{ player.auctionPrice }}</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 <script>
-import { getOwnersOfTeam } from "../final-api-wrapper";
-import {
-  debugPoint,
-} from "../firebase-config";
+import { getOwnersOfTeam, getTeamOfSelectedOwner } from "../final-api-wrapper";
+import { debugPoint } from "../firebase-config";
 export default {
   data() {
     return {
-      ownersTeam : [],
-      // ownersTeam: ['team1', 'team2', 'team3', 'team4', 'team5', 'team6', 'team7', 'team8', 'team9', 'team10'],
-      options: ['A', 'B', 'C'],
-      selectedOwner : null
+      teamOwners: [],
+      selectedOwner: null,
+      ownerTeamArr:  [],
+      no : 0,
     };
   },
-  // mounted() {
-  //   this.team = this.$route.params.teamId;
-  //   console.log("Mounted Team : " + this.team);
-  //   this.getTeam();
-  // },
+
   created() {
-    this.team = this.$route.params.teamId;
+    let team = this.$route.params.teamId;
+    if (team == "auction") {
+      this.team = "TeamA";
+    }
+    if (team == "scores") {
+      this.team = "TeamB";
+    }
     console.log("Created Team : " + this.team);
     this.getTeam();
   },
   methods: {
     getTeam() {
-      this.ownersTeam = getOwnersOfTeam(this.team)
-      debugPoint("this.ownersTeam : "+this.ownersTeam)
+      this.teamOwners = getOwnersOfTeam(this.team);
+      // debugPoint("this.ownersTeam : " + this.ownersTeam);
     },
-    onOwnerSelect(owner) {
-      this.selectedOwner = owner;
-      debugPoint("this.selectedOwner : "+this.selectedOwner)
-    }
+    ownerText(owner){
+      return "showing" + owner + "'s team'"
+    },
+    getOwnersTeam() {
+      debugPoint("getOwnersTeam");
+      // getTeamOfSelectedOwner(this.team, this.ownersTeam);
+      let obj = null;
+      if (this.team == "TeamA") {
+        obj = require("../data/ownersTeamA.json");
+      }
+      if (this.team == "TeamB") {
+        obj = require("../data/ownersTeamB.json");
+      }
+
+      // const map = new Map();
+      for (const key in obj) {
+        if (this.selectedOwner == key) {
+          // map.set(key, obj[key]);
+          this.ownerTeamArr = obj[key]
+          break;
+        }
+      }
+      debugPoint(this.ownerTeamArr[0].name)
+    },
   },
 };
 </script>
 
 <style>
 .dropdown {
-  margin-left: 16px;
-  margin-right: 16px;
-  padding: 20px 0px;
-  left: auto; 
+  font-size: 16px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 200px;
+}
+
+.dropdown option {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+#app {
+  margin-bottom: 30px;
 }
 </style>

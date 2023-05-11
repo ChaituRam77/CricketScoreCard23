@@ -33,8 +33,18 @@
             />
           </div>
         </div>
+        <!-- <button type="submit" class="btn btn-primary bg-primary">
+          <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Submit
+        </button>
+      </form> -->
         <button type="submit" class="btn btn-primary bg-primary">Submit</button>
       </form>
+      <div v-if="loading" class="d-flex justify-content-center my-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -45,11 +55,14 @@ import {
   addMapFieldToDB,
   updateFieldToDB,
   getDocNmsFromColl,
+  getDataFromDoc,
   getFieldDataFromDoc,
   deleteDocFromCollection,
   deleteValueFromDoc,
   setDocToCollection,
+  checkDocExistsInColl,
   debugPoint,
+  newdebugPoint,
 } from "../firebase-config";
 import { getTeamWiseTotalPoints, getLastMatchInfo } from "../final-api-wrapper";
 import axios from "axios";
@@ -57,6 +70,15 @@ import axios from "axios";
 export default {
   data() {
     return {
+      apiScoreCardCollection: "ApiScoreCardNew",
+      auctionTeamCollection: "AuctionTeams",
+      auctionTeamCollTeamADocNm: "TeamA_Standings",
+      auctionTeamCollTeamBDocNm: "TeamB_Standings",
+      playersCollection: "Players",
+      totalPointsDbDocNm: "1TotalPoints",
+      totalPointsDbFieldNm: "0total",
+      passKey: " ",
+      loading: false,
       matchID: null,
       matchNm: null,
       team1: null,
@@ -66,6 +88,7 @@ export default {
       showlogs: null,
       useAPI: null,
       writeToDB: null,
+      playersCollectionFullLogic: null,
       playersMap: new Map(),
       playersScore: new Map(),
       playersBowling: new Map(),
@@ -118,47 +141,21 @@ export default {
         "TeamB_Vinit",
       ],
       recentMatchOwnerPoints: new Map(),
+      runoutNotCalculated: [],
+      runoutCalculated: [],
+      runoutCalculatedPlayersMap: new Map(),
+      substituteRunOutNotCalculatedArr: [],
     };
   },
   methods: {
+    async garage() {
+      this.apiScore = require("../data/sampleResponse.json");
+      debugPoint(this.apiScore)
+     
+    },
     async introduceMatchScore() {
       let scorecard = new Map();
-      // this.showlogs = true;
-      // this.useAPI = true;
-      // this.writeToDB = true;
-      // this.matchID = "66169";
-      if (this.useAPI) {
-        const options = {
-          method: "GET",
-          url:
-            "https://cricbuzz-cricket.p.rapidapi.com/mcenter/v1/" +
-            this.matchID +
-            "/hscard",
-          headers: {
-            "X-RapidAPI-Key":
-              "427451b511msh07056d18c6e0adcp1dae07jsn577cf6594d98",
-            "X-RapidAPI-Host": "cricbuzz-cricket.p.rapidapi.com",
-          },
-        };
-        await axios
-          .request(options)
-          .then((response) => {
-            this.apiScore = response.data;
-            this.consoleLog(this.apiScore.scoreCard);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        this.apiScore = require("../data/sampleResponse.json");
-      }
       scorecard = this.apiScore.scoreCard;
-      this.matchDetails =
-        scorecard[0].matchId +
-        "_" +
-        scorecard[0].batTeamDetails.batTeamShortName +
-        "vs" +
-        scorecard[1].batTeamDetails.batTeamShortName;
       this.consoleLog("response recieve : " + this.matchDetails);
       let batId = 0;
       let bowlerId = 0;
@@ -184,15 +181,17 @@ export default {
           this.playersMap.get(batId).sixes = parseInt(`${value.sixers}`);
           this.playersMap.get(batId).runs = parseInt(`${value.runs}`);
           let outDesc = `${value.outDesc}`;
-          if (!outDesc == "") {
+          // debugPoint(outDesc);
+          if (outDesc == "not out") {
+            outDesc = "";
+          }
+          if (outDesc != "") {
             wicketCode = `${value.wicketCode}`;
             bowlerId = parseInt(`${value.bowlerId}`);
             let fielderId1 = parseInt(`${value.fielderId1}`);
             let fielderId2 = parseInt(`${value.fielderId2}`);
             if (!(bowlerId == 0)) {
               this.chkKeyExistsInMapNAssign(bowlerId);
-              // this.playersMap.get(bowlerId).wickets =
-              //   this.playersMap.get(bowlerId).wickets + 1;
               // BOWLED LBW : 60042
               if (wicketCode == "BOWLED" || wicketCode == "LBW") {
                 this.playersMap.get(bowlerId).bowledNlbw =
@@ -220,30 +219,72 @@ export default {
             }
             // RUNOUT : 60042
             if (wicketCode == "RUNOUT") {
+              // debugPoint("0");
               this.chkKeyExistsInMapNAssign(fielderId1);
-              if (!fielderId2 == 0) {
-                this.playersMap.get(fielderId1).runout =
-                  this.playersMap.get(fielderId1).runout + 1;
-                this.chkKeyExistsInMapNAssign(fielderId2);
-                this.playersMap.get(fielderId2).runout =
-                  this.playersMap.get(fielderId2).runout + 1;
-              } else {
+              if (fielderId2 == 0) {
+                //logic for direct hit
                 this.playersMap.get(fielderId1).directhit =
                   this.playersMap.get(fielderId1).directhit + 1;
+              } else {
+                this.playersMap.get(fielderId1).runout =
+                  this.playersMap.get(fielderId1).runout + 1;
+                if (fielderId1 == fielderId2) {
+                  fielderId2 = await this.runOutFieldersId(outDesc, fielderId1);
+                  fielderId2 = undefined ? 0 : fielderId2;
+                }
+                if (fielderId2 != undefined) {
+                  fielderId2 = parseInt(fielderId2);
+                  this.runoutCalculated.push(outDesc);
+                  this.chkKeyExistsInMapNAssign(fielderId2);
+                  this.playersMap.get(fielderId2).runout =
+                    this.playersMap.get(fielderId2).runout + 1;
+                } else {
+                  this.runoutNotCalculated.push(outDesc);
+                }
               }
             }
+            // debugPoint("sub");
             // sub : 66176
             if (outDesc.includes("(sub)")) {
-              this.playersMap.get(fielderId1).in11 = "N";
-              let catcher = outDesc.substring(2, outDesc.indexOf(" b "));
-              this.playersMap.get(fielderId1).bName = catcher.replace(
-                "(sub)",
-                ""
-              );
+              let fielder1SubNm = null;
+              if (fielderId2 == 0) {
+                //Satisfies if sub is catcher or direct hit or wicketkeeper
+                fielder1SubNm = outDesc.substring(2, outDesc.indexOf(" b "));
+                fielder1SubNm = fielder1SubNm.replace("(sub)", "");
+                fielder1SubNm = fielder1SubNm.replace("st ", "");
+                this.playersMap.get(fielderId1).in11 = "N";
+                this.playersMap.get(fielderId1).bName = fielder1SubNm;
+              } else {
+                if (this.runOutFieldersId.length == 2) {
+                  //run out ((sub)Yash Dhull/Salt)
+                  let outDescSub = outDesc.split("(sub)").join("");
+                  // extract only players names
+                  let players = outDescSub
+                    .substring(
+                      outDescSub.indexOf("(") + 1,
+                      outDescSub.indexOf(")")
+                    )
+                    .split("/");
+
+                  if (outDesc.includes("((sub)")) {
+                    //runout first filder is sub
+                    this.substituteRunOutLogic(players[0]);
+                  }
+                  if (outDesc.includes("/(sub)")) {
+                    //runout seecond filder is sub
+                    this.substituteRunOutLogic(players[1]);
+                  }
+                } else {
+                  this.substituteRunOutNotCalculatedArr.push(outDesc);
+                }
+                // clear global varaible
+                this.runoutCalculatedPlayersMap.clear();
+              }
             }
           }
         }
         let bowlersData = scorecard[i].bowlTeamDetails.bowlersData;
+        //assigning bolwer details
         for (const [key, value] of Object.entries(bowlersData)) {
           bowlerId = parseInt(`${value.bowlerId}`);
           this.chkKeyExistsInMapNAssign(bowlerId);
@@ -252,49 +293,141 @@ export default {
           this.playersMap.get(bowlerId).maiden = parseInt(`${value.maidens}`);
         }
       }
-
       let potmId = parseInt(this.apiScore.matchHeader.playersOfTheMatch[0].id);
       this.consoleLog("potmId : " + potmId);
       this.chkKeyExistsInMapNAssign(potmId);
       this.playersMap.get(potmId).potm = "Y";
 
+      // create object for each player
       this.playersMap.forEach(async (value, key) => {
         const map = new Map(Object.entries(value));
-        this.playersMap.get(key).atotal = this.claculateTotalNew(map);
-        this.consoleLog(
-          key +
-            " : " +
-            this.playersMap.get(key).bName +
-            " " +
-            JSON.stringify(value)
-        );
-        //setDoc Merge false not working - writting only last
-        //setDoc Merge true not working - second write iincludes first records
-
-        // if (this.useAPI) {
-        //   await updateDocToCollection(
-        //     "ApiScoreCard",
-        //     this.matchDetails,
-        //     key,
-        //     value
-        //   );
-        // }
+        let total = this.claculateTotalNew(map);
+        this.playersMap.get(key).atotal = total;
+        let playerNm = this.playersMap.get(key).bName;
+        this.consoleLog(key + " : " + playerNm + " " + JSON.stringify(value));
+        this.assignPlayersScore(key, playerNm, value, total);
       });
-
       if (this.writeToDB) {
         await addMapFieldToDB(
-          "ApiScoreCard",
+          this.apiScoreCardCollection,
           this.matchDetails,
           this.playersMap
         );
       }
       await this.asignMatchPointsToOwner();
-
       await this.assignScoreCardToDB();
-
-      alert(this.matchID + " scores updated");
     },
-
+    substituteRunOutLogic(playerName) {
+      debugPoint("substituteRunOutLogic()");
+      for (let [plyrId, plyrNm] of this.runoutCalculatedPlayersMap) {
+        debugPoint("Inside substituteRunOutLogic()");
+        if (
+          plyrNm == playerName ||
+          playerName.includes(plyrNm) ||
+          plyrNm.includes(playerName)
+        ) {
+          this.playersMap.get(parseInt(plyrId)).in11 = "N";
+          this.playersMap.get(parseInt(plyrId)).bName = playerName;
+          break;
+        }
+      }
+    },
+    async assignPlayersScore(playerId, playerName, scoreObject, matchPoints) {
+      let playerIdDoc = playerId.toString();
+      try {
+        // debugPoint("assignPlayersScore()");
+        //If writeToDB is false dont proceed
+        if (!this.writeToDB) {
+          return undefined;
+        }
+        let dbCollectionName = this.playersCollection;
+        if (this.playersCollectionFullLogic) {
+          let playerOverAllPoints = 0;
+          //add player to Players collection if not exists
+          if (!(await checkDocExistsInColl(dbCollectionName, playerId))) {
+            // debugPoint("assignPlayersScore() setPlayer");
+            // assign total field to match points
+            await setDocToCollection(
+              dbCollectionName,
+              playerIdDoc,
+              this.totalPointsDbFieldNm,
+              matchPoints
+            );
+            // assign player name
+            await setDocToCollection(
+              dbCollectionName,
+              playerIdDoc,
+              "0Name",
+              playerName
+            );
+          } else {
+            //get player overall points
+            playerOverAllPoints = await getFieldDataFromDoc(
+              dbCollectionName,
+              playerIdDoc,
+              this.totalPointsDbFieldNm
+            );
+            let total = playerOverAllPoints + matchPoints;
+            await setDocToCollection(
+              dbCollectionName,
+              playerIdDoc,
+              this.totalPointsDbFieldNm,
+              total
+            );
+          }
+        } else {
+          await setDocToCollection(
+            dbCollectionName,
+            playerIdDoc,
+            this.totalPointsDbFieldNm,
+            matchPoints
+          );
+          await setDocToCollection(
+            dbCollectionName,
+            playerIdDoc,
+            "0Name",
+            playerName
+          );
+        }
+        debugPoint("assignPlayersScore() for " + playerId);
+        await setDocToCollection(
+          dbCollectionName,
+          playerIdDoc,
+          this.matchDetails,
+          JSON.parse(JSON.stringify(scoreObject))
+        );
+      } catch (error) {
+        console.log("assignPlayersScore Error : " + error);
+        return error;
+      }
+    },
+    async getScoreFromApi() {
+      if (this.useAPI) {
+        const options = {
+          method: "GET",
+          url:
+            "https://cricbuzz-cricket.p.rapidapi.com/mcenter/v1/" +
+            this.matchID +
+            "/hscard",
+          headers: {
+            "X-RapidAPI-Key":
+              "427451b511msh07056d18c6e0adcp1dae07jsn577cf6594d98",
+            "X-RapidAPI-Host": "cricbuzz-cricket.p.rapidapi.com",
+          },
+        };
+        await axios
+          .request(options)
+          .then((response) => {
+            this.apiScore = response.data;
+            this.consoleLog(this.apiScore.scoreCard);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        this.apiScore = require("../data/sampleResponse.json");
+      }
+    },
     consoleLog(valueToprint) {
       if (this.showlogs) {
         console.log(valueToprint);
@@ -327,13 +460,8 @@ export default {
     },
 
     async asignMatchPointsToOwner() {
-      // let matchDetails = ["66169_CSKvsGT", "66173_PBKSvsKKR", "66176_LSGvsDC", "66183_RRvsSRH", "66190_MIvsRCB", "66197_CSKvsLSG"]
-      // this.matchID = "66169_CSKvsGT"
-      // this.writeToDB = true
-      this.showlogs = true;
       this.consoleLog(this.matchDetails);
       const ownersData = ["TeamA", "TeamB"];
-      // debugPoint("Point 1");
       // let lastMatchInfo = await getLastMatchInfo();
       for (let i = 0; i < ownersData.length; i++) {
         // this.consoleLog("Team : " + ownersData[i]);
@@ -347,14 +475,15 @@ export default {
           }
         }
         map.forEach(async (value, key) => {
+          // debugPoint("000");
           const dbCollectionName = ownersData[i] + "_" + key;
           let ownerOverAllPoints = 0;
           let playersMatchMap = new Map();
           if (this.writeToDB) {
             ownerOverAllPoints = await getFieldDataFromDoc(
               dbCollectionName,
-              "1TotalPoints",
-              "1total"
+              this.totalPointsDbDocNm,
+              this.totalPointsDbFieldNm
             );
           }
 
@@ -371,7 +500,7 @@ export default {
             }
           });
           let newOverAllPoints = totalPointsforMatch + ownerOverAllPoints;
-          console.log(
+          this.consoleLog(
             "key : " +
               key +
               " points : " +
@@ -386,7 +515,7 @@ export default {
             exisitingOverAllPoints: ownerOverAllPoints,
             newTotal: newOverAllPoints,
           });
-          playersMatchMap.set("1total", totalPointsforMatch);
+          playersMatchMap.set(this.totalPointsDbFieldNm, totalPointsforMatch);
 
           if (this.writeToDB) {
             await addMapFieldToDB(
@@ -396,108 +525,192 @@ export default {
             );
             await setDocToCollection(
               dbCollectionName,
-              "1TotalPoints",
-              "1total",
+              this.totalPointsDbDocNm,
+              this.totalPointsDbFieldNm,
               newOverAllPoints
             );
             await setDocToCollection(
               dbCollectionName,
-              "1TotalPoints",
+              this.totalPointsDbDocNm,
               this.matchDetails,
               totalPointsforMatch
             );
           }
         });
-
-        console.log(
-          "this.recentMatchOwnerPoints : " +
-            [...this.recentMatchOwnerPoints.entries()]
-        );
       }
     },
 
     async assignScoreCardToDB() {
-      this.writeToDB;
-      debugPoint("assignScoreCardToDB()");
+      // this.showlogs = true;
+      // debugPoint("assignScoreCardToDB()");
       let ownersData = ["TeamA", "TeamB"];
-      let recentMatchInfo = await getLastMatchInfo();
+      // let recentMatchInfo = await getLastMatchInfo();
       for (let i = 0; i < ownersData.length; i++) {
         this.consoleLog("Team : " + ownersData[i]);
-        debugPoint("updateFieldToDB");
+        // debugPoint("updateFieldToDB");
         let totalPoints = await getTeamWiseTotalPoints(ownersData[i], true);
-        // let totalPointsArr = [];
-        // for (const [t] of totalPoints.entries()) {
-        //   let ownerPoints = {
-        //     lastMatchPoints: totalPoints[t].lastMatchPoints,
-        //     name: totalPoints[t].name,
-        //     totalPoints: totalPoints[t].totalPoints,
-        //     no: totalPoints[t].no,
-        //     rankChange: totalPoints[t].rankChange,
-        //   };
-        //   totalPointsArr.push(ownerPoints);
-        // }
-        // const totalPointsArr = totalPoints.map((obj)=> {return Object.assign({}, obj)});
-        // totalPointsArr = totalPoints;
-        // console.log("totalPointsArr : " + JSON.stringify(totalPoints));
         if (this.writeToDB) {
           await addFieldToDB(
-            "AuctionTeams",
+            this.auctionTeamCollection,
             ownersData[i] + "_Standings",
-            recentMatchInfo.matchNo +
-              "_" +
-              recentMatchInfo.id +
-              "_" +
-              recentMatchInfo.teams,
+            this.matchDetails,
             JSON.parse(JSON.stringify(totalPoints))
           );
         }
       }
     },
 
-    async resetOwnersDB() {
-      matchDetails = await getDocNmsFromColl("ApiScoreCard");
-      let collectionArray = [
-        "TeamA_Darshan",
-        "TeamA_Dots",
-        "TeamA_JD",
-        "TeamA_Kiruba",
-        "TeamA_PnV",
-        "TeamA_Prabu",
-        "TeamA_RK",
-        "TeamA_Ragu",
-        "TeamA_Ragul",
-        "TeamB_Anand",
-        "TeamB_Chaitu",
-        "TeamB_Dinesh",
-        "TeamB_Gokul",
-        "TeamB_Laxman",
-        "TeamB_Praneeth",
-        "TeamB_Raja",
-        "TeamB_Rajesh",
-        "TeamB_Rama",
-        "TeamB_Vinit",
-      ];
-
-      for (let index = 0; index < collectionArray.length; index++) {
-        for (let m = 0; m < matchDetails.length; m++) {
+    async resetOwnersDB(condition) {
+      debugPoint("in resetOwnersDB()");
+      let matchDetails = [];
+      let allMatchDetails = await getDocNmsFromColl(
+        this.apiScoreCardCollection
+      );
+      allMatchDetails.sort();
+      //if condition RESET delete all
+      if (condition == "RESET") {
+        matchDetails = allMatchDetails;
+      }
+      //if condition RESET_matcID consider only that match
+      else if (
+        condition.includes("RESET_") ||
+        condition.includes("RESETFROM_")
+      ) {
+        let matchId = condition.replace("RESET_", "").replace("RESETFROM_", "");
+        let validCondition = false;
+        for (let m in allMatchDetails) {
+          let matchFrmArr = allMatchDetails[m];
+          if (matchFrmArr.includes(matchId)) {
+            validCondition = true;
+            if (condition.includes("RESET_")) {
+              matchDetails.push(matchFrmArr);
+            }
+            if (condition.includes("RESETFROM_")) {
+              matchDetails = allMatchDetails.slice(parseInt(m));
+            }
+            break;
+          }
+        }
+        if (!validCondition) {
+          alert("Error : Match ID " + matchId + " is not available in DB!!!");
+          return undefined;
+        }
+      }
+      for (let m = 0; m < matchDetails.length; m++) {
+        debugPoint("HERE");
+        // await this.resetPlayerCollectionMatchInfo(matchDetails[m]);
+        for (let index = 0; index < this.teamCollectionArray.length; index++) {
+          //Delete match in from each owner collection
           await deleteDocFromCollection(
-            collectionArray[index],
+            this.teamCollectionArray[index],
             matchDetails[m]
           );
+          //Delete 1TotalPoints doc in each owner collection if its RESET
+          if (condition == "RESET") {
+            await deleteDocFromCollection(
+              this.teamCollectionArray[index],
+              this.totalPointsDbDocNm
+            );
+            //Create 1TotalPoints doc with field 0total as 0
+            await setDocToCollection(
+              this.teamCollectionArray[index],
+              this.totalPointsDbDocNm,
+              this.totalPointsDbFieldNm,
+              0
+            );
+          } else {
+            //Delete specific match from 1TotalPoints doc in each owner collection
+            //Get ownerOverAllTotalPoints
+            let ownerTotalPoints = await getFieldDataFromDoc(
+              this.teamCollectionArray[index],
+              this.totalPointsDbDocNm,
+              this.totalPointsDbFieldNm
+            );
+            //Get ownerMatchTotalPoints
+            let ownerMatchPoints = await getFieldDataFromDoc(
+              this.teamCollectionArray[index],
+              this.totalPointsDbDocNm,
+              matchDetails[m]
+            );
+            let deleteMatchPointsFromTotal =
+              ownerTotalPoints - ownerMatchPoints;
+            //Delete ownerMatchTotalPoints field from 1TotalPoints doc
+            await deleteValueFromDoc(
+              this.teamCollectionArray[index],
+              this.totalPointsDbDocNm,
+              matchDetails[m]
+            );
+            //assign recalculated ownerOverAllTotalPoints
+            await setDocToCollection(
+              this.teamCollectionArray[index],
+              this.totalPointsDbDocNm,
+              this.totalPointsDbFieldNm,
+              deleteMatchPointsFromTotal
+            );
+          }
         }
-
-        await setDocToCollection(
-          collectionArray[index],
-          "1TotalPoints",
-          "1total",
-          0
+        //delete each match from APIScorecardCollection
+        await deleteDocFromCollection(
+          this.apiScoreCardCollection,
+          matchDetails[m]
+        );
+        //delete each match from APIScorecardCollection
+        await deleteValueFromDoc(
+          this.auctionTeamCollection,
+          this.auctionTeamCollTeamADocNm,
+          matchDetails[m]
+        );
+        await deleteValueFromDoc(
+          this.auctionTeamCollection,
+          this.auctionTeamCollTeamBDocNm,
+          matchDetails[m]
         );
       }
     },
 
+    async resetPlayerCollectionMatchInfo(matcnNm) {
+      let allPlayerDetails = await getDocNmsFromColl(this.playersCollection);
+      debugPoint("resetPlayerCollectionMatchInfo()");
+      for (let p in allPlayerDetails) {
+        //Get MatchTotalPoints
+        let matchPoints = await getFieldDataFromDoc(
+          this.playersCollection,
+          allPlayerDetails[p],
+          matcnNm
+        );
+        if (matchPoints != undefined) {
+          debugPoint("resetPlayerCollectionMatchInfo()2");
+          //Get OverAllTotalPoints
+          let playerTotalPoints = await getFieldDataFromDoc(
+            this.playersCollection,
+            allPlayerDetails[p].toString(),
+            this.totalPointsDbFieldNm
+          );
+
+          let deleteMatchPointsFromTotal =
+            playerTotalPoints - matchPoints.atotal;
+          //assign recalculated OverAllTotalPoints
+          await setDocToCollection(
+            this.playersCollection,
+            allPlayerDetails[p].toString(),
+            this.totalPointsDbFieldNm,
+            deleteMatchPointsFromTotal
+          );
+          //delete match details field from players doc
+          await deleteValueFromDoc(
+            this.playersCollection,
+            allPlayerDetails[p].toString(),
+            matcnNm
+          );
+        }
+      }
+    },
     async cleanMatchScoreFromDB() {
       let matchScoreToDelete = "66285_MIvsSRH";
-      await deleteDocFromCollection("ApiScoreCard", matchScoreToDelete);
+      await deleteDocFromCollection(
+        this.apiScoreCardCollection,
+        matchScoreToDelete
+      );
       // var teamArr = this.teamCollectionArray.filter((name) =>
       //   name.includes("TeamA")
       // );
@@ -508,13 +721,13 @@ export default {
 
         let ownerOverAllPoints = await getFieldDataFromDoc(
           owner,
-          "1TotalPoints",
-          "1total"
+          this.totalPointsDbDocNm,
+          this.totalPointsDbFieldNm
         );
 
         let deleteMatchPoints = await getFieldDataFromDoc(
           owner,
-          "1TotalPoints",
+          this.totalPointsDbDocNm,
           matchScoreToDelete
         );
 
@@ -524,12 +737,16 @@ export default {
         if (newOverAllPoints !== "NaN") {
           await setDocToCollection(
             owner,
-            "1TotalPoints",
-            "1total",
+            this.totalPointsDbDocNm,
+            this.totalPointsDbFieldNm,
             newOverAllPoints
           );
 
-          await deleteValueFromDoc(owner, "1TotalPoints", matchScoreToDelete);
+          await deleteValueFromDoc(
+            owner,
+            this.totalPointsDbDocNm,
+            matchScoreToDelete
+          );
 
           await deleteDocFromCollection(owner, matchScoreToDelete);
         } else {
@@ -537,28 +754,151 @@ export default {
         }
       }
     },
+    async runOutFieldersId(outDesc, fielderId) {
+      /**
+       *Extract player names from outDesc.
+       *Extract possible names for example "Virat Kohli" as Virat and Kohli
+       *Call API withh those names and if there is only one occurance in response
+        assign it as fielderId
+       */
 
-    async garage() {
-      const ownersData = ["TeamA", "TeamB"];
-      let lastMatchInfo = await getLastMatchInfo();
-      for (let i = 0; i < ownersData.length; i++) {
-        debugPoint("With Map");
-        let totalPoints = await getTeamWiseTotalPoints(ownersData[i], true);
+      newdebugPoint("runOutFieldersId(" + outDesc + " , " + fielderId + ")");
+      //replace all occurances of "(sub)" in outdesc
+      outDesc = outDesc.split("(sub)").join("");
+      //extract only players names
+      let players = outDesc
+        .substring(outDesc.indexOf("(") + 1, outDesc.indexOf(")"))
+        .split("/");
+      let playersToGetIdArr = [];
+      playersToGetIdArr.push(...players);
+      let playerSubNmArr = [];
+      for (let p in players) {
+        let playerNm = players[p].split(" ");
+        if (playerNm.length > 1) {
+          for (let subNm in playerNm) {
+            if (playerNm[subNm].length > 1) {
+              playerSubNmArr.push(playerNm[subNm]);
+            }
+          }
+        }
+      }
+      playersToGetIdArr.push(...playerSubNmArr);
+      for (let id in playersToGetIdArr) {
+        let playerToGetId = playersToGetIdArr[id];
+        console.log("'" + playerToGetId + "'");
+        let playersArr = await this.getPlayerIdFromAPI(playerToGetId);
+        //For some players (ex : Tilak Varma) API is not returning entire object
+        if(playersArr == undefined || playersArr[0].id == undefined){
+          continue
+        }
+        if (playersArr.length == 1 && fielderId != playersArr[0].id) {
+          debugPoint("runOutFieldersId : " + playersArr[0].id);
+          this.runOutMapAddPlayerDetails(
+            players,
+            playersArr[0].id,
+            fielderId,
+            playerToGetId
+          );
+          return playersArr[0].id;
+        } else {
+          console.log(
+            "Length of runout player id's from API : " + playersArr.length
+          );
+          for (let pa in playersArr) {
+            if (playersArr[pa].name == playerToGetId) {
+              debugPoint(playersArr[pa].name);
+              if (fielderId != playersArr[pa].id) {
+                newdebugPoint("runOutFieldersId : " + playersArr[pa].id);
+                this.runOutMapAddPlayerDetails(
+                  players,
+                  playersArr[pa].id,
+                  fielderId,
+                  playerToGetId
+                );
+                return playersArr[pa].id;
+              }
+            }
+          }
+        }
+      }
+      return undefined;
+    },
+    async runOutMapAddPlayerDetails(
+      playersNmArr,
+      playerIdFrmApi,
+      playerIdDuplicated,
+      playerName
+    ) {
+      debugPoint("runOutMapAddPlayerDetails");
+      for (let p in playersNmArr) {
+        if (
+          playersNmArr[p].includes(playerName) ||
+          playersNmArr[p] == playerName
+        ) {
+          this.runoutCalculatedPlayersMap.set(playerIdFrmApi, playerName);
+          // playersNmArr.pop(playersNmArr[p]);
+          playersNmArr = playersNmArr.filter(
+            (item) => item !== playersNmArr[p]
+          );
+          this.runoutCalculatedPlayersMap.set(
+            playerIdDuplicated,
+            playersNmArr[0]
+          );
+          break;
+        }
+      }
+    },
+    async getPlayerIdFromAPI(playerNm) {
+      let playerArr = [];
+      debugPoint("getPlayerIdFromAPI( "+playerNm+" )")
+      const options = {
+        method: "GET",
+        url: "https://cricbuzz-cricket.p.rapidapi.com/stats/v1/player/search",
+        params: { plrN: playerNm },
+        headers: {
+          "X-RapidAPI-Key":
+            "427451b511msh07056d18c6e0adcp1dae07jsn577cf6594d98",
+          "X-RapidAPI-Host": "cricbuzz-cricket.p.rapidapi.com",
+        },
+      };
+      try {
+        const response = await axios.request(options);
+        playerArr = response.data.player;
+        console.log(playerArr);
+        return playerArr;
+      } catch (error) {
+        console.error(error);
+        return undefined;
+      }
+    },
+    async getPlayerNmFromAPI(playerId) {
+      debugPoint("getPlayerNmFromAPI");
+      try {
+        const options = {
+          method: "GET",
+          url:
+            "https://cricbuzz-cricket.p.rapidapi.com/stats/v1/player/" +
+            parseInt(playerId),
+          headers: {
+            "X-RapidAPI-Key":
+              "427451b511msh07056d18c6e0adcp1dae07jsn577cf6594d98",
+            "X-RapidAPI-Host": "cricbuzz-cricket.p.rapidapi.com",
+          },
+        };
 
-        let totalPointsMap = [];
-
-        totalPointsMap = totalPoints;
-
-        await addFieldToDB(
-          "AuctionTeams",
-          ownersData[i] + "_Standings",
-          lastMatchInfo.matchNo +
-            "_" +
-            lastMatchInfo.id +
-            "_" +
-            lastMatchInfo.teams,
-          totalPointsMap
-        );
+        try {
+          const response = await axios.request(options);
+          console.log("getPlayerNmFromAPI : " + response.data.name);
+          return response.data.name;
+        } catch (error) {
+          debugPoint("error");
+          console.error(error);
+          return undefined;
+        }
+      } catch (error) {
+        debugPoint("error");
+        console.error(error);
+        return undefined;
       }
     },
     async mockTest() {
@@ -684,24 +1024,90 @@ export default {
       return false;
     },
     async validsecretkeyAndProceed() {
-      if (this.secretKey == "HailKing") {
-        this.showlogs = false;
-        this.useAPI = true;
-        this.writeToDB = true;
-        // this.matchNm = this.matchID + "_" + this.team1 + "vs" + this.team2;
-        // let matchExistsInDB = await getFieldDataFromDoc(
-        //   "ApiScoreCard",
-        //   this.matchNm
-        // );
-        //if (this.writeToDB && matchExistsInDB !== undefined) {
-        //  alert("Match ID already introduced!!!");
-        //  return undefined;
-        // }
-        this.introduceMatchScore();
+      this.loading = true;
+      if (this.matchID.includes("RESET") && this.secretKey == this.passKey) {
+        await this.resetOwnersDB(this.matchID);
+        alert("DB is reset!!!");
       } else {
-        alert("Invalid Secret Key");
-        return undefined;
+        try {
+          if (this.secretKey == this.passKey) {
+            let scorecard = new Map();
+            this.showlogs = false;
+            this.useAPI = true;
+            this.writeToDB = true;
+            this.playersCollectionFullLogic = false;
+            await this.getScoreFromApi();
+            scorecard = this.apiScore.scoreCard;
+            if ((this.apiScore.isMatchComplete = false)) {
+              alert("Match is not completed! Retry upon completion.");
+              return undefined;
+            }
+            let matchNo =
+              this.apiScore.matchHeader.matchDescription.match(/\d+/)[0];
+            matchNo = matchNo < 10 ? "0" + matchNo : matchNo;
+            debugPoint("matchNo : " + matchNo);
+            if (matchNo == null || matchNo == undefined) {
+              alert("Error : Unable to fetch match number!!");
+              return undefined;
+            }
+            this.matchDetails =
+              matchNo +
+              "_" +
+              scorecard[0].matchId +
+              "_" +
+              scorecard[0].batTeamDetails.batTeamShortName +
+              "vs" +
+              scorecard[1].batTeamDetails.batTeamShortName;
+            debugPoint("matchDetails : " + this.matchDetails);
+            
+            let matchExistsInDB = await getDataFromDoc(
+              this.apiScoreCardCollection,
+              this.matchDetails
+            );
+            if (matchExistsInDB !== undefined) {
+              this.loading = false;
+              alert("Match ID already introduced!!!");
+              return undefined;
+            }
+            let potm = new Map();
+            potm = this.apiScore.matchHeader.playersOfTheMatch;
+
+            if (potm.length == 0) {
+              this.loading = false;
+              alert("Player of the match is not available!!!");
+              return undefined;
+            }
+            await this.introduceMatchScore();
+            let msg = "";
+            if (!this.runoutCalculated.length == 0) {
+              msg =
+                "\rInfo: RunOut logic applied for " +
+                this.runoutCalculated.toString();
+            }
+            if (!this.runoutNotCalculated.length == 0) {
+              msg =
+                msg +
+                "\rError: RunOut logic not applied for " +
+                this.runoutNotCalculated.toString();
+            }
+            if (!this.substituteRunOutNotCalculatedArr.length == 0) {
+              msg =
+                msg +
+                "\rSubstitute not applied for " +
+                this.substituteRunOutNotCalculatedArr.toString();
+            }
+            alert(this.matchDetails + " scores updated" + msg);
+          } else {
+            this.loading = false;
+            alert("Invalid Secret Key");
+            return undefined;
+          }
+        } catch (error) {
+          this.consoleLog(error);
+          alert("Technical Error");
+        }
       }
+      this.loading = false;
     },
   },
 };

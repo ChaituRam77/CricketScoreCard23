@@ -8,17 +8,17 @@ import MatchWiseView from '../views/MatchWiseView.vue'
 const routes = [
 
   {
-    path: '/home/:teamId',
+    path: '/:teamId/home',
     name: 'home',
     component: HomeView
   },
   {
-    path: '/teamView/:teamId/:ownerId',
+    path: '/:teamId/teamView/:ownerId',
     name: 'teamView',
     component: TeamWiseView
   },
   {
-    path: '/matchView/:teamId/:ownerId/:matchId',
+    path: '/:teamId/matchView/:ownerId/:matchId',
     name: 'matchView',
     component: MatchWiseView
   },
@@ -31,7 +31,7 @@ const routes = [
     component: DetailsView
   },
   {
-    path: '/:teamId/introduceScore',
+    path: '/introduceScore',
     name: 'introduceScore',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
