@@ -169,13 +169,13 @@ export default {
     },
     async getScoreCardOfMatch() {
       let matchInfoNeeded = null;
-      let matchInfoNo = this.showScoreCardOfMatch.substring(
-        this.showScoreCardOfMatch.indexOf("Match No: "),
-        2
-      );
+      debugPoint("getScoreCardOfMatch()")
+      let matchInfoNo = this.showScoreCardOfMatch.match(/\d+/)[0]
+      debugPoint(matchInfoNo)
       for (const m in this.allMatchDetailsArr) {
         let match = this.allMatchDetailsArr[m].split("_");
-        if ((matchInfoNo = match[0])) {
+        if ((matchInfoNo == match[0])) {
+          debugPoint(this.allMatchDetailsArr[m])
           matchInfoNeeded = match;
           break;
         }

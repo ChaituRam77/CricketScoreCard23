@@ -460,6 +460,9 @@ export default {
     },
 
     async asignMatchPointsToOwner() {
+      /** 
+       * In this method match and 1Total documents will be added/updatede to all Owners 
+       */
       this.consoleLog(this.matchDetails);
       const ownersData = ["TeamA", "TeamB"];
       // let lastMatchInfo = await getLastMatchInfo();
@@ -1058,8 +1061,7 @@ export default {
               scorecard[0].batTeamDetails.batTeamShortName +
               "vs" +
               scorecard[1].batTeamDetails.batTeamShortName;
-            debugPoint("matchDetails : " + this.matchDetails);
-            
+            debugPoint("matchDetails : " + this.matchDetails);            
             let matchExistsInDB = await getDataFromDoc(
               this.apiScoreCardCollection,
               this.matchDetails
@@ -1071,7 +1073,6 @@ export default {
             }
             let potm = new Map();
             potm = this.apiScore.matchHeader.playersOfTheMatch;
-
             if (potm.length == 0) {
               this.loading = false;
               alert("Player of the match is not available!!!");

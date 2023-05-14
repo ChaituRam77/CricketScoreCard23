@@ -149,8 +149,9 @@ export async function getTeamWiseTotalPoints(team, cashImg) {
       } else {
         rank = 0;
       }
-      teamWiseTotalPoints[i].rankChange =
-        rank > 0 ? "⬆" + rank : rank < 0 ? "⬇" + rank : "➖";
+      let rankChange = rank > 0 ? "⬆" + rank : rank < 0 ? "⬇" + rank : "➖";
+      rankChange = rankChange.replace("-","")
+      teamWiseTotalPoints[i].rankChange = rankChange
     }
   }
   // console.log("teamWiseTotalPoints 3 : " + JSON.stringify(teamWiseTotalPoints));
