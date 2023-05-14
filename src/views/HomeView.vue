@@ -161,11 +161,14 @@ export default {
         (a, b) => parseFloat(b.totalPoints) - parseFloat(a.totalPoints)
       );
 
-      // debugPoint("totalPoints : " + JSON.stringify(totalPoints));
-      // await fetchTeamWiseTotalPoints(this.team);
-      this.teamWiseTotalPoints = totalPoints;
 
-      // debugPoint(this.lastMatchInfo);
+      debugPoint("totalPoints : " + JSON.stringify(totalPoints));
+      // await fetchTeamWiseTotalPoints(this.team);
+      this.teamWiseTotalPoints = JSON.parse(
+  JSON.stringify(totalPoints).replaceAll('-', '')
+);
+      
+      debugPoint(this.lastMatchInfo);
     },
     async getScoreCardOfMatch() {
       let matchInfoNeeded = null;
@@ -184,7 +187,6 @@ export default {
         alert("Technical Error!!");
         return undefined;
       }
-      console.log()
       this.lastMatchInfo = {
         matchNo: matchInfoNeeded[0],
         id: matchInfoNeeded[1],
