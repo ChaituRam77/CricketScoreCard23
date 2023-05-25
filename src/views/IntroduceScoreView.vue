@@ -181,7 +181,6 @@ export default {
           this.playersMap.get(batId).sixes = parseInt(`${value.sixers}`);
           this.playersMap.get(batId).runs = parseInt(`${value.runs}`);
           let outDesc = `${value.outDesc}`;
-          // debugPoint(outDesc);
           if (outDesc == "not out") {
             outDesc = "";
           }
