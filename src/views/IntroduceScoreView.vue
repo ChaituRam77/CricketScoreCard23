@@ -190,6 +190,7 @@ export default {
             bowlerId = parseInt(`${value.bowlerId}`);
             let fielderId1 = parseInt(`${value.fielderId1}`);
             let fielderId2 = parseInt(`${value.fielderId2}`);
+            let fielderId3 = parseInt(`${value.fielderId3}`);
             if (!(bowlerId == 0)) {
               this.chkKeyExistsInMapNAssign(bowlerId);
               // BOWLED LBW : 60042
@@ -219,25 +220,33 @@ export default {
             }
             // RUNOUT : 60042
             if (wicketCode == "RUNOUT") {
-              // debugPoint("0");
               this.chkKeyExistsInMapNAssign(fielderId1);
               if (fielderId2 == 0) {
                 //logic for direct hit
                 this.playersMap.get(fielderId1).directhit =
                   this.playersMap.get(fielderId1).directhit + 1;
               } else {
+                debugPoint("runout");
                 this.playersMap.get(fielderId1).runout =
                   this.playersMap.get(fielderId1).runout + 1;
                 if (fielderId1 == fielderId2) {
                   fielderId2 = await this.runOutFieldersId(outDesc, fielderId1);
                   fielderId2 = undefined ? 0 : fielderId2;
-                }
+                }              
                 if (fielderId2 != undefined) {
-                  fielderId2 = parseInt(fielderId2);
+                  let fielderRunOutArr = []
+                  fielderRunOutArr.push(fielderId2)
+                  if (fielderId3 != undefined && fielderId3 != 0) {
+                    fielderRunOutArr.push(fielderId3)
+                  }
+                  for(let id in fielderRunOutArr){
+                  let fielderId = parseInt(fielderRunOutArr[id]);
+                  debugPoint("fielderRunOutArr fielderId : " + fielderId)
                   this.runoutCalculated.push(outDesc);
-                  this.chkKeyExistsInMapNAssign(fielderId2);
-                  this.playersMap.get(fielderId2).runout =
-                    this.playersMap.get(fielderId2).runout + 1;
+                  this.chkKeyExistsInMapNAssign(fielderId);
+                  this.playersMap.get(fielderId).runout =
+                    this.playersMap.get(fielderId).runout + 1;
+                  }                  
                 } else {
                   this.runoutNotCalculated.push(outDesc);
                 }
@@ -246,12 +255,20 @@ export default {
             // debugPoint("sub");
             // sub : 66176
             if (outDesc.includes("(sub)")) {
+              debugPoint("sub")
               let fielder1SubNm = null;
               if (fielderId2 == 0) {
                 //Satisfies if sub is catcher or direct hit or wicketkeeper
-                fielder1SubNm = outDesc.substring(2, outDesc.indexOf(" b "));
-                fielder1SubNm = fielder1SubNm.replace("(sub)", "");
-                fielder1SubNm = fielder1SubNm.replace("st ", "");
+                if(outDesc.includes(" b ")){
+                  fielder1SubNm = outDesc.substring(2, outDesc.indexOf(" b "));
+                }else{
+                  fielder1SubNm = outDesc
+                }
+                let outDescReplaceArr = ["run out","(sub)","st ","(",")"]
+                for(let r in outDescReplaceArr){
+                  fielder1SubNm = fielder1SubNm.replace(outDescReplaceArr[r], "");
+                }
+                fielder1SubNm = fielder1SubNm.trim()              
                 this.playersMap.get(fielderId1).in11 = "N";
                 this.playersMap.get(fielderId1).bName = fielder1SubNm;
               } else {
@@ -283,6 +300,8 @@ export default {
             }
           }
         }
+
+
         let bowlersData = scorecard[i].bowlTeamDetails.bowlersData;
         //assigning bolwer details
         for (const [key, value] of Object.entries(bowlersData)) {
@@ -1045,8 +1064,16 @@ export default {
               alert("Match is not completed! Retry upon completion.");
               return undefined;
             }
-            let matchNo =
-              this.apiScore.matchHeader.matchDescription.match(/\d+/)[0];
+            let matchDesc = this.apiScore.matchHeader.matchDescription
+            let matchNo = 0
+            if (!matchDesc.includes(" Match")) {
+              let listOfMatches = await getDocNmsFromColl("ApiScoreCardNew");
+              let lastMatchNo = (listOfMatches[listOfMatches.length -1]).split("_")
+              matchNo = parseInt(lastMatchNo[0]) + 1
+              debugPoint("matchNo : " + matchNo);
+            }else{
+              matchNo = matchDesc.match(/\d+/)[0]; 
+            }          
             matchNo = matchNo < 10 ? "0" + matchNo : matchNo;
             debugPoint("matchNo : " + matchNo);
             if (matchNo == null || matchNo == undefined) {
@@ -1061,7 +1088,7 @@ export default {
               scorecard[0].batTeamDetails.batTeamShortName +
               "vs" +
               scorecard[1].batTeamDetails.batTeamShortName;
-            debugPoint("matchDetails : " + this.matchDetails);            
+            debugPoint("matchDetails : " + this.matchDetails);                  
             let matchExistsInDB = await getDataFromDoc(
               this.apiScoreCardCollection,
               this.matchDetails
