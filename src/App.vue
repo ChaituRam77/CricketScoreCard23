@@ -1,8 +1,9 @@
 <template>
-  <h1 class='fs-3 app-title'><strong>IPL 2023 Points Table</strong></h1>
+  <h1 class='fs-3 app-title'><strong>ICC WorldCup 2023 Points Table</strong></h1>
   <nav>
     <router-link :to="teamLink">Standings</router-link> &nbsp;&nbsp;
     <router-link :to="detailsLink">Teams</router-link> &nbsp;&nbsp;&nbsp;
+    <router-link :to="rulesLink">Rules</router-link> &nbsp;&nbsp;&nbsp;
     <!-- <router-link :to="introduceLink"><i class="bi bi-three-dots-vertical"></i></router-link> -->
   </nav>
   <router-view/>
@@ -15,6 +16,9 @@ computed:{
   },
   detailsLink(){
     return '/'+ this.$route.params.teamId +'/detailsView';
+  },
+  rulesLink(){
+    return '/'+ this.$route.params.teamId +'/rules';
   },
   // introduceLink(){
   //   return '/'+ this.$route.params.teamId +'/introduceScore';

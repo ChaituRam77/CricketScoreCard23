@@ -53,6 +53,8 @@
 import {
   addFieldToDB,
   addMapFieldToDB,
+  addMapFieldToDoc,
+  addDocifNotExists,
   updateFieldToDB,
   getDocNmsFromColl,
   getDataFromDoc,
@@ -85,7 +87,7 @@ export default {
       team2: null,
       mom: null,
       secretKey: null,
-      showlogs: null,
+      showlogs: true,
       useAPI: null,
       writeToDB: null,
       playersCollectionFullLogic: null,
@@ -101,6 +103,26 @@ export default {
       playersSubstitute: [],
       apiScore: {},
       obj: {},
+      pointsRule :{
+        run : 1,
+        four : 1,
+        six : 2,
+        runsAdditionalPointsArr : [50,100,150],
+        runsAdditionalPoints: 10,
+        wicket : 25,
+        wicketAdditionalPointsArr : [3,5,6],
+        wicketAdditionalPoints: 10,
+        maiden : 10,
+        bowledLbw : 10,
+        hitWicket : 10,
+        catch :10,
+        runOutDirectHit :10,
+        runOutFielders :5,
+        stumping : 11,
+        in11 : 5,
+        potm : 50
+      },
+      
       switchValues: {
         name: "bName",
         total: "atotal",
@@ -123,21 +145,21 @@ export default {
         "TeamA_Darshan",
         "TeamA_Dots",
         "TeamA_JD",
-        "TeamA_Kiruba",
-        "TeamA_PnV",
+        "TeamA_Kiruba",        
         "TeamA_Prabu",
+        "TeamA_Prakash",
         "TeamA_RK",
         "TeamA_Ragu",
-        "TeamA_Ragul",
         "TeamB_Anand",
-        "TeamB_Chaitu",
+        "TeamB_Chaitanya",
+        "TeamB_Charan",
         "TeamB_Dinesh",
         "TeamB_Gokul",
-        "TeamB_Laxman",
         "TeamB_Praneeth",
         "TeamB_Raja",
         "TeamB_Rajesh",
         "TeamB_Rama",
+        "TeamB_Sreeni",
         "TeamB_Vinit",
       ],
       recentMatchOwnerPoints: new Map(),
@@ -151,7 +173,7 @@ export default {
     async garage() {
       this.apiScore = require("../data/sampleResponse.json");
       debugPoint(this.apiScore)
-     
+
     },
     async introduceMatchScore() {
       let scorecard = new Map();
@@ -231,7 +253,7 @@ export default {
                 if (fielderId1 == fielderId2) {
                   fielderId2 = await this.runOutFieldersId(outDesc, fielderId1);
                   fielderId2 = undefined ? 0 : fielderId2;
-                }              
+                }
                 if (fielderId2 != undefined) {
                   let fielderRunOutArr = []
                   fielderRunOutArr.push(fielderId2)
@@ -245,7 +267,7 @@ export default {
                   this.chkKeyExistsInMapNAssign(fielderId);
                   this.playersMap.get(fielderId).runout =
                     this.playersMap.get(fielderId).runout + 1;
-                  }                  
+                  }
                 } else {
                   this.runoutNotCalculated.push(outDesc);
                 }
@@ -267,7 +289,7 @@ export default {
                 for(let r in outDescReplaceArr){
                   fielder1SubNm = fielder1SubNm.replace(outDescReplaceArr[r], "");
                 }
-                fielder1SubNm = fielder1SubNm.trim()              
+                fielder1SubNm = fielder1SubNm.trim()
                 this.playersMap.get(fielderId1).in11 = "N";
                 this.playersMap.get(fielderId1).bName = fielder1SubNm;
               } else {
@@ -452,8 +474,16 @@ export default {
       }
     },
 
+
     async assignOwnerstoDB() {
-      let obj = require("../data/ownersTeamA.json");
+      const promises = [];
+      try {
+      let objOwn = {
+        key1: 'value1',
+        key2: 'value2',
+          };
+          // await addFieldToDB("AuctionTeams", "TeamA", "Chaitu1", objOwn);
+      let obj = require("../data/charan.json");
       const map = new Map();
       for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -465,7 +495,7 @@ export default {
         // console.log("Value : " + JSON.stringify(obj[key]));
         let objOwn = {};
         value.forEach(async (element) => {
-          console.log(element.name + element.name);
+          // console.log(element.name + element.name);
           objOwn[element.id] = {
             bName: element.name,
             category: element.category,
@@ -473,20 +503,39 @@ export default {
             price: element.auctionPrice,
           };
         });
-        await updateFieldToDB("AuctionTeams", "TeamB", key, objOwn);
-      });
+        // await addFieldToDB("AuctionTeams", "TeamA", key, objOwn);
+        promises.push(
+        addFieldToDB("AuctionTeams", "TeamB", key, objOwn)
+          .then(() => {
+            console.log(`Document updated for key: ${key}`);
+          })
+          .catch((error) => {
+            console.error(`Error updating document for key: ${key}`, error);
+          })
+      );
+    });
+
+    // Wait for all promises to complete
+    await Promise.all(promises);
+    console.log('All Firestore updates completed successfully');
+  
+
+      } catch (error) {
+        console.log(error.message)
+      }
+
     },
 
     async asignMatchPointsToOwner() {
-      /** 
-       * In this method match and 1Total documents will be added/updatede to all Owners 
+      /**
+       * In this method match and 1Total documents will be added/updatede to all Owners
        */
       this.consoleLog(this.matchDetails);
       const ownersData = ["TeamA", "TeamB"];
       // let lastMatchInfo = await getLastMatchInfo();
       for (let i = 0; i < ownersData.length; i++) {
         // this.consoleLog("Team : " + ownersData[i]);
-        let obj = require("../data/owners" + ownersData[i] + ".json");
+        let obj = require("../data/wc23Owners" + ownersData[i] + ".json");
         const map = new Map();
 
         for (const key in obj) {
@@ -568,7 +617,7 @@ export default {
       // let recentMatchInfo = await getLastMatchInfo();
       for (let i = 0; i < ownersData.length; i++) {
         this.consoleLog("Team : " + ownersData[i]);
-        // debugPoint("updateFieldToDB");
+        debugPoint("updateFieldToDB");
         let totalPoints = await getTeamWiseTotalPoints(ownersData[i], true);
         if (this.writeToDB) {
           await addFieldToDB(
@@ -973,40 +1022,73 @@ export default {
     },
     claculateTotalNew(scoreMap) {
       let battingPoints = 0;
+      let battingAdditionalPoints = 0;
       let bowlingPoints = 0;
+      let bowlingAdditionalPoints = 0;
       let catchingPoints = 0;
       let runOutPoints = 0;
       let directHitPoints = 0;
       let stumpingPoints = 0;
       let totalPoints = 0;
       let runs = scoreMap.get(this.switchValues.runs);
-      battingPoints =
-        runs > 29
-          ? runs > 49
-            ? runs + (runs > 99 ? 25 : 15)
-            : runs + 5
-          : runs;
-      battingPoints =
-        battingPoints +
-        scoreMap.get(this.switchValues.fours) * 1 +
-        scoreMap.get(this.switchValues.sixes) * 2;
+      // battingPoints =
+      //   runs > 29
+      //     ? runs > 49
+      //       ? runs + (runs > 99 ? 25 : 15)
+      //       : runs + 5
+      //     : runs;
+      debugPoint("Points");
+      if(runs > this.pointsRule.runsAdditionalPointsArr[0] - 1){
+        this.pointsRule.runsAdditionalPointsArr.forEach(runsAdditionalPointsFor =>{
+          if(runs > runsAdditionalPointsFor -1){
+            battingAdditionalPoints = battingAdditionalPoints + this. pointsRule.runsAdditionalPoints
+          }
+        })
+      }
+      
+      // battingPoints = 
+      //   battingPoints +
+      //   scoreMap.get(this.switchValues.fours) * 1 +
+      //   scoreMap.get(this.switchValues.sixes) * 2;
+
+      battingPoints = 
+        runs * this.pointsRule.run + battingAdditionalPoints +
+        scoreMap.get(this.switchValues.fours) * this.pointsRule.four+
+        scoreMap.get(this.switchValues.sixes) * this.pointsRule.six;
       this.consoleLog("battingPoints : " + battingPoints);
       let wickets = scoreMap.get(this.switchValues.bowling);
+      // bowlingPoints =
+      //   wickets > 2 ? wickets * 20 + (wickets > 4 ? 20 : 10) : wickets * 20;
+      debugPoint("BowlPoints");
+      if(wickets > this.pointsRule.wicketAdditionalPointsArr[0] - 1){
+        this.pointsRule.wicketAdditionalPointsArr.forEach(wicketAdditionalPointsArr =>{
+          if(wickets > wicketAdditionalPointsArr -1){
+            bowlingAdditionalPoints = bowlingAdditionalPoints + this. pointsRule.wicketAdditionalPoints
+          }
+        })
+      }
+      // bowlingPoints =
+      //   bowlingPoints +
+      //   scoreMap.get(this.switchValues.maiden) * 20 +
+      //   scoreMap.get(this.switchValues.bowledLbw) * 5 +
+      //   scoreMap.get(this.switchValues.hitwkt) * 5;
       bowlingPoints =
-        wickets > 2 ? wickets * 20 + (wickets > 4 ? 20 : 10) : wickets * 20;
-      bowlingPoints =
-        bowlingPoints +
-        scoreMap.get(this.switchValues.maiden) * 20 +
-        scoreMap.get(this.switchValues.bowledLbw) * 5 +
-        scoreMap.get(this.switchValues.hitwkt) * 5;
+        wickets * this.pointsRule.wicket + bowlingAdditionalPoints +
+        scoreMap.get(this.switchValues.maiden) * this.pointsRule.maiden +
+        scoreMap.get(this.switchValues.bowledLbw) * this.pointsRule.bowledLbw +
+        scoreMap.get(this.switchValues.hitwkt) * this.pointsRule.hitWicket;
       this.consoleLog("bowlingPoints : " + bowlingPoints);
-      catchingPoints = scoreMap.get(this.switchValues.catching) * 5;
+      // catchingPoints = scoreMap.get(this.switchValues.catching) * 5;
+      catchingPoints = scoreMap.get(this.switchValues.catching) * this.pointsRule.catch;
       this.consoleLog("catchingPoints : " + catchingPoints);
-      runOutPoints = scoreMap.get(this.switchValues.runOuts) * 5;
+      // runOutPoints = scoreMap.get(this.switchValues.runOuts) * 5;
+      runOutPoints = scoreMap.get(this.switchValues.runOuts) * this.pointsRule.runOutFielders;
       this.consoleLog("runOutPoints : " + runOutPoints);
-      directHitPoints = scoreMap.get(this.switchValues.directhit) * 10;
+      // directHitPoints = scoreMapt.get(this.switchValues.directhit) * 10;
+      directHitPoints = scoreMap.get(this.switchValues.directhit) * this.pointsRule.runOutDirectHit;
       this.consoleLog("directHitPoints : " + directHitPoints);
-      stumpingPoints = scoreMap.get(this.switchValues.stumping) * 10;
+      // stumpingPoints = scoreMap.get(this.switchValues.stumping) * 10;
+      stumpingPoints = scoreMap.get(this.switchValues.stumping) * this.pointsRule.stumping;
       this.consoleLog("stumpingPoints : " + stumpingPoints);
       totalPoints =
         battingPoints +
@@ -1015,8 +1097,8 @@ export default {
         runOutPoints +
         directHitPoints +
         stumpingPoints +
-        (scoreMap.get(this.switchValues.substitute) == "Y" ? 2 : 0) +
-        (scoreMap.get(this.switchValues.potm) == "Y" ? 30 : 0);
+        (scoreMap.get(this.switchValues.substitute) == "Y" ? this.pointsRule.in11 : 0) +
+        (scoreMap.get(this.switchValues.potm) == "Y" ? this.pointsRule.potm : 0);
       this.consoleLog("totalPoints : " + totalPoints);
       return totalPoints;
     },
@@ -1053,7 +1135,7 @@ export default {
         try {
           if (this.secretKey == this.passKey) {
             let scorecard = new Map();
-            this.showlogs = false;
+            this.showlogs = true;
             this.useAPI = true;
             this.writeToDB = true;
             this.playersCollectionFullLogic = false;
@@ -1071,8 +1153,8 @@ export default {
               matchNo = parseInt(lastMatchNo[0]) + 1
               debugPoint("matchNo : " + matchNo);
             }else{
-              matchNo = matchDesc.match(/\d+/)[0]; 
-            }          
+              matchNo = matchDesc.match(/\d+/)[0];
+            }
             matchNo = matchNo < 10 ? "0" + matchNo : matchNo;
             debugPoint("matchNo : " + matchNo);
             if (matchNo == null || matchNo == undefined) {
@@ -1087,7 +1169,7 @@ export default {
               scorecard[0].batTeamDetails.batTeamShortName +
               "vs" +
               scorecard[1].batTeamDetails.batTeamShortName;
-            debugPoint("matchDetails : " + this.matchDetails);                  
+            debugPoint("matchDetails : " + this.matchDetails);
             let matchExistsInDB = await getDataFromDoc(
               this.apiScoreCardCollection,
               this.matchDetails

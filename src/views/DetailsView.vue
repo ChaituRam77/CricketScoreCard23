@@ -1,4 +1,7 @@
 <template>
+  <div>
+      <h2 class="section-heading">Select the owner</h2>
+    </div>
   <div id="app">
     <select v-model="selectedOwner" class="dropdown" @change="getOwnersTeam">
       <option selected>Select owner</option>
@@ -51,6 +54,8 @@ import { debugPoint } from "../firebase-config";
 export default {
   data() {
     return {
+      teamAFileNm : "../data/wc23OwnersTeamA.json",
+      teamBFileNm : "../data/wc23OwnersTeamB.json",
       teamOwners: [],
       selectedOwner: null,
       ownerTeamArr:  [],
@@ -82,10 +87,10 @@ export default {
       // getTeamOfSelectedOwner(this.team, this.ownersTeam);
       let obj = null;
       if (this.team == "TeamA") {
-        obj = require("../data/ownersTeamA.json");
+        obj = require("../data/wc23OwnersTeamA.json");
       }
       if (this.team == "TeamB") {
-        obj = require("../data/ownersTeamB.json");
+        obj = require("../data/wc23OwnersTeamB.json");
       }
 
       // const map = new Map();

@@ -13,33 +13,32 @@ let teamCollectionArray = [
   "TeamA_Dots",
   "TeamA_JD",
   "TeamA_Kiruba",
-  "TeamA_PnV",
   "TeamA_Prabu",
+  "TeamA_Prakash",
   "TeamA_RK",
   "TeamA_Ragu",
-  "TeamA_Ragul",
   "TeamB_Anand",
-  "TeamB_Chaitu",
+  "TeamB_Chaitanya",
+  "TeamB_Charan",
   "TeamB_Dinesh",
   "TeamB_Gokul",
-  "TeamB_Laxman",
   "TeamB_Praneeth",
   "TeamB_Raja",
   "TeamB_Rajesh",
   "TeamB_Rama",
+  "TeamB_Sreeni",
   "TeamB_Vinit",
 ];
 
 export function getOwnersOfTeam(teamName) {
   // debugPoint("getOwnersOfTeam("+teamName+")")
   let ownrArr = teamCollectionArray.filter((name) => name.includes(teamName));
-  ownrArr = ownrArr.map((ownerNm)=> ownerNm.replace(teamName+"_",""))
+  ownrArr = ownrArr.map((ownerNm) => ownerNm.replace(teamName + "_", ""));
   return ownrArr;
 }
 
 export function getTeamOfSelectedOwner(teamName, ownerName) {
-  debugPoint("0")
- 
+  debugPoint("0");
 }
 
 export async function getOwnerNames() {
@@ -95,7 +94,7 @@ export async function getTeamWiseTotalPoints(team, cashImg) {
     let lastMatchScorecard = await getFieldDataFromDoc(
       "AuctionTeams",
       team + "_Standings",
-      listOfMatches[listOfMatches.length - 2] 
+      listOfMatches[listOfMatches.length - 2]
     );
     // console.log("lastMatchScorecard : "+JSON.stringify(lastMatchScorecard))
     for (const [i] of lastMatchScorecard.entries()) {
@@ -109,12 +108,12 @@ export async function getTeamWiseTotalPoints(team, cashImg) {
   for (let index = 0; index < teamArr.length; index++) {
     let ownerName = teamArr[index];
     let totalPoints = await getFieldValueWithWhileLoop(
-      30,
+      100,
       ownerName,
       "1TotalPoints",
       "0total"
     );
-  
+
     let recentMatchId = listOfMatches[listOfMatches.length - 1];
     // console.log("recentMatchId : " + recentMatchId);
     let lastMatchTotal = await getFieldValueWithWhileLoop(
@@ -150,8 +149,8 @@ export async function getTeamWiseTotalPoints(team, cashImg) {
         rank = 0;
       }
       let rankChange = rank > 0 ? "⬆" + rank : rank < 0 ? "⬇" + rank : "➖";
-      rankChange = rankChange.replace("-","")
-      teamWiseTotalPoints[i].rankChange = rankChange
+      rankChange = rankChange.replace("-", "");
+      teamWiseTotalPoints[i].rankChange = rankChange;
     }
   }
   // console.log("teamWiseTotalPoints 3 : " + JSON.stringify(teamWiseTotalPoints));
@@ -183,9 +182,9 @@ async function getFieldValueWithWhileLoop(
     loopExitCount++;
   }
   console.log(
-    "Collection Nm : "+
-    colNm+
-    " loopExitCount : " +
+    "Collection Nm : " +
+      colNm +
+      " loopExitCount : " +
       loopExitCount +
       " DocNm : " +
       DocNm +
@@ -240,7 +239,7 @@ export async function fetchOwnerMatchWisePoints(ownerName) {
     name.includes(ownerName)
   );
   let listOfMatches = await getDataFromDoc(ownerDbCollNm[0], "1TotalPoints");
-  
+
   let matchWisePoints = [];
   // listOfMatches.forEach( (value, key) => {
   for (let [key, value] of listOfMatches) {

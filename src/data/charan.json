@@ -1,0 +1,14 @@
+{
+    "Charan":[{"id" :9647,"name" : "Hardik Pandya", "category" :"All-Rounder","team" : "India", "auctionPrice":12},
+    {"id" :8367,"name" : "Mohammad Nawaz", "category" :"All-Rounder","team" : "Pakistan", "auctionPrice":3},
+    {"id" :7662,"name" : "Glenn Maxwell", "category" :"All-Rounder","team" : "Australia", "auctionPrice":17},
+    {"id" :6326,"name" : "Kane Williamson", "category" :"Batsman","team" : "New Zealand", "auctionPrice":18},
+    {"id" :11177,"name" : "Rachin Ravindra", "category" :"All-Rounder","team" : "New Zealand", "auctionPrice":5},
+    {"id" :9582,"name" : "Aiden Markram", "category" :"Batsman","team" : "South Africa", "auctionPrice":15},
+    {"id" :9603,"name" : "Lungi Ngidi", "category" :"Bowler","team" : "South Africa", "auctionPrice":3},
+    {"id" :7952,"name" : "Dimuth Karunaratne", "category" :"Batsman","team" : "Srilanka", "auctionPrice":1},
+    {"id" :9494,"name" : "Kusal Mendis", "category" :"Wicket-Keeper","team" : "Srilanka", "auctionPrice":7},
+    {"id" :8540,"name" : "Litton Das", "category" :"Wicket-Keeper","team" : "Bangladesh", "auctionPrice":6},
+    {"id" :11081,"name" : "Mehidy Hassan Miraz", "category" :"All-Rounder","team" : "Bangladesh", "auctionPrice":7},
+    {"id" :8375,"name" : "Najibullah Zadran", "category" :"Batsman","team" : "Afghanistan", "auctionPrice":26}]
+}

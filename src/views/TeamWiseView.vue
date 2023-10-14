@@ -89,9 +89,9 @@ export default {
 }
 
 #teamWiseDiv h2 {
+  text-align: center;
   display: inline-block;
   font-weight: bold;
   font-size: 16px;
 }
-
 </style>

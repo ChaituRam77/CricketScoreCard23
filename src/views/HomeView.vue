@@ -30,6 +30,7 @@ import { computed } from '@vue/runtime-core'
     <table class="table table-borderless table-sm table-hover" id="scoresTable">
       <thead>
         <tr class="bg-secondary bg-gradient text-white">
+          <th scope="col"></th>
           <th scope="col">#</th>
           <th scope="col">Team</th>
           <th scope="col">Match Points</th>
@@ -39,7 +40,48 @@ import { computed } from '@vue/runtime-core'
 
       <tbody class="team" v-for="team in teamWiseTotalPoints" :key="team">
         <tr>
-          <th scope="row">{{ team.no }} {{ team.rankChange }}</th>
+          <!-- <th scope="row">{{ team.no }} {{ team.rankChange }}</th> -->
+          <!-- <td>
+            <img
+              v-if="team.rankChange.includes('⬆')"
+              :src="imgChevronUp"
+              alt="up arrow icon"
+            />
+            <img
+              v-else-if="team.rankChange.includes('⬇')"
+              :src="imgChevronDwn"
+              alt="down arrow icon"
+            />            
+            <span style="font-size: 80%">
+              {{ team.rankChange.replace('⬆','').replace('⬇','').replace('➖','')}}
+            </span>
+
+          </td> -->
+          <td>
+            <div style="display: flex; align-items: center">
+              <img
+                v-if="team.rankChange.includes('⬆')"
+                :src="imgChevronUp"
+                alt="up arrow icon"
+              />
+              <img
+                v-else-if="team.rankChange.includes('⬇')"
+                :src="imgChevronDwn"
+                alt="down arrow icon"
+              />
+              <span style="font-size: 80%">
+                {{
+                  team.rankChange
+                    .replace("⬆", "")
+                    .replace("⬇", "")
+                    .replace("➖", "")
+                }}
+              </span>
+            </div>
+          </td>
+          <td>
+            {{ team.no }}
+          </td>
           <td>
             <router-link :to="teamLink(team.name)">
               <a>{{ team.name }}</a>
@@ -69,12 +111,7 @@ import { computed } from '@vue/runtime-core'
 </template>
 
 <script>
-import {
-  getMatchWisePoints,
-  fetchTeamWiseTotalPoints,
-  getTeamWiseTotalPoints,
-  getLastMatchInfo,
-} from "../final-api-wrapper";
+import { getMatchWisePoints } from "../final-api-wrapper";
 
 import {
   getFieldDataFromDoc,
@@ -85,6 +122,8 @@ import {
 export default {
   data() {
     return {
+      imgChevronUp: require("../images/chevron-up.svg"),
+      imgChevronDwn: require("../images/chevron-down.svg"),
       apiScoreCardCollection: "ApiScoreCardNew",
       teamWiseTotalPoints: [],
       greeting: "",
@@ -111,7 +150,7 @@ export default {
     console.log("Team : " + this.team);
   },
   methods: {
-    async mountMeethods(){
+    async mountMeethods() {
       await this.getListOfMatches();
       await this.fetchScoresNew();
     },
@@ -126,7 +165,7 @@ export default {
         this.matchDetailsArr.push(
           "Match No: " + matchInfo[0] + " " + matchInfo[2]
         );
-        if (m == this.allMatchDetailsArr.length-1) {
+        if (m == this.allMatchDetailsArr.length - 1) {
           lastMatch = matchInfo;
         }
       }
@@ -156,29 +195,28 @@ export default {
           "_" +
           this.lastMatchInfo.teams
       );
-
+      debugPoint("TTTT");
       totalPoints.sort(
         (a, b) => parseFloat(b.totalPoints) - parseFloat(a.totalPoints)
       );
 
-
       debugPoint("totalPoints : " + JSON.stringify(totalPoints));
       // await fetchTeamWiseTotalPoints(this.team);
       this.teamWiseTotalPoints = JSON.parse(
-  JSON.stringify(totalPoints).replaceAll('-', '')
-);
-      
+        JSON.stringify(totalPoints).replaceAll("-", "")
+      );
+
       debugPoint(this.lastMatchInfo);
     },
     async getScoreCardOfMatch() {
       let matchInfoNeeded = null;
-      debugPoint("getScoreCardOfMatch()")
-      let matchInfoNo = this.showScoreCardOfMatch.match(/\d+/)[0]
-      debugPoint(matchInfoNo)
+      debugPoint("getScoreCardOfMatch()");
+      let matchInfoNo = this.showScoreCardOfMatch.match(/\d+/)[0];
+      debugPoint(matchInfoNo);
       for (const m in this.allMatchDetailsArr) {
         let match = this.allMatchDetailsArr[m].split("_");
-        if ((matchInfoNo == match[0])) {
-          debugPoint(this.allMatchDetailsArr[m])
+        if (matchInfoNo == match[0]) {
+          debugPoint(this.allMatchDetailsArr[m]);
           matchInfoNeeded = match;
           break;
         }
@@ -192,7 +230,7 @@ export default {
         id: matchInfoNeeded[1],
         teams: matchInfoNeeded[2],
       };
-      this.fetchScoresNew()
+      this.fetchScoresNew();
     },
 
     dynamicHeading(name) {
@@ -221,18 +259,31 @@ div {
   cursor: pointer;
 }
 
-.team-row th,
+.team th,
 .team-row td {
   padding: 10px;
   text-align: center;
+  font-weight: normal;
+  vertical-align: middle;
 }
 
 .team-row th {
   font-weight: bold;
 }
 
-.team-row td {
-  font-weight: normal;
+.team-row td:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-row td:first-child img {
+  height: 16px;
+  margin-right: 4px;
+}
+
+.team-row td:first-child span {
+  font-size: 80%;
 }
 
 #matchDiv {

@@ -17,13 +17,23 @@ import {
   where,
   getDocsFromCache,
 } from "firebase/firestore";
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCy22SFvFcB0dAevkEEU6kdj4BsuD6llaE",
+//   authDomain: "cricketscore23-c6b8f.firebaseapp.com",
+//   projectId: "cricketscore23-c6b8f",
+//   storageBucket: "cricketscore23-c6b8f.appspot.com",
+//   messagingSenderId: "1055907934943",
+//   appId: "1:1055907934943:web:3fc28364f48a05f92eef6a",
+// };
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCy22SFvFcB0dAevkEEU6kdj4BsuD6llaE",
-  authDomain: "cricketscore23-c6b8f.firebaseapp.com",
-  projectId: "cricketscore23-c6b8f",
-  storageBucket: "cricketscore23-c6b8f.appspot.com",
-  messagingSenderId: "1055907934943",
-  appId: "1:1055907934943:web:3fc28364f48a05f92eef6a",
+  apiKey: "AIzaSyC7WYjE0fThgZ13yGD8WoknUvWe3zytdMY",
+  authDomain: "worldcup23-f23d4.firebaseapp.com",
+  projectId: "worldcup23-f23d4",
+  storageBucket: "worldcup23-f23d4.appspot.com",
+  messagingSenderId: "105906288827",
+  appId: "1:105906288827:web:0d3c064b2b50396087d19e",
+  measurementId: "G-KFF3GTFN37"
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -55,7 +65,7 @@ export async function getDocNmsFromColl(collNm) {
     docSnaps.docs.map((doc) => {
       docNms.push(doc.id);
     });
-    // console.log(docNms);
+    console.log(docNms);
     return docNms;
   } catch (error) {
     console.log("getDocNmsFromCollection() error : " + error.message);
@@ -198,6 +208,7 @@ export async function addFieldToDB(
   fieldNm,
   fieldObj
 ) {
+  try {
   // console.log("fieldNm : " + fieldNm + " fieldObj " + JSON.stringify(fieldObj));
   const docRef = doc(db, collectionNm, documentNm);
   // const obj = Object.fromEntries(fieldObj);
@@ -207,9 +218,13 @@ export async function addFieldToDB(
       [fieldNm]: fieldObj,
     },
     { merge: true }
-  ).catch((err) => {
+  ).then(() => {
+    console.log('Document successfully updated with the new map field');
+  }).catch((err) => {
     console.log("error: " + err.message);
-  });
+  }); } catch (error) {
+    console.log("addFieldToDB() error : " + error.message);
+  }
 }
 
 export async function addMapFieldToDoc(
@@ -218,6 +233,8 @@ export async function addMapFieldToDoc(
   fieldNm,
   fieldObjMap
 ) {
+  try {
+    console.log("addMapFieldToDoc")
   const docRef = doc(db, collectionNm, documentNm);
   // const obj = Object.fromEntries(fieldObj);
   const obj = Object.fromEntries(fieldObjMap);
@@ -225,12 +242,17 @@ export async function addMapFieldToDoc(
   await setDoc(
     docRef,
     {
-      [fieldNm]: obj,
+      [fieldNm]: fieldObjMap,
     },
     { merge: true }
   ).catch((err) => {
     console.log("error: " + err.message);
   });
+
+  } catch (error) {
+    console.log("addMapFieldToDoc() error: " + error.message);
+  }
+  
 }
 
 export async function addMapFieldToDB(collectionNm, documentNm, fieldObj) {
@@ -248,6 +270,8 @@ export async function updateFieldToDB(
   fieldNm,
   fieldObj
 ) {
+  try {
+    debugPoint("Update")
   const docRef = doc(db, collectionNm, documentNm);
   // const obj = Object.fromEntries(fieldObj);
   await updateDoc(
@@ -256,7 +280,9 @@ export async function updateFieldToDB(
       [fieldNm]: fieldObj,
     },
     { merge: true }
-  ).catch((err) => {
+  ).then(() => {
+    console.log('Document successfully updated with the new map field');
+  }).catch((err) => {
     console.log(
       "updateFieldToDB(" +
         collectionNm +
@@ -270,6 +296,21 @@ export async function updateFieldToDB(
         err.message
     );
   });
+  } catch (error) {
+    console.log(
+      "updateFieldToDB(" +
+        collectionNm +
+        "," +
+        documentNm +
+        "," +
+        fieldNm +
+        "," +
+        fieldObj +
+        ") error: " +
+        error.message
+    );
+  }
+  
 }
 
 export async function addDocToCollection(
@@ -294,9 +335,10 @@ export async function setDocToCollection(
   fieldObj
 ) {
   try {
-  //   console.log("Inside setDocToCollection() colNm : "+collectionNm+" documentNm : "+documentNm
+    debugPoint("set")
+    console.log("Inside setDocToCollection() colNm : "+collectionNm+" documentNm : "+documentNm
   // +" fieldNm : "+fieldNm
-  // +" fieldObj : "+fieldObj)
+  +" fieldObj : "+fieldObj)
   const docRef = doc(db, collectionNm, documentNm);
   // const obj = Object.fromEntries(fieldObj);
   await setDoc(
