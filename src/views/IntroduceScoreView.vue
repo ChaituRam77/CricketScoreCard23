@@ -118,7 +118,7 @@ export default {
         catch :10,
         runOutDirectHit :10,
         runOutFielders :5,
-        stumping : 11,
+        stumping : 10,
         in11 : 5,
         potm : 50
       },
