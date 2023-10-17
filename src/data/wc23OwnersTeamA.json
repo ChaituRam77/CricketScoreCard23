@@ -21,6 +21,7 @@
         {"id" :8383,"name" : "Mark Wood", "category" :"Bowler","team" : "England", "auctionPrice":13},
         {"id" :14565,"name" : "Marco Jansen", "category" :"All-Rounder","team" : "South Africa", "auctionPrice":9},
         {"id" :8422,"name" : "Dasun Shanaka", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":6},
+        {"id" :9500,"name" : "Chamika Karunaratne", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":0},
         {"id" :10693,"name" : "Glenn Phillips", "category" :"Wicket-keeper","team" : "New Zealand", "auctionPrice":5},
         {"id" :9067,"name" : "Matt Henry", "category" :"Bowler","team" : "New Zealand", "auctionPrice":9},
         {"id" :14205,"name" : "Tanzid Hasan Tamim", "category" :"Batsman","team" : "Bangladesh", "auctionPrice":1},

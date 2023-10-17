@@ -30,7 +30,7 @@ import { computed } from '@vue/runtime-core'
     <table class="table table-borderless table-sm table-hover" id="scoresTable">
       <thead>
         <tr class="bg-secondary bg-gradient text-white">
-          <th scope="col"></th>
+          <th scope="col"> </th>
           <th scope="col">#</th>
           <th scope="col">Team</th>
           <th scope="col">Match Points</th>
@@ -58,29 +58,27 @@ import { computed } from '@vue/runtime-core'
 
           </td> -->
           <td>
-            <div style="display: flex; align-items: center">
-              <img
-                v-if="team.rankChange.includes('⬆')"
-                :src="imgChevronUp"
-                alt="up arrow icon"
-              />
-              <img
-                v-else-if="team.rankChange.includes('⬇')"
-                :src="imgChevronDwn"
-                alt="down arrow icon"
-              />
-              <span style="font-size: 80%">
-                {{
-                  team.rankChange
-                    .replace("⬆", "")
-                    .replace("⬇", "")
-                    .replace("➖", "")
-                }}
-              </span>
-            </div>
-          </td>
+  <div style="display: flex; align-items: center;">
+    <img
+      v-if="team.rankChange.includes('⬆')"
+      :src="imgChevronUp"
+      alt="up arrow icon"
+    />
+    <img
+      v-else-if="team.rankChange.includes('⬇')"
+      :src="imgChevronDwn"
+      alt="down arrow icon"
+    />
+    <span style="font-size: 80%">
+      {{ team.rankChange.replace('⬆','').replace('⬇','').replace('➖','')}}
+    </span>
+  </div>
+</td>
           <td>
-            {{ team.no }}
+            <!-- {{ team.no }} -->
+            <router-link :to="teamLink(team.name)">
+              <a>{{ team.no }}</a>
+            </router-link>
           </td>
           <td>
             <router-link :to="teamLink(team.name)">
@@ -88,10 +86,16 @@ import { computed } from '@vue/runtime-core'
             </router-link>
           </td>
           <td>
-            <p>{{ team.lastMatchPoints }}</p>
+            <!-- <p>{{ team.lastMatchPoints }}</p> -->
+            <router-link :to="teamLink(team.name)">
+              <a>{{ team.lastMatchPoints }}</a>
+            </router-link>
           </td>
           <td>
-            <p>{{ team.totalPoints }}</p>
+            <!-- <p>{{ team.totalPoints }}</p> -->
+            <router-link :to="teamLink(team.name)">
+              <a>{{ team.totalPoints }}</a>
+            </router-link>
           </td>
         </tr>
       </tbody>
@@ -111,7 +115,9 @@ import { computed } from '@vue/runtime-core'
 </template>
 
 <script>
-import { getMatchWisePoints } from "../final-api-wrapper";
+import {
+  getMatchWisePoints,
+} from "../final-api-wrapper";
 
 import {
   getFieldDataFromDoc,
@@ -122,8 +128,8 @@ import {
 export default {
   data() {
     return {
-      imgChevronUp: require("../images/chevron-up.svg"),
-      imgChevronDwn: require("../images/chevron-down.svg"),
+      imgChevronUp: require('../images/chevron-up.svg'),
+      imgChevronDwn: require('../images/chevron-down.svg'),
       apiScoreCardCollection: "ApiScoreCardNew",
       teamWiseTotalPoints: [],
       greeting: "",
@@ -195,7 +201,7 @@ export default {
           "_" +
           this.lastMatchInfo.teams
       );
-      debugPoint("TTTT");
+      debugPoint("TTTT")
       totalPoints.sort(
         (a, b) => parseFloat(b.totalPoints) - parseFloat(a.totalPoints)
       );

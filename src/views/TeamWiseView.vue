@@ -21,10 +21,16 @@
       <tbody class="match" v-for="match in matchWisePoints" :key="match">
         <tr>
           <td>
-            <p>{{ match.matchNo }}</p>
+            <!-- <p>{{ match.matchNo }}</p> -->
+            <router-link :to="matchLink(match.matchKey)">
+              {{ match.matchNo }}
+            </router-link>
           </td>
           <td>
-            <p>{{ match.matchVs }}</p>
+            <!-- <p>{{ match.matchVs }}</p> -->
+            <router-link :to="matchLink(match.matchKey)">
+              {{ match.matchVs }}
+            </router-link>
           </td>
           <td>
             <router-link :to="matchLink(match.matchKey)">

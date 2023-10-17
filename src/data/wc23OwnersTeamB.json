@@ -24,6 +24,7 @@
         {"id" :2258,"name" : "Jos Buttler", "category" :"Wicket-Keeper","team" : "England", "auctionPrice":22},
         {"id" :8561,"name" : "Ish Sodhi", "category" :"Bowler","team" : "New Zealand", "auctionPrice":7},
         {"id" :8422,"name" : "Dasun Shanaka", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":1},
+        {"id" :9500,"name" : "Chamika Karunaratne", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":0},
         {"id" :16458,"name" : "Matheesha Pathirana", "category" :"Bowler","team" : "Srilanka", "auctionPrice":5},
         {"id" :13273,"name" : "Bas de Leede", "category" :"All-Rounder","team" : "Netherlands", "auctionPrice":8}
     ],
