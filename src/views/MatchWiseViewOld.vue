@@ -17,10 +17,9 @@
         <tr class="bg-primary bg-gradient text-white">
           <th scope="col">Name</th>
           <th scope="col">Total</th>
-          <!-- <th scope="col">Runs</th>
+          <th scope="col">Runs</th>
           <th scope="col">4's</th>
-          <th scope="col">6's</th> -->
-          <th scope="col">Batting Points</th>
+          <th scope="col">6's</th>
           <th scope="col">Wickets</th>
           <th scope="col">bowled/LBW</th>
           <th scope="col">hitwkt</th>
@@ -40,7 +39,7 @@
           <td>
             <p>{{ player.total }}</p>
           </td>
-          <!-- <td>
+          <td>
             <p>{{ player.runs }}</p>
           </td>
           <td>
@@ -48,9 +47,6 @@
           </td>
           <td>
             <p>{{ player.sixes }}</p>
-          </td> -->
-          <td>
-            <p @click="showSubtable('batting')">{{ player.runs + player.fours + player.sixes }}</p>
           </td>
           <td>
             <p>{{ player.wickets }}</p>
@@ -79,36 +75,6 @@
         </tr>
       </tbody>
     </table>
-    <!-- Subtables -->
-    <div v-if="showBattingSubtable">
-      <!-- <h3>Batting Subtable</h3> -->
-      <table
-      class="table table-borderless table-sm table-hover"
-      id="playerWiseScoresTable"
-    >
-        <thead>
-          <tr>
-            <th>Runs</th>
-            <th>4s</th>
-            <th>6s</th>
-          </tr>
-      <tbody class="player" v-for="player in playerWisePoints" :key="player">
-        <tr>
-          <td>
-            <p>{{ player.runs }}</p>
-          </td>
-          <td>
-            <p>{{ player.fours }}</p>
-          </td>
-          <td>
-            <p>{{ player.sixes }}</p>
-          </td>
-        </tr>
-      </tbody>
-        </thead>
-        <!-- Render your batting subtable data here -->
-      </table>
-    </div>
   </div>
 </template>
 <script>
@@ -117,9 +83,6 @@ import { getDataFromDoc,debugPoint } from "../firebase-config";
 export default {
   data() {
     return {
-      showBattingSubtable: false,
-      showBowlingSubtable: false,
-      showFieldingSubtable: false,
       playerWisePoints: [],
       ownerId: "",
       matchId:"",
@@ -132,11 +95,6 @@ export default {
     this.updatePlayerWisePoints();
   },
   methods: {
-    showSubtable(type) {
-      this.showBattingSubtable = type === "batting";
-      this.showBowlingSubtable = type === "bowling";
-      this.showFieldingSubtable = type === "fielding";
-    },
     async updatePlayerWisePoints() {
       this.playerWisePoints = await fetchOwnerMatchPlayerWisePoints(this.ownerId,this.matchId);
     },

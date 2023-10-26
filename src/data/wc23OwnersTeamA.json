@@ -8,7 +8,8 @@
         {"id" :8561,"name" : "Ish Sodhi", "category" :"Bowler","team" : "New Zealand", "auctionPrice":3},
         {"id" :9554,"name" : "Rassie van der Dussen", "category" :"Batsman","team" : "South Africa", "auctionPrice":6},
         {"id" :9494,"name" : "Kusal Mendis", "category" :"Wicket-keeper","team" : "Srilanka", "auctionPrice":7},
-        {"id" :18504,"name" : "Matheesha Pathirana", "category" :"Bowler","team" : "Srilanka", "auctionPrice":5},
+        {"id" :1629,"name" : "Matheesha Pathirana", "category" :"Bowler","team" : "Srilanka", "auctionPrice":5},
+        {"id" :18504,"name" : "Angelo Mathews", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":0},
         {"id" :10799,"name" : "Iftikhar Ahmed", "category" :"All-Rounder","team" : "Pakistan", "auctionPrice":3},
         {"id" :10863,"name" : "Faqar Zaman", "category" :"Batsman","team" : "Pakistan", "auctionPrice":7},
         {"id" :8571,"name" : "Rahmat Shah", "category" :"All-Rounder","team" : "Afghanistan", "auctionPrice":1}
@@ -36,7 +37,7 @@
         {"id" :14561,"name" : "Haris Rauf", "category" :"Bowler","team" : "Pakistan", "auctionPrice":9},
         {"id" :6692,"name" : "Moeen Ali", "category" :"All-Rounder","team" : "England", "auctionPrice":14},
         {"id" :9863,"name" : "Mustafizur Rahman", "category" :"Bowler","team" : "Bangladesh", "auctionPrice":11},
-        {"id" :9200,"name" : "Alex Carey", "category" :"Wicket-keeper","team" : "Pakistan", "auctionPrice":12},
+        {"id" :9200,"name" : "Alex Carey", "category" :"Wicket-keeper","team" : "Australia", "auctionPrice":12},
         {"id" :10713,"name" : "Daryl Mitchell", "category" :"All-Rounder","team" : "New Zealand", "auctionPrice":6},
         {"id" :8277,"name" : "Hashmatullah Shahidi", "category" :"Batsman","team" : "Afghanistan", "auctionPrice":3},
         {"id" :9491,"name" : "Reeza Hendricks", "category" :"Batsman","team" : "South Africa", "auctionPrice":1},
@@ -82,6 +83,7 @@
         {"id" :14251,"name" : "Dunith Wellalage", "category" :"Bowler","team" : "Srilanka", "auctionPrice":3},
         {"id" :11081,"name" : "Mehidy Hassan Miraz", "category" :"All-Rounder","team" : "Bangladesh", "auctionPrice":15},
         {"id" :8349,"name" : "Reece Topley", "category" :"Bowler","team" : "England", "auctionPrice":6},
+        {"id" :11436,"name" : "Brydon Carse", "category" :"Bowler","team" : "England", "auctionPrice":0},
         {"id" :9864,"name" : "Najmul Hossain Shanto", "category" :"Batsman","team" : "Bangladesh", "auctionPrice":3}
     ], 
     "RK" :[
