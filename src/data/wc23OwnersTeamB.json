@@ -73,6 +73,7 @@
         {"id" :11808,"name" : "Shubman Gill", "category" :"Batsman","team" : "India", "auctionPrice":50},
         {"id" :10863,"name" : "Faqar Zaman", "category" :"Batsman","team" : "Pakistan", "auctionPrice":5},
         {"id" :8349,"name" : "Reece Topley", "category" :"Bowler","team" : "England", "auctionPrice":1},
+        {"id" :11436,"name" : "Brydon Carse", "category" :"Bowler","team" : "England", "auctionPrice":0},
         {"id" :8383,"name" : "Mark Wood", "category" :"Bowler","team" : "England", "auctionPrice":11},
         {"id" :8549,"name" : "Will Young", "category" :"All-Rounder","team" : "New Zealand", "auctionPrice":11},
         {"id" :10692,"name" : "Lockie Ferguson", "category" :"Bowler","team" : "New Zealand", "auctionPrice":3},
@@ -135,6 +136,7 @@
         {"id" :9495,"name" : "Sadeera Samarawickrama", "category" :"Wicket-Keeper","team" : "Srilanka", "auctionPrice":3},
         {"id" :7872,"name" : "Dhananjaya De Silva", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":3},
         {"id" :10928,"name" : "Lahiru Kumara", "category" :"Bowler","team" : "Srilanka", "auctionPrice":21},
+        {"id" :8393,"name" : "Dushmantha Chameera", "category" :"Bowler","team" : "Srilanka", "auctionPrice":0},
         {"id" :9864,"name" : "Najmul Hossain Shanto", "category" :"Batsman","team" : "Bangladesh", "auctionPrice":8},
         {"id" :11871,"name" : "Mahedi Hasan Shak", "category" :"All-Rounder","team" : "Bangladesh", "auctionPrice":2},
         {"id" :8571,"name" : "Rahmat Shah", "category" :"All-Rounder","team" : "Afghanistan", "auctionPrice":1}
