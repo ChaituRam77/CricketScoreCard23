@@ -26,10 +26,12 @@
         {"id" :8422,"name" : "Dasun Shanaka", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":1},
         {"id" :9500,"name" : "Chamika Karunaratne", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":0},
         {"id" :16458,"name" : "Matheesha Pathirana", "category" :"Bowler","team" : "Srilanka", "auctionPrice":5},
-        {"id" :18504,"name" : "Angelo Mathews", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":0},
+        {"id" :1629,"name" : "Angelo Mathews", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":0},
         {"id" :13273,"name" : "Bas de Leede", "category" :"All-Rounder","team" : "Netherlands", "auctionPrice":8}
     ],
-    "Charan":[{"id" :9647,"name" : "Hardik Pandya", "category" :"All-Rounder","team" : "India", "auctionPrice":12},
+    "Charan":[
+    {"id" :9647,"name" : "Hardik Pandya", "category" :"All-Rounder","team" : "India", "auctionPrice":12},
+    {"id" :10551,"name" : "Prasidh Krishna", "category" :"Bowler","team" : "India", "auctionPrice":0},
     {"id" :8367,"name" : "Mohammad Nawaz", "category" :"All-Rounder","team" : "Pakistan", "auctionPrice":3},
     {"id" :7662,"name" : "Glenn Maxwell", "category" :"All-Rounder","team" : "Australia", "auctionPrice":17},
     {"id" :6326,"name" : "Kane Williamson", "category" :"Batsman","team" : "New Zealand", "auctionPrice":18},
@@ -64,6 +66,7 @@
         {"id" :10713,"name" : "Daryl Mitchell", "category" :"All-Rounder","team" : "New Zealand", "auctionPrice":6},
         {"id" :8983,"name" : "Jimmy Neesham", "category" :"All-Rounder","team" : "New Zealand", "auctionPrice":3},
         {"id" :9067,"name" : "Matt Henry", "category" :"Bowler","team" : "New Zealand", "auctionPrice":1},
+        {"id" :9441,"name" : "Kyle Jamieson", "category" :"Bowler","team" : "New Zealand", "auctionPrice":0},
         {"id" :14205,"name" : "Tanzid Hasan Tamim", "category" :"Batsman","team" : "Bangladesh", "auctionPrice":1},
         {"id" :13223,"name" : "Tawhid Hridoy", "category" :"Batsman","team" : "Bangladesh", "auctionPrice":1},
         {"id" :10738,"name" : "Rashid Khan", "category" :"All-Rounder","team" : "Afghanistan", "auctionPrice":25},

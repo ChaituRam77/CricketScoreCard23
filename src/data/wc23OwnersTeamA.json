@@ -8,8 +8,8 @@
         {"id" :8561,"name" : "Ish Sodhi", "category" :"Bowler","team" : "New Zealand", "auctionPrice":3},
         {"id" :9554,"name" : "Rassie van der Dussen", "category" :"Batsman","team" : "South Africa", "auctionPrice":6},
         {"id" :9494,"name" : "Kusal Mendis", "category" :"Wicket-keeper","team" : "Srilanka", "auctionPrice":7},
-        {"id" :1629,"name" : "Matheesha Pathirana", "category" :"Bowler","team" : "Srilanka", "auctionPrice":5},
-        {"id" :18504,"name" : "Angelo Mathews", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":0},
+        {"id" :16458,"name" : "Matheesha Pathirana", "category" :"Bowler","team" : "Srilanka", "auctionPrice":5},
+        {"id" :1629,"name" : "Angelo Mathews", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":0},
         {"id" :10799,"name" : "Iftikhar Ahmed", "category" :"All-Rounder","team" : "Pakistan", "auctionPrice":3},
         {"id" :10863,"name" : "Faqar Zaman", "category" :"Batsman","team" : "Pakistan", "auctionPrice":7},
         {"id" :8571,"name" : "Rahmat Shah", "category" :"All-Rounder","team" : "Afghanistan", "auctionPrice":1}
@@ -25,6 +25,7 @@
         {"id" :9500,"name" : "Chamika Karunaratne", "category" :"All-Rounder","team" : "Srilanka", "auctionPrice":0},
         {"id" :10693,"name" : "Glenn Phillips", "category" :"Wicket-keeper","team" : "New Zealand", "auctionPrice":5},
         {"id" :9067,"name" : "Matt Henry", "category" :"Bowler","team" : "New Zealand", "auctionPrice":9},
+        {"id" :9441,"name" : "Kyle Jamieson", "category" :"Bowler","team" : "New Zealand", "auctionPrice":0},
         {"id" :14205,"name" : "Tanzid Hasan Tamim", "category" :"Batsman","team" : "Bangladesh", "auctionPrice":1},
         {"id" :8540,"name" : "Litton Das", "category" :"Wicket-keeper","team" : "Bangladesh", "auctionPrice":3},
         {"id" :13273,"name" : "Bas de Leede", "category" :"All-Rounder","team" : "Netherlands", "auctionPrice":1}
@@ -45,6 +46,7 @@
     ],
     "Prabu" : [
         {"id" :9647,"name" : "Hardik Pandya", "category" :"All-Rounder","team" : "India", "auctionPrice":10},
+        {"id" :10551,"name" : "Prasidh Krishna", "category" :"Bowler","team" : "India", "auctionPrice":0},
         {"id" :9468,"name" : "Mohammad Rizwan", "category" :"Wicket-Keeper","team" : "Pakistan", "auctionPrice":17},
         {"id" :8292,"name" : "Kuldeep Yadav", "category" :"Bowler","team" : "India", "auctionPrice":24},
         {"id" :1742,"name" : "Adil Rashid", "category" :"Bowler","team" : "England", "auctionPrice":15},
@@ -74,7 +76,7 @@
     "Ragu" : [
         {"id" :8359,"name" : "Babar Azam", "category" :"Batsman","team" : "Pakistan", "auctionPrice":18},
         {"id" :12160,"name" : "Shaheen Shah Afridi", "category" :"Bowler","team" : "Pakistan", "auctionPrice":19},
-        {"id" :2258,"name" : "Jonny Bairstow", "category" :"Wicket-Keeper","team" : "England", "auctionPrice":14},
+        {"id" :6507,"name" : "Jonny Bairstow", "category" :"Wicket-Keeper","team" : "England", "auctionPrice":14},
         {"id" :11186,"name" : "Shadab Khan", "category" :"All-Rounder","team" : "Pakistan", "auctionPrice":9},
         {"id" :6250,"name" : "Mitch Marsh", "category" :"All-Rounder","team" : "Australia", "auctionPrice":16},
         {"id" :8216,"name" : "Tom Latham", "category" :"Wicket-Keeper","team" : "New Zealand", "auctionPrice":3},
