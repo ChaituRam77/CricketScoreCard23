@@ -107,20 +107,20 @@ export default {
         run : 1,
         four : 1,
         six : 2,
-        runsAdditionalPointsArr : [50,100,150],
+        runsAdditionalPointsArr : [30,50,100],
         runsAdditionalPoints: 10,
-        wicket : 25,
-        wicketAdditionalPointsArr : [3,5,6],
+        wicket : 20,
+        wicketAdditionalPointsArr : [2,3,5],
         wicketAdditionalPoints: 10,
-        maiden : 10,
-        bowledLbw : 10,
-        hitWicket : 10,
-        catch :10,
+        maiden : 20,
+        bowledLbw : 5,
+        hitWicket : 5,
+        catch :5,
         runOutDirectHit :10,
         runOutFielders :5,
         stumping : 10,
         in11 : 5,
-        potm : 50
+        potm : 30
       },
       
       switchValues: {
@@ -483,7 +483,7 @@ export default {
         key2: 'value2',
           };
           // await addFieldToDB("AuctionTeams", "TeamA", "Chaitu1", objOwn);
-      let obj = require("../data/charan.json");
+      let obj = require("../data/ipl24OwnersTeamB.json");
       const map = new Map();
       for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -491,11 +491,11 @@ export default {
         }
       }
       map.forEach(async (value, key) => {
-        // console.log("Key : " + key);
+        console.log("Key : " + key);
         // console.log("Value : " + JSON.stringify(obj[key]));
         let objOwn = {};
         value.forEach(async (element) => {
-          // console.log(element.name + element.name);
+          console.log(element.name + element.name);
           objOwn[element.id] = {
             bName: element.name,
             category: element.category,
@@ -535,7 +535,7 @@ export default {
       // let lastMatchInfo = await getLastMatchInfo();
       for (let i = 0; i < ownersData.length; i++) {
         // this.consoleLog("Team : " + ownersData[i]);
-        let obj = require("../data/wc23Owners" + ownersData[i] + ".json");
+        let obj = require("../data/ipl24Owners" + ownersData[i] + ".json");
         const map = new Map();
 
         for (const key in obj) {

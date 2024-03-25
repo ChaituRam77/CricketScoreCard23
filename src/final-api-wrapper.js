@@ -11,23 +11,23 @@ let matchWisePoints = new Map();
 let teamCollectionArray = [
   "TeamA_Darshan",
   "TeamA_Dots",
-  "TeamA_JD",
   "TeamA_Kiruba",
   "TeamA_Prabu",
   "TeamA_Prakash",
-  "TeamA_RK",
   "TeamA_Ragu",
+  "TeamA_RK",
+  "TeamA_JD",
   "TeamB_Anand",
   "TeamB_Chaitanya",
   "TeamB_Charan",
   "TeamB_Dinesh",
   "TeamB_Gokul",
-  "TeamB_Praneeth",
+  "TeamB_Harish",
   "TeamB_Raja",
-  "TeamB_Rajesh",
+  "TeamB_RK",
   "TeamB_Rama",
-  "TeamB_Sreeni",
-  "TeamB_Vinit",
+  "TeamB_Prabha",
+  "TeamB_Sreeni"
 ];
 
 export function getOwnersOfTeam(teamName) {
