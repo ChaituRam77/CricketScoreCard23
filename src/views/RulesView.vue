@@ -67,9 +67,9 @@
         </tbody>
       </table>
       <p class="statements">
-        Player of the match will be awarded 50 points.
+        Player of the match will be awarded 30 points.
         <br />
-        If player is in starting playing 11, will be awarded 5 points..
+        If player is in starting playing 12, will be awarded 5 points..
       </p>
     </div>
   </div>
