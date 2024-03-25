@@ -24,7 +24,7 @@ let teamCollectionArray = [
   "TeamB_Gokul",
   "TeamB_Harish",
   "TeamB_Raja",
-  "TeamB_RK",
+  "TeamB_Karthi",
   "TeamB_Rama",
   "TeamB_Prabha",
   "TeamB_Sreeni"

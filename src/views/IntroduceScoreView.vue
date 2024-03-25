@@ -108,9 +108,11 @@ export default {
         four : 1,
         six : 2,
         runsAdditionalPointsArr : [30,50,100],
-        runsAdditionalPoints: 10,
+        runsAdditionalPointsArrSubSet : [5,10,10],
+        // runsAdditionalPoints: 10,
         wicket : 20,
         wicketAdditionalPointsArr : [2,3,5],
+        wicketAdditionalPointsArrSubSet : [5,10,10],
         wicketAdditionalPoints: 10,
         maiden : 20,
         bowledLbw : 5,
@@ -155,12 +157,13 @@ export default {
         "TeamB_Charan",
         "TeamB_Dinesh",
         "TeamB_Gokul",
-        "TeamB_Praneeth",
+        "TeamB_Harish",
+        "TeamB_Karthi",
+        "TeamB_Prabha",
         "TeamB_Raja",
-        "TeamB_Rajesh",
         "TeamB_Rama",
         "TeamB_Sreeni",
-        "TeamB_Vinit",
+    
       ],
       recentMatchOwnerPoints: new Map(),
       runoutNotCalculated: [],
@@ -1037,11 +1040,13 @@ export default {
       //       ? runs + (runs > 99 ? 25 : 15)
       //       : runs + 5
       //     : runs;
-      debugPoint("Points");
+      newdebugPoint("Points");
+      let r = 0;
       if(runs > this.pointsRule.runsAdditionalPointsArr[0] - 1){
         this.pointsRule.runsAdditionalPointsArr.forEach(runsAdditionalPointsFor =>{
           if(runs > runsAdditionalPointsFor -1){
-            battingAdditionalPoints = battingAdditionalPoints + this. pointsRule.runsAdditionalPoints
+            battingAdditionalPoints = battingAdditionalPoints + this.pointsRule.runsAdditionalPointsArrSubSet[r]
+            r= r+1;
           }
         })
       }
@@ -1059,11 +1064,13 @@ export default {
       let wickets = scoreMap.get(this.switchValues.bowling);
       // bowlingPoints =
       //   wickets > 2 ? wickets * 20 + (wickets > 4 ? 20 : 10) : wickets * 20;
-      debugPoint("BowlPoints");
+      newdebugPoint("BowlPoints");
+      let b = 0;
       if(wickets > this.pointsRule.wicketAdditionalPointsArr[0] - 1){
         this.pointsRule.wicketAdditionalPointsArr.forEach(wicketAdditionalPointsArr =>{
           if(wickets > wicketAdditionalPointsArr -1){
-            bowlingAdditionalPoints = bowlingAdditionalPoints + this. pointsRule.wicketAdditionalPoints
+            bowlingAdditionalPoints = bowlingAdditionalPoints + this. pointsRule.wicketAdditionalPointsArrSubSet[b];
+            b = b +1;
           }
         })
       }

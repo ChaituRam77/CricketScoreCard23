@@ -32,7 +32,9 @@
             <p>{{ ownerTeamArr.indexOf(player) +1 }}</p>
           </td>
           <td>
-            <p>{{ player.name }}</p>
+          <a :href="getPlayerProfileLink(player.id)" target="_blank">
+                {{ player.name }}
+            </a>
           </td>
           <td>
             <p>{{ player.category }}</p>
@@ -102,6 +104,9 @@ export default {
         }
       }
       debugPoint(this.ownerTeamArr[0].name)
+    },
+    getPlayerProfileLink(playerId){
+      return `https://www.cricbuzz.com/profiles/${playerId}/`;
     },
   },
 };
