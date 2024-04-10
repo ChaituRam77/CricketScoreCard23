@@ -120,6 +120,7 @@
         {"id": 10636, "name": "Rajat Patidar", "category": "Batsman", "team": "RCB", "auctionPrice": 11},
         {"id": 14691, "name": "Dhruv Jurel", "category": "Wicket-Keeper", "team": "RR", "auctionPrice": 6},
         {"id": 10926, "name": "Wanindu Hasaranga*", "category": "All-Rounder", "team": "SRH", "auctionPrice": 4},
+        {"id": 13931, "name": "Vijayakanth Viyaskanth", "category": "Bowler", "team": "SRH", "auctionPrice": 0},
         {"id": 2195, "name": "Mayank Agarwal", "category": "Batsman", "team": "SRH", "auctionPrice": 5}
     ],
     "Karthi": [

@@ -134,6 +134,7 @@
         {"id": 13169, "name": "Tim David", "category": "Batsman", "team": "MI", "auctionPrice": 5},
         {"id": 11289, "name": "Naveen-ul-Haq", "category": "Bowler", "team": "LSG", "auctionPrice": 5},
         {"id": 10926, "name": "Wanindu Hasaranga", "category": "All-Rounder", "team": "SRH", "auctionPrice": 9},
+        {"id": 13931, "name": "Vijayakanth Viyaskanth", "category": "Bowler", "team": "SRH", "auctionPrice": 0},
         {"id": 19027, "name": "Umran Malik", "category": "Bowler", "team": "SRH", "auctionPrice": 3},
         {"id": 1844, "name": "Karn Sharma", "category": "Bowler", "team": "RCB", "auctionPrice": 1},
         {"id": 10499, "name": "Abhinav Manohar", "category": "Batsman", "team": "GT", "auctionPrice": 1}
