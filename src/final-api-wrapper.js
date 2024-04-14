@@ -108,7 +108,7 @@ export async function getTeamWiseTotalPoints(team, cashImg) {
   for (let index = 0; index < teamArr.length; index++) {
     let ownerName = teamArr[index];
     let totalPoints = await getFieldValueWithWhileLoop(
-      100,
+      200,
       ownerName,
       "1TotalPoints",
       "0total"
