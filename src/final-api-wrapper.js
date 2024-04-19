@@ -1,4 +1,4 @@
-import db, { debugPoint } from "./firebase-config";
+import db, { debugPoint,newdebugPoint } from "./firebase-config";
 import {
   getDataFromDoc,
   getDocNmsFromColl,
@@ -105,8 +105,10 @@ export async function getTeamWiseTotalPoints(team, cashImg) {
     }
   }
   var teamArr = teamCollectionArray.filter((name) => name.includes(team));
+  newdebugPoint("Team Arr : "+teamArr);
   for (let index = 0; index < teamArr.length; index++) {
     let ownerName = teamArr[index];
+    newdebugPoint("get Total points of owner : "+ownerName)
     let totalPoints = await getFieldValueWithWhileLoop(
       200,
       ownerName,

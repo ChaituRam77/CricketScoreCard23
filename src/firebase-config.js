@@ -383,7 +383,7 @@ export async function updateDocToCollection(
 
 export function debugPoint(msg) {
   // if(msg.includes("run out")){
-     console.log("Debug point from " + msg);
+    //  console.log("Debug point from " + msg);
   // }
 }
 export function newdebugPoint(msg) {
