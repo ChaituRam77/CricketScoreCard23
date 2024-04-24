@@ -63,6 +63,8 @@ import {
   deleteValueFromDoc,
   setDocToCollection,
   checkDocExistsInColl,
+  debugPoint0,
+  debugPoint1,
   debugPoint,
   newdebugPoint,
 } from "../firebase-config";
@@ -347,7 +349,7 @@ export default {
         let total = this.claculateTotalNew(map);
         this.playersMap.get(key).atotal = total;
         let playerNm = this.playersMap.get(key).bName;
-        this.consoleLog(key + " : " + playerNm + " " + JSON.stringify(value));
+        debugPoint0(key + " : " + playerNm + " " + JSON.stringify(value));
         this.assignPlayersScore(key, playerNm, value, total);
       });
       if (this.writeToDB) {
@@ -432,7 +434,7 @@ export default {
             playerName
           );
         }
-        debugPoint("assignPlayersScore() for " + playerId);
+        debugPoint0("assignPlayersScore() for " + playerId);
         await setDocToCollection(
           dbCollectionName,
           playerIdDoc,
@@ -552,7 +554,7 @@ export default {
           const dbCollectionName = ownersData[i] + "_" + key;
           let ownerOverAllPoints = 0;
           let playersMatchMap = new Map();
-          if (this.writeToDB) {
+          if (this.writeToDB) {            
             ownerOverAllPoints = await getFieldDataFromDoc(
               dbCollectionName,
               this.totalPointsDbDocNm,
@@ -591,23 +593,28 @@ export default {
           playersMatchMap.set(this.totalPointsDbFieldNm, totalPointsforMatch);
 
           if (this.writeToDB) {
-            await addMapFieldToDB(
+            var promises = [];
+            newdebugPoint("assignMatchPointsToOwner - PlayersMatchMap : "+new Date().toLocaleString());
+             promises.push( await addMapFieldToDB(
               dbCollectionName,
               this.matchDetails,
               playersMatchMap
-            );
-            await setDocToCollection(
+            ));
+            newdebugPoint("assignMatchPointsToOwner - newOverAllPoints : "+new Date().toLocaleString());
+            promises.push(await setDocToCollection(
               dbCollectionName,
               this.totalPointsDbDocNm,
               this.totalPointsDbFieldNm,
               newOverAllPoints
-            );
-            await setDocToCollection(
+            ));
+            newdebugPoint("assignMatchPointsToOwner - totalPointsForMatch : "+new Date().toLocaleString());
+            promises.push(await setDocToCollection(
               dbCollectionName,
               this.totalPointsDbDocNm,
               this.matchDetails,
               totalPointsforMatch
-            );
+            ));
+            Promise.all(promises);
           }
         });
       }
@@ -1142,7 +1149,7 @@ export default {
         try {
           if (this.secretKey == this.passKey) {
             let scorecard = new Map();
-            this.showlogs = true;
+            this.showlogs = false;
             this.useAPI = true;
             this.writeToDB = true;
             this.playersCollectionFullLogic = false;

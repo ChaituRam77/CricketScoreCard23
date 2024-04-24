@@ -345,7 +345,7 @@ export async function setDocToCollection(
 ) {
   try {
     debugPoint("set")
-    console.log("Inside setDocToCollection() colNm : "+collectionNm+" documentNm : "+documentNm
+    console.log(new Date().toLocaleString()+" : Inside setDocToCollection() colNm : "+collectionNm+" documentNm : "+documentNm
   // +" fieldNm : "+fieldNm
   +" fieldObj : "+fieldObj)
   const docRef = doc(db, collectionNm, documentNm);
@@ -382,12 +382,20 @@ export async function updateDocToCollection(
 }
 
 export function debugPoint(msg) {
-  // if(msg.includes("run out")){
-    //  console.log("Debug point from " + msg);
-  // }
+  if(msg.includes("run out")){
+     console.log("Debug point from " + msg);
+  }
 }
 export function newdebugPoint(msg) {
   // if(msg.includes("run out")){
      console.log("Debug point from " + msg);
   // }
+}
+
+export function debugPoint0(msg) {
+     console.log("Debug point from " + msg);
+}
+
+export function debugPoint1(msg) {
+  console.log("Debug point from " + msg);
 }

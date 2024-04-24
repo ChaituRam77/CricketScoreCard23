@@ -36,6 +36,7 @@
     "Kiruba": [
         {"id": 11813, "name": "Ruturaj Gaikwad", "category": "Batsman", "team": "CSK", "auctionPrice": 28},
         {"id": 9838, "name": "Devon Conway", "category": "Wicket-Keeper", "team": "CSK", "auctionPrice": 6},
+        {"id": 10477, "name": "Richard Gleeson", "category": "Bowler", "team": "CSK", "auctionPrice": 0},
         {"id": 11311, "name": "Krunal Pandya", "category": "All-Rounder", "team": "LSG", "auctionPrice": 8},
         {"id": 8292, "name": "Kuldeep Yadav", "category": "Bowler", "team": "DC", "auctionPrice": 19},
         {"id": 10754, "name": "Mukesh Kumar", "category": "Bowler", "team": "DC", "auctionPrice": 8},
@@ -49,6 +50,7 @@
         {"id": 2244, "name": "Rilee Rossouw", "category": "Batsman", "team": "PBKS", "auctionPrice": 3},
         {"id": 12345, "name": "Shivam Mavi", "category": "All-Rounder", "team": "LSG", "auctionPrice": 3},
         {"id": 6592, "name": "David Willey", "category": "All-Rounder", "team": "LSG", "auctionPrice": 3},
+        {"id": 9067, "name": "Matt Henry", "category": "ABowler", "team": "LSG", "auctionPrice": 0},
         {"id": 9012, "name": "Rahul Tripathi", "category": "Batsman", "team": "SRH", "auctionPrice": 8}
     ],
     "Prabu": [
