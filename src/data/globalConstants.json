@@ -1,0 +1,11 @@
+{
+    "dbValues" : [
+       { "apiScoreCardCollection" : "ApiScoreCardNew"},
+       {"auctionTeamCollection": "AuctionTeams"},
+       {"auctionTeamCollTeamADocNm": "TeamA_Standings"},
+      {"auctionTeamCollTeamBDocNm": "TeamB_Standings"},
+      {"playersCollection": "Players"},
+      {"totalPointsDbDocNm": "1TotalPoints"},
+      {"totalPointsDbFieldNm": "0total"}
+    ]
+}

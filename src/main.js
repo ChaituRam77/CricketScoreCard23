@@ -8,3 +8,4 @@ import { createApp } from 'vue'
 import './index.css'
 
 createApp(App).use(store).use(router).mount('#app')
+

@@ -75,6 +75,7 @@
         {"id": 7662, "name": "Glenn Maxwell", "category": "All-Rounder", "team": "RCB", "auctionPrice": 22},
         {"id": 12087, "name": "Rahul Chahar", "category": "Bowler", "team": "PBKS", "auctionPrice": 5},
         {"id": 6250, "name": "Mitchell Marsh", "category": "All-Rounder", "team": "DC", "auctionPrice": 7},
+        {"id": 8030, "name": "Gulbadin Naib", "category": "All-Rounder", "team": "DC", "auctionPrice": 0},
         {"id": 13940, "name": "Yashasvi Jaiswal", "category": "Batsman", "team": "RR", "auctionPrice": 25},
         {"id": 11445, "name": "Rovman Powell", "category": "Batsman", "team": "RR", "auctionPrice": 5},
         {"id": 8117, "name": "Trent Boult", "category": "Bowler", "team": "RR", "auctionPrice": 11},

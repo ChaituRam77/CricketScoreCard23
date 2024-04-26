@@ -1,6 +1,7 @@
 {
     "Anand": [
         {"id": 6250, "name": "Mitchell Marsh", "category": "All-Rounder", "team": "DC", "auctionPrice": 31},
+        {"id": 8030, "name": "Gulbadin Naib", "category": "All-Rounder", "team": "DC", "auctionPrice": 0},
         {"id": 12305, "name": "Riyan Parag", "category": "All-Rounder", "team": "RR", "auctionPrice": 7},
         {"id": 12086, "name": "Abhishek Sharma", "category": "All-Rounder", "team": "SRH", "auctionPrice": 6},
         {"id": 10896, "name": "Rinku Singh", "category": "Batsman", "team": "KKR", "auctionPrice": 23},
