@@ -150,9 +150,9 @@ export default {
     if (team == "auction") {
       this.team = "TeamA";
     }
-    if (team == "scores") {
-      this.team = "TeamB";
-    }
+    // if (team == "scores") {
+    //   this.team = "TeamB";
+    // }
     console.log("Team : " + this.team);
   },
   methods: {

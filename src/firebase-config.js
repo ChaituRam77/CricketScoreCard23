@@ -35,15 +35,29 @@ import {
 //   appId: "1:105906288827:web:0d3c064b2b50396087d19e",
 //   measurementId: "G-KFF3GTFN37"
 // };
+
+//IPL 2024 Config
+// const firebaseConfig = {
+//   apiKey: "AIzaSyBeuvi0VKp1KS5nrbwuLEM0Yda9VgmNZbs",
+//   authDomain: "ipl24-5fd5a.firebaseapp.com",
+//   projectId: "ipl24-5fd5a",
+//   storageBucket: "ipl24-5fd5a.appspot.com",
+//   messagingSenderId: "656914913257",
+//   appId: "1:656914913257:web:6394ff0eb16b5878d4dd78",
+//   measurementId: "G-5WDQ85VM6N"
+// };
+
+//WC24T20
 const firebaseConfig = {
-  apiKey: "AIzaSyBeuvi0VKp1KS5nrbwuLEM0Yda9VgmNZbs",
-  authDomain: "ipl24-5fd5a.firebaseapp.com",
-  projectId: "ipl24-5fd5a",
-  storageBucket: "ipl24-5fd5a.appspot.com",
-  messagingSenderId: "656914913257",
-  appId: "1:656914913257:web:6394ff0eb16b5878d4dd78",
-  measurementId: "G-5WDQ85VM6N"
+  apiKey: "AIzaSyDB7VoVz2E8l2R4N6PvtJa7Xqekv1CPTFw",
+  authDomain: "worldcup24t20.firebaseapp.com",
+  projectId: "worldcup24t20",
+  storageBucket: "worldcup24t20.appspot.com",
+  messagingSenderId: "1081774392120",
+  appId: "1:1081774392120:web:982c0acbb289e67720f7cd",
+  measurementId: "G-DJ5VL5Y0BX"
 };
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -382,9 +396,9 @@ export async function updateDocToCollection(
 }
 
 export function debugPoint(msg) {
-  if(msg.includes("run out")){
+  // if(msg.includes("run out")){
      console.log("Debug point from " + msg);
-  }
+  // }
 }
 export function newdebugPoint(msg) {
   // if(msg.includes("run out")){

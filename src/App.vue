@@ -1,5 +1,5 @@
 <template>
-  <h1 class='fs-3 app-title'><strong>IPL 2024 Points Table</strong></h1>
+  <h1 class='fs-3 app-title'><strong>T20 WC 2024 Points Table</strong></h1>
   <nav>
     <router-link :to="teamLink">Standings</router-link> &nbsp;&nbsp;
     <router-link :to="detailsLink">Teams</router-link> &nbsp;&nbsp;&nbsp;

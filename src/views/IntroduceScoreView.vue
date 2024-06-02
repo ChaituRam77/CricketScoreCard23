@@ -4,7 +4,7 @@
       <div class="col-md-6 offser-md-3">
         <h2>Introduce match details</h2>
       </div>
-      <form @submit.prevent="validsecretkeyAndProceed">
+      <form @submit.prevent="introduceMatchScore">
         <div class="form-group row">
           <label for="inputMatchID" class="col-sm-2 col-form-label"
             >Match ID</label
@@ -74,7 +74,7 @@ export default {
       auctionTeamCollTeamADocNm: "TeamA_Standings",
       auctionTeamCollTeamBDocNm: "TeamB_Standings",
       playersCollection: "Players",
-      totalPointsDbDocNm: "1TotalPoints",
+      totalPointsDbDocNm: "00TotalPoints",
       totalPointsDbFieldNm: "0total",
       passKey: " ",
       loading: false,
@@ -140,6 +140,28 @@ export default {
         potm: "potm",
       },
       matchDetails: null,
+      // teamCollectionArray: [
+      //   "TeamA_Darshan",
+      //   "TeamA_Dots",
+      //   "TeamA_JD",
+      //   "TeamA_Kiruba",        
+      //   "TeamA_Prabu",
+      //   "TeamA_Prakash",
+      //   "TeamA_RK",
+      //   "TeamA_Ragu",
+      //   "TeamB_Anand",
+      //   "TeamB_Chaitanya",
+      //   "TeamB_Charan",
+      //   "TeamB_Dinesh",
+      //   "TeamB_Gokul",
+      //   "TeamB_Harish",
+      //   "TeamB_Karthi",
+      //   "TeamB_Prabha",
+      //   "TeamB_Raja",
+      //   "TeamB_Rama",
+      //   "TeamB_Sreeni",
+    
+      // ],
       teamCollectionArray: [
         "TeamA_Darshan",
         "TeamA_Dots",
@@ -148,19 +170,7 @@ export default {
         "TeamA_Prabu",
         "TeamA_Prakash",
         "TeamA_RK",
-        "TeamA_Ragu",
-        "TeamB_Anand",
-        "TeamB_Chaitanya",
-        "TeamB_Charan",
-        "TeamB_Dinesh",
-        "TeamB_Gokul",
-        "TeamB_Harish",
-        "TeamB_Karthi",
-        "TeamB_Prabha",
-        "TeamB_Raja",
-        "TeamB_Rama",
-        "TeamB_Sreeni",
-    
+        "TeamA_Ragu"
       ],
       recentMatchOwnerPoints: new Map(),
       runoutNotCalculated: [],
@@ -485,7 +495,7 @@ export default {
         key2: 'value2',
           };
           // await addFieldToDB("AuctionTeams", "TeamA", "Chaitu1", objOwn);
-      let obj = require("../data/ipl24OwnersTeamB.json");
+      let obj = require("../data/wc24T20OwnersTeamA.json");
       const map = new Map();
       for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -507,7 +517,7 @@ export default {
         });
         // await addFieldToDB("AuctionTeams", "TeamA", key, objOwn);
         promises.push(
-        addFieldToDB("AuctionTeams", "TeamB", key, objOwn)
+        addFieldToDB("AuctionTeams", "TeamA", key, objOwn)
           .then(() => {
             console.log(`Document updated for key: ${key}`);
           })
@@ -533,11 +543,12 @@ export default {
        * In this method match and 1Total documents will be added/updatede to all Owners
        */
       this.consoleLog(this.matchDetails);
-      const ownersData = ["TeamA", "TeamB"];
+      // const ownersData = ["TeamA", "TeamB"];
+      const ownersData = ["TeamA"];
       // let lastMatchInfo = await getLastMatchInfo();
       for (let i = 0; i < ownersData.length; i++) {
         // this.consoleLog("Team : " + ownersData[i]);
-        let obj = require("../data/ipl24Owners" + ownersData[i] + ".json");
+        let obj = require("../data/wc24T20OwnersTeamA" + ownersData[i] + ".json");
         const map = new Map();
 
         for (const key in obj) {
@@ -620,7 +631,8 @@ export default {
     async assignScoreCardToDB() {
       // this.showlogs = true;
       // debugPoint("assignScoreCardToDB()");
-      let ownersData = ["TeamA", "TeamB"];
+      // let ownersData = ["TeamA", "TeamB"];
+      let ownersData = ["TeamA"];
       // let recentMatchInfo = await getLastMatchInfo();
       for (let i = 0; i < ownersData.length; i++) {
         this.consoleLog("Team : " + ownersData[i]);

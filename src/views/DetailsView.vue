@@ -20,8 +20,8 @@
         <tr class="bg-primary bg-gradient text-white">
           <th scope="col">#</th>
           <th scope="col">Name</th>
-          <th scope="col">Category</th>
           <th scope="col">Team</th>
+          <th scope="col">Category</th>
           <th scope="col">AuctionPrice</th>
         </tr>
       </thead>
@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       teamAFileNm : "../data/ipl24OwnersTeamA.json",
-      teamBFileNm : "../data/ipl24OwnersTeamB.json",
+      // teamBFileNm : "../data/ipl24OwnersTeamB.json",
       teamOwners: [],
       selectedOwner: null,
       ownerTeamArr:  [],
@@ -70,16 +70,16 @@ export default {
     if (team == "auction") {
       this.team = "TeamA";
     }
-    if (team == "scores") {
-      this.team = "TeamB";
-    }
+    // if (team == "scores") {
+    //   this.team = "TeamB";
+    // }
     console.log("Created Team : " + this.team);
     this.getTeam();
   },
   methods: {
     getTeam() {
+      debugPoint("this.ownersTeam : " + this.ownersTeam);
       this.teamOwners = getOwnersOfTeam(this.team);
-      // debugPoint("this.ownersTeam : " + this.ownersTeam);
     },
     ownerText(owner){
       return "showing" + owner + "'s team'"
@@ -89,11 +89,11 @@ export default {
       // getTeamOfSelectedOwner(this.team, this.ownersTeam);
       let obj = null;
       if (this.team == "TeamA") {
-        obj = require("../data/ipl24OwnersTeamA.json");
+        obj = require("../data/wc24T20OwnersTeamA.json");
       }
-      if (this.team == "TeamB") {
-        obj = require("../data/ipl24OwnersTeamB.json");
-      }
+      // if (this.team == "TeamB") {
+      //   obj = require("../data/ipl24OwnersTeamB.json");
+      // }
 
       // const map = new Map();
       for (const key in obj) {
