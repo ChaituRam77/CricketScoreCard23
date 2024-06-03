@@ -6,10 +6,12 @@ import {
   } from "./firebase-config";
 
  export async function resetOwnersDB(condition) {
+  let globalConstants = {}
+  globalConstants = require("../data/globalConstants.json");
     debugPoint("in resetOwnersDB()");
     let matchDetails = [];
     let allMatchDetails = await getDocNmsFromColl(
-        app.config.globalProperties.$globalVar
+        globalConstants.apiScoreCardCollection
     );
     allMatchDetails.sort();
     //if condition RESET delete all
@@ -50,13 +52,13 @@ import {
           this.teamCollectionArray[index],
           matchDetails[m]
         );
-        //Delete 1TotalPoints doc in each owner collection if its RESET
+        //Delete 00TotalPoints doc in each owner collection if its RESET
         if (condition == "RESET") {
           await deleteDocFromCollection(
             this.teamCollectionArray[index],
             this.totalPointsDbDocNm
           );
-          //Create 1TotalPoints doc with field 0total as 0
+          //Create 00TotalPoints doc with field 0total as 0
           await setDocToCollection(
             this.teamCollectionArray[index],
             this.totalPointsDbDocNm,
@@ -64,7 +66,7 @@ import {
             0
           );
         } else {
-          //Delete specific match from 1TotalPoints doc in each owner collection
+          //Delete specific match from 00TotalPoints doc in each owner collection
           //Get ownerOverAllTotalPoints
           let ownerTotalPoints = await getFieldDataFromDoc(
             this.teamCollectionArray[index],
@@ -79,7 +81,7 @@ import {
           );
           let deleteMatchPointsFromTotal =
             ownerTotalPoints - ownerMatchPoints;
-          //Delete ownerMatchTotalPoints field from 1TotalPoints doc
+          //Delete ownerMatchTotalPoints field from 00TotalPoints doc
           await deleteValueFromDoc(
             this.teamCollectionArray[index],
             this.totalPointsDbDocNm,

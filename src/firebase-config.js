@@ -163,7 +163,7 @@ export async function deleteOwnerDocs() {
     const ownerScoresdocRef = doc(db, "Owners", ownerName);
     await deleteDoc(ownerScoresdocRef);
     await setDoc(ownerScoresdocRef, {
-      "1total": 0,
+      "0total": 0,
     }).catch((err) => {
       console.log(err.message);
     });

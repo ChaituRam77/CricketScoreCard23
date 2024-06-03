@@ -112,7 +112,7 @@ export async function getTeamWiseTotalPoints(team, cashImg) {
     let totalPoints = await getFieldValueWithWhileLoop(
       200,
       ownerName,
-      "1TotalPoints",
+      "00TotalPoints",
       "0total"
     );
 
@@ -121,7 +121,7 @@ export async function getTeamWiseTotalPoints(team, cashImg) {
     let lastMatchTotal = await getFieldValueWithWhileLoop(
       30,
       ownerName,
-      "1TotalPoints",
+      "00TotalPoints",
       recentMatchId
     );
 
@@ -213,7 +213,7 @@ export async function fetchTeamWiseTotalPoints(team) {
       let matchNo = listOfMatches.indexOf(listOfMatches[m]) + 1;
       let teamTotalPoints = await getFieldDataFromDoc(
         ownerName,
-        "1TotalPoints",
+        "00TotalPoints",
         listOfMatches[m]
       );
 
@@ -240,7 +240,7 @@ export async function fetchOwnerMatchWisePoints(ownerName) {
   var ownerDbCollNm = teamCollectionArray.filter((name) =>
     name.includes(ownerName)
   );
-  let listOfMatches = await getDataFromDoc(ownerDbCollNm[0], "1TotalPoints");
+  let listOfMatches = await getDataFromDoc(ownerDbCollNm[0], "00TotalPoints");
 
   let matchWisePoints = [];
   // listOfMatches.forEach( (value, key) => {

@@ -4,7 +4,7 @@
       <div class="col-md-6 offser-md-3">
         <h2>Introduce match details</h2>
       </div>
-      <form @submit.prevent="introduceMatchScore">
+      <form @submit.prevent="validsecretkeyAndProceed">
         <div class="form-group row">
           <label for="inputMatchID" class="col-sm-2 col-form-label"
             >Match ID</label
@@ -56,6 +56,8 @@ import {
   getDocNmsFromColl,
   getDataFromDoc,
   getFieldDataFromDoc,
+  deleteDocFromCollection,
+  deleteValueFromDoc,
   setDocToCollection,
   checkDocExistsInColl,
   debugPoint0,
@@ -63,7 +65,7 @@ import {
   newdebugPoint,
 } from "../firebase-config";
 import { getTeamWiseTotalPoints } from "../final-api-wrapper";
-import { resetOwnersDB} from "../reset-data";
+// import { resetOwnersDB} from "../reset-data";
 import axios from "axios";
 
 export default {
@@ -111,6 +113,7 @@ export default {
         wicketAdditionalPointsArr : [2,3,5],
         wicketAdditionalPointsArrSubSet : [5,10,10],
         wicketAdditionalPoints: 10,
+        dot : 1,
         maiden : 20,
         bowledLbw : 5,
         hitWicket : 5,
@@ -129,6 +132,7 @@ export default {
         fours: "fours",
         sixes: "sixes",
         bowling: "wickets",
+        dots: "dots",
         bowledLbw: "bowledNlbw",
         hitwkt: "hitwkt",
         maiden: "maiden",
@@ -341,6 +345,7 @@ export default {
           this.playersMap.get(bowlerId).bName = `${value.bowlName}`;
           this.playersMap.get(bowlerId).wickets = parseInt(`${value.wickets}`);
           this.playersMap.get(bowlerId).maiden = parseInt(`${value.maidens}`);
+          // this.playersMap.get(bowlerId).dots = parseInt(`${value.dots}`);
         }
       }
       let potmId = parseInt(this.apiScore.matchHeader.playersOfTheMatch[0].id);
@@ -364,6 +369,7 @@ export default {
           this.playersMap
         );
       }
+      debugPoint("score assigned to apiScoreCardCollection")
       await this.asignMatchPointsToOwner();
       newdebugPoint("Timeout started : "+new Date().toLocaleString());
       await new Promise(resolve => setTimeout(resolve, 7000));
@@ -483,6 +489,7 @@ export default {
     },
     consoleLog(valueToprint) {
       if (this.showlogs) {
+        newdebugPoint(valueToprint)
         console.log(valueToprint);
       }
     },
@@ -540,7 +547,7 @@ export default {
 
     async asignMatchPointsToOwner() {
       /**
-       * In this method match and 1Total documents will be added/updatede to all Owners
+       * In this method match and 1Total documents will be added/updated to all Owners
        */
       this.consoleLog(this.matchDetails);
       // const ownersData = ["TeamA", "TeamB"];
@@ -548,7 +555,7 @@ export default {
       // let lastMatchInfo = await getLastMatchInfo();
       for (let i = 0; i < ownersData.length; i++) {
         // this.consoleLog("Team : " + ownersData[i]);
-        let obj = require("../data/wc24T20OwnersTeamA" + ownersData[i] + ".json");
+        let obj = require("../data/wc24T20Owners" + ownersData[i] + ".json");
         const map = new Map();
 
         for (const key in obj) {
@@ -558,7 +565,7 @@ export default {
           }
         }
         map.forEach(async (value, key) => {
-          // debugPoint("000");
+          debugPoint("000");
           const dbCollectionName = ownersData[i] + "_" + key;
           let ownerOverAllPoints = 0;
           let playersMatchMap = new Map();
@@ -881,6 +888,7 @@ export default {
         runs * this.pointsRule.run + battingAdditionalPoints +
         scoreMap.get(this.switchValues.fours) * this.pointsRule.four+
         scoreMap.get(this.switchValues.sixes) * this.pointsRule.six;
+        
       this.consoleLog("battingPoints : " + battingPoints);
       let wickets = scoreMap.get(this.switchValues.bowling);
       // bowlingPoints =
@@ -905,6 +913,7 @@ export default {
         scoreMap.get(this.switchValues.maiden) * this.pointsRule.maiden +
         scoreMap.get(this.switchValues.bowledLbw) * this.pointsRule.bowledLbw +
         scoreMap.get(this.switchValues.hitwkt) * this.pointsRule.hitWicket;
+        // scoreMap.get(this.switchValues.dots) * this.pointsRule.dot;
       this.consoleLog("bowlingPoints : " + bowlingPoints);
       // catchingPoints = scoreMap.get(this.switchValues.catching) * 5;
       catchingPoints = scoreMap.get(this.switchValues.catching) * this.pointsRule.catch;
@@ -957,16 +966,17 @@ export default {
     async validsecretkeyAndProceed() {
       this.loading = true;
       if (this.matchID.includes("RESET") && this.secretKey == this.passKey) {
-        await resetOwnersDB(this.matchID);
+        await this.resetOwnersDB(this.matchID);
         alert("DB is reset!!!");
       } else {
         try {
           if (this.secretKey == this.passKey) {
             let scorecard = new Map();
-            this.showlogs = false;
+            this.showlogs = true;
             this.useAPI = true;
             this.writeToDB = true;
             this.playersCollectionFullLogic = false;
+            newdebugPoint("get score from API")
             await this.getScoreFromApi();
             scorecard = this.apiScore.scoreCard;
             if ((this.apiScore.isMatchComplete = false)) {
@@ -1046,6 +1056,202 @@ export default {
       }
       this.loading = false;
     },
+
+  async resetOwnersDB(condition) {
+    debugPoint("in resetOwnersDB()");
+    let matchDetails = [];
+    let allMatchDetails = await getDocNmsFromColl(
+        this.apiScoreCardCollection
+    );
+    allMatchDetails.sort();
+    //if condition RESET delete all
+    if (condition == "RESET") {
+      matchDetails = allMatchDetails;
+    }
+    //if condition RESET_matcID consider only that match
+    else if (
+      condition.includes("RESET_") ||
+      condition.includes("RESETFROM_")
+    ) {
+      let matchId = condition.replace("RESET_", "").replace("RESETFROM_", "");
+      let validCondition = false;
+      for (let m in allMatchDetails) {
+        let matchFrmArr = allMatchDetails[m];
+        if (matchFrmArr.includes(matchId)) {
+          validCondition = true;
+          if (condition.includes("RESET_")) {
+            matchDetails.push(matchFrmArr);
+          }
+          if (condition.includes("RESETFROM_")) {
+            matchDetails = allMatchDetails.slice(parseInt(m));
+          }
+          break;
+        }
+      }
+      if (!validCondition) {
+        alert("Error : Match ID " + matchId + " is not available in DB!!!");
+        return undefined;
+      }
+    }
+    for (let m = 0; m < matchDetails.length; m++) {
+      debugPoint("HERE");
+      // await this.resetPlayerCollectionMatchInfo(matchDetails[m]);
+      for (let index = 0; index < this.teamCollectionArray.length; index++) {
+        //Delete match in from each owner collection
+        await deleteDocFromCollection(
+          this.teamCollectionArray[index],
+          matchDetails[m]
+        );
+        //Delete 00TotalPoints doc in each owner collection if its RESET
+        if (condition == "RESET") {
+          await deleteDocFromCollection(
+            this.teamCollectionArray[index],
+            this.totalPointsDbDocNm
+          );
+          //Create 00TotalPoints doc with field 0total as 0
+          await setDocToCollection(
+            this.teamCollectionArray[index],
+            this.totalPointsDbDocNm,
+            this.totalPointsDbFieldNm,
+            0
+          );
+        } else {
+          //Delete specific match from 00TotalPoints doc in each owner collection
+          //Get ownerOverAllTotalPoints
+          let ownerTotalPoints = await getFieldDataFromDoc(
+            this.teamCollectionArray[index],
+            this.totalPointsDbDocNm,
+            this.totalPointsDbFieldNm
+          );
+          //Get ownerMatchTotalPoints
+          let ownerMatchPoints = await getFieldDataFromDoc(
+            this.teamCollectionArray[index],
+            this.totalPointsDbDocNm,
+            matchDetails[m]
+          );
+          let deleteMatchPointsFromTotal =
+            ownerTotalPoints - ownerMatchPoints;
+          //Delete ownerMatchTotalPoints field from 00TotalPoints doc
+          await deleteValueFromDoc(
+            this.teamCollectionArray[index],
+            this.totalPointsDbDocNm,
+            matchDetails[m]
+          );
+          //assign recalculated ownerOverAllTotalPoints
+          await setDocToCollection(
+            this.teamCollectionArray[index],
+            this.totalPointsDbDocNm,
+            this.totalPointsDbFieldNm,
+            deleteMatchPointsFromTotal
+          );
+        }
+      }
+      //delete each match from APIScorecardCollection
+      await deleteDocFromCollection(
+        this.apiScoreCardCollection,
+        matchDetails[m]
+      );
+      //delete each match from APIScorecardCollection
+      await deleteValueFromDoc(
+        this.auctionTeamCollection,
+        this.auctionTeamCollTeamADocNm,
+        matchDetails[m]
+      );
+      await deleteValueFromDoc(
+        this.auctionTeamCollection,
+        this.auctionTeamCollTeamBDocNm,
+        matchDetails[m]
+      );
+    }
+  },
+
+   async resetPlayerCollectionMatchInfo(matcnNm) {
+    let allPlayerDetails = await getDocNmsFromColl(this.playersCollection);
+    debugPoint("resetPlayerCollectionMatchInfo()");
+    for (let p in allPlayerDetails) {
+      //Get MatchTotalPoints
+      let matchPoints = await getFieldDataFromDoc(
+        this.playersCollection,
+        allPlayerDetails[p],
+        matcnNm
+      );
+      if (matchPoints != undefined) {
+        debugPoint("resetPlayerCollectionMatchInfo()2");
+        //Get OverAllTotalPoints
+        let playerTotalPoints = await getFieldDataFromDoc(
+          this.playersCollection,
+          allPlayerDetails[p].toString(),
+          this.totalPointsDbFieldNm
+        );
+
+        let deleteMatchPointsFromTotal =
+          playerTotalPoints - matchPoints.atotal;
+        //assign recalculated OverAllTotalPoints
+        await setDocToCollection(
+          this.playersCollection,
+          allPlayerDetails[p].toString(),
+          this.totalPointsDbFieldNm,
+          deleteMatchPointsFromTotal
+        );
+        //delete match details field from players doc
+        await deleteValueFromDoc(
+          this.playersCollection,
+          allPlayerDetails[p].toString(),
+          matcnNm
+        );
+      }
+    }
+  },
+
+  async cleanMatchScoreFromDB() {
+    let matchScoreToDelete = "66285_MIvsSRH";
+    await deleteDocFromCollection(
+      this.apiScoreCardCollection,
+      matchScoreToDelete
+    );
+    // var teamArr = this.teamCollectionArray.filter((name) =>
+    //   name.includes("TeamA")
+    // );
+    var teamArr = this.teamCollectionArray;
+    debugPoint("Point 1");
+    for (const [o] of teamArr.entries()) {
+      const owner = teamArr[o];
+
+      let ownerOverAllPoints = await getFieldDataFromDoc(
+        owner,
+        this.totalPointsDbDocNm,
+        this.totalPointsDbFieldNm
+      );
+
+      let deleteMatchPoints = await getFieldDataFromDoc(
+        owner,
+        this.totalPointsDbDocNm,
+        matchScoreToDelete
+      );
+
+      let newOverAllPoints = ownerOverAllPoints - deleteMatchPoints;
+      debugPoint("Point 3");
+
+      if (newOverAllPoints !== "NaN") {
+        await setDocToCollection(
+          owner,
+          this.totalPointsDbDocNm,
+          this.totalPointsDbFieldNm,
+          newOverAllPoints
+        );
+
+        await deleteValueFromDoc(
+          owner,
+          this.totalPointsDbDocNm,
+          matchScoreToDelete
+        );
+
+        await deleteDocFromCollection(owner, matchScoreToDelete);
+      } else {
+        alert("error iin clean up process, please verify!!!");
+      }
+    }
+  }
   },
 };
 </script>
