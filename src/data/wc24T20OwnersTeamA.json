@@ -80,6 +80,7 @@
 {"id" :9491,"name" : "Reeza Hendricks", "category" :"SOUTH AFRICA","team" : "Batsman", "auctionPrice":6},
 {"id" :10173,"name" : "Tabraiz Shamsi", "category" :"SOUTH AFRICA","team" : "Bowler", "auctionPrice":11},
 {"id" :9791,"name" : "Brandon King", "category" :"WEST INDIES","team" : "Batsman", "auctionPrice":18},
+{"id" :8440,"name" : "Kyle Mayers", "category" :"WEST INDIES","team" : "All-Rounder", "auctionPrice":0},
 {"id" :8030,"name" : "Gulbadin Naib", "category" :"AFGHANISTAN","team" : "All-Rounder", "auctionPrice":7},
 {"id" :9976,"name" : "Mark Chapman", "category" :"NEW ZEALAND","team" : "Batsman", "auctionPrice":2},
 {"id" :8589,"name" : "David Wiese", "category" :"NAMIBIA","team" : "All-Rounder", "auctionPrice":10},
