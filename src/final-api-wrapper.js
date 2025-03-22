@@ -11,24 +11,27 @@ let matchWisePoints = new Map();
 let teamCollectionArray = [
   "TeamA_Darshan",
   "TeamA_Dots",
-  "TeamA_Kiruba",
+  "TeamA_JD",       
   "TeamA_Prabu",
   "TeamA_Prakash",
   "TeamA_Ragu",
+  "TeamA_Rijo", 
   "TeamA_RK",
-  "TeamA_JD",
   "TeamB_Anand",
   "TeamB_Chaitanya",
   "TeamB_Charan",
-  "TeamB_Dinesh",
   "TeamB_Gokul",
-  "TeamB_Harish",
-  "TeamB_Raja",
-  "TeamB_Karthi",
-  "TeamB_Rama",
+  "TeamB_Karthik",
   "TeamB_Prabha",
-  "TeamB_Sreeni"
+  "TeamB_Praneeth",
+  "TeamB_Raghav",
+  "TeamB_Raja",
+  "TeamB_Rajesh",
+  "TeamB_Rama",
+  "TeamB_Vinit",
 ];
+let totalPointsDbDocNm = "00TotalPoints";
+let totalPointsDbFieldNm = "00total";
 
 export function getOwnersOfTeam(teamName) {
   // debugPoint("getOwnersOfTeam("+teamName+")")
@@ -112,8 +115,8 @@ export async function getTeamWiseTotalPoints(team, cashImg) {
     let totalPoints = await getFieldValueWithWhileLoop(
       200,
       ownerName,
-      "00TotalPoints",
-      "0total"
+      totalPointsDbDocNm,
+      totalPointsDbFieldNm
     );
 
     let recentMatchId = listOfMatches[listOfMatches.length - 1];
@@ -121,7 +124,7 @@ export async function getTeamWiseTotalPoints(team, cashImg) {
     let lastMatchTotal = await getFieldValueWithWhileLoop(
       30,
       ownerName,
-      "00TotalPoints",
+      totalPointsDbDocNm,
       recentMatchId
     );
 
@@ -213,7 +216,7 @@ export async function fetchTeamWiseTotalPoints(team) {
       let matchNo = listOfMatches.indexOf(listOfMatches[m]) + 1;
       let teamTotalPoints = await getFieldDataFromDoc(
         ownerName,
-        "00TotalPoints",
+        totalPointsDbDocNm,
         listOfMatches[m]
       );
 
@@ -240,12 +243,12 @@ export async function fetchOwnerMatchWisePoints(ownerName) {
   var ownerDbCollNm = teamCollectionArray.filter((name) =>
     name.includes(ownerName)
   );
-  let listOfMatches = await getDataFromDoc(ownerDbCollNm[0], "00TotalPoints");
+  let listOfMatches = await getDataFromDoc(ownerDbCollNm[0], totalPointsDbDocNm);
 
   let matchWisePoints = [];
   // listOfMatches.forEach( (value, key) => {
   for (let [key, value] of listOfMatches) {
-    if (key == "0total") {
+    if (key == totalPointsDbFieldNm) {
       continue;
     }
     let match = key;
@@ -278,7 +281,7 @@ export async function fetchOwnerMatchPlayerWisePoints(ownerName, matchName) {
   let playerPointsMap = await getDataFromDoc(ownerDbCollNm[0], matchName);
   let playerWisePoints = [];
   for (let [key, value] of playerPointsMap) {
-    if (key == "0total") {
+    if (key == totalPointsDbFieldNm) {
       continue;
     }
     let playerscore = {

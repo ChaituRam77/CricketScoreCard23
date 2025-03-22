@@ -408,7 +408,7 @@ export default {
             await setDocToCollection(
               dbCollectionName,
               playerIdDoc,
-              "0Name",
+              "00Name",
               playerName
             );
           } else {
@@ -436,7 +436,7 @@ export default {
           await setDocToCollection(
             dbCollectionName,
             playerIdDoc,
-            "0Name",
+            "00Name",
             playerName
           );
         }

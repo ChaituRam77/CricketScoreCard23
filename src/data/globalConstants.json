@@ -6,6 +6,6 @@
       {"auctionTeamCollTeamBDocNm": "TeamB_Standings"},
       {"playersCollection": "Players"},
       {"totalPointsDbDocNm": "00TotalPoints"},
-      {"totalPointsDbFieldNm": "0total"}
+      {"totalPointsDbFieldNm": "00total"}
     ]
 }

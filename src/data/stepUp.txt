@@ -11,3 +11,6 @@ Db Collection names
 2. In cloud firestore create new database
 3. Go to Project Settings -> Firebase Config -> in web app, click on it, and you will see the Firebase SDK
 4. Modify Firestore Security Rules, to allow write access
+5. 
+6.
+7. Change array names in firebase-config.js & IntroduceScoreView (teamCollectionArray)
