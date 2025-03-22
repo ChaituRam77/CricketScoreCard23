@@ -48,14 +48,25 @@ import {
 // };
 
 //WC24T20
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDB7VoVz2E8l2R4N6PvtJa7Xqekv1CPTFw",
+//   authDomain: "worldcup24t20.firebaseapp.com",
+//   projectId: "worldcup24t20",
+//   storageBucket: "worldcup24t20.appspot.com",
+//   messagingSenderId: "1081774392120",
+//   appId: "1:1081774392120:web:982c0acbb289e67720f7cd",
+//   measurementId: "G-DJ5VL5Y0BX"
+// };
+
+//ipl2025
 const firebaseConfig = {
-  apiKey: "AIzaSyDB7VoVz2E8l2R4N6PvtJa7Xqekv1CPTFw",
-  authDomain: "worldcup24t20.firebaseapp.com",
-  projectId: "worldcup24t20",
-  storageBucket: "worldcup24t20.appspot.com",
-  messagingSenderId: "1081774392120",
-  appId: "1:1081774392120:web:982c0acbb289e67720f7cd",
-  measurementId: "G-DJ5VL5Y0BX"
+  apiKey: "AIzaSyCVi6qE0Y_20uz4nCeekZHZsisB_lUor7U",
+  authDomain: "ipl25-1b47e.firebaseapp.com",
+  projectId: "ipl25-1b47e",
+  storageBucket: "ipl25-1b47e.firebasestorage.app",
+  messagingSenderId: "844998370147",
+  appId: "1:844998370147:web:962f174f95b381a365e956",
+  measurementId: "G-2Q64W6NLFY"
 };
 
 // Initialize Firebase
@@ -124,6 +135,17 @@ export async function checkDocExistsInColl(collectionNm, docNm) {
     return docExists;
   } catch (error) {
     console.log("checkDocExistsInColl() Error : " + error.message);
+  }
+}
+
+export async function createCollectionWithDocAndFields(collectionNm, docNm, fieldNm, fieldValue) {
+  try {
+    await setDoc(doc(db, collectionNm, docNm), {
+      [fieldNm] : fieldValue
+    });
+    console.log("createCollectionWithDocAndFields successfully written!"+collectionNm);
+  } catch (e) {
+    console.error("Error writing document: ", e);
   }
 }
 export async function addDocifNotExists(collectionNm, docNm) {

@@ -5,6 +5,7 @@
         <h2>Introduce match details</h2>
       </div>
       <form @submit.prevent="validsecretkeyAndProceed">
+      <!-- <form @submit.prevent="createOwnerstoDB">   -->
         <div class="form-group row">
           <label for="inputMatchID" class="col-sm-2 col-form-label"
             >Match ID</label
@@ -63,6 +64,7 @@ import {
   debugPoint0,
   debugPoint,
   newdebugPoint,
+  createCollectionWithDocAndFields,
 } from "../firebase-config";
 import { getTeamWiseTotalPoints } from "../final-api-wrapper";
 // import { resetOwnersDB} from "../reset-data";
@@ -77,7 +79,7 @@ export default {
       auctionTeamCollTeamBDocNm: "TeamB_Standings",
       playersCollection: "Players",
       totalPointsDbDocNm: "00TotalPoints",
-      totalPointsDbFieldNm: "0total",
+      totalPointsDbFieldNm: "00total",
       passKey: " ",
       loading: false,
       matchID: null,
@@ -144,37 +146,27 @@ export default {
         potm: "potm",
       },
       matchDetails: null,
-      // teamCollectionArray: [
-      //   "TeamA_Darshan",
-      //   "TeamA_Dots",
-      //   "TeamA_JD",
-      //   "TeamA_Kiruba",        
-      //   "TeamA_Prabu",
-      //   "TeamA_Prakash",
-      //   "TeamA_RK",
-      //   "TeamA_Ragu",
-      //   "TeamB_Anand",
-      //   "TeamB_Chaitanya",
-      //   "TeamB_Charan",
-      //   "TeamB_Dinesh",
-      //   "TeamB_Gokul",
-      //   "TeamB_Harish",
-      //   "TeamB_Karthi",
-      //   "TeamB_Prabha",
-      //   "TeamB_Raja",
-      //   "TeamB_Rama",
-      //   "TeamB_Sreeni",
-    
-      // ],
       teamCollectionArray: [
         "TeamA_Darshan",
         "TeamA_Dots",
-        "TeamA_JD",
-        "TeamA_Kiruba",        
+        "TeamA_JD",       
         "TeamA_Prabu",
         "TeamA_Prakash",
+        "TeamA_Ragu",
+        "TeamA_Rijo", 
         "TeamA_RK",
-        "TeamA_Ragu"
+        "TeamB_Anand",
+        "TeamB_Chaitanya",
+        "TeamB_Charan",
+        "TeamB_Gokul",
+        "TeamB_Karthik",
+        "TeamB_Prabha",
+        "TeamB_Praneeth",
+        "TeamB_Raghav",
+        "TeamB_Raja",
+        "TeamB_Rajesh",
+        "TeamB_Rama",
+        "TeamB_Vinit",
       ],
       recentMatchOwnerPoints: new Map(),
       runoutNotCalculated: [],
@@ -494,15 +486,20 @@ export default {
       }
     },
 
-    async assignOwnerstoDB() {
+    async createOwnerstoDB() {
+      /**
+       * Setting up project menthod
+       * Method allocate all owners & players to firestore DB
+       */
+      let obj = require("../data/ownersTeamB.json");
+      let team = "TeamB";
       const promises = [];
       try {
       let objOwn = {
         key1: 'value1',
         key2: 'value2',
           };
-          // await addFieldToDB("AuctionTeams", "TeamA", "Chaitu1", objOwn);
-      let obj = require("../data/wc24T20OwnersTeamA.json");
+      // await addFieldToDB("AuctionTeams", "TeamA", "Chaitu1", objOwn);
       const map = new Map();
       for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -524,7 +521,7 @@ export default {
         });
         // await addFieldToDB("AuctionTeams", "TeamA", key, objOwn);
         promises.push(
-        addFieldToDB("AuctionTeams", "TeamA", key, objOwn)
+        addFieldToDB("AuctionTeams", team, key, objOwn)
           .then(() => {
             console.log(`Document updated for key: ${key}`);
           })
@@ -532,7 +529,9 @@ export default {
             console.error(`Error updating document for key: ${key}`, error);
           })
       );
-    });
+    }
+    
+    );
 
     // Wait for all promises to complete
     await Promise.all(promises);
@@ -545,17 +544,34 @@ export default {
 
     },
 
+    async createOwnerCollectionsInDB(){
+      var teamArr = this.teamCollectionArray;
+      let team = "TeamB";
+    debugPoint("Point 1");
+    for (const [o] of teamArr.entries()) {
+      const owner = teamArr[o];
+      if (owner.includes(team)) {
+        await createCollectionWithDocAndFields(
+          owner,
+          this.totalPointsDbDocNm,
+          this.totalPointsDbFieldNm,
+          0
+        );
+      } 
+    }
+    },
+
     async asignMatchPointsToOwner() {
       /**
        * In this method match and 1Total documents will be added/updated to all Owners
        */
       this.consoleLog(this.matchDetails);
-      // const ownersData = ["TeamA", "TeamB"];
-      const ownersData = ["TeamA"];
+      const ownersData = ["TeamA", "TeamB"];
+      // const ownersData = ["TeamA"];
       // let lastMatchInfo = await getLastMatchInfo();
       for (let i = 0; i < ownersData.length; i++) {
         // this.consoleLog("Team : " + ownersData[i]);
-        let obj = require("../data/wc24T20Owners" + ownersData[i] + ".json");
+        let obj = require("../data/owners" + ownersData[i] + ".json");
         const map = new Map();
 
         for (const key in obj) {
@@ -638,8 +654,8 @@ export default {
     async assignScoreCardToDB() {
       // this.showlogs = true;
       // debugPoint("assignScoreCardToDB()");
-      // let ownersData = ["TeamA", "TeamB"];
-      let ownersData = ["TeamA"];
+      let ownersData = ["TeamA", "TeamB"];
+      // let ownersData = ["TeamA"];
       // let recentMatchInfo = await getLastMatchInfo();
       for (let i = 0; i < ownersData.length; i++) {
         this.consoleLog("Team : " + ownersData[i]);

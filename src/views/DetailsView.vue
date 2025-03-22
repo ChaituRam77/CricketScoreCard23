@@ -37,10 +37,10 @@
             </a>
           </td>
           <td>
-            <p>{{ player.category }}</p>
+            <p>{{ player.team }}</p>
           </td>
           <td>
-            <p>{{ player.team }}</p>
+            <p>{{ player.category }}</p>
           </td>
           <td>
             <p>{{ player.auctionPrice }}</p>
@@ -56,8 +56,6 @@ import { debugPoint } from "../firebase-config";
 export default {
   data() {
     return {
-      teamAFileNm : "../data/ipl24OwnersTeamA.json",
-      // teamBFileNm : "../data/ipl24OwnersTeamB.json",
       teamOwners: [],
       selectedOwner: null,
       ownerTeamArr:  [],
@@ -70,9 +68,9 @@ export default {
     if (team == "auction") {
       this.team = "TeamA";
     }
-    // if (team == "scores") {
-    //   this.team = "TeamB";
-    // }
+    if (team == "scores") {
+      this.team = "TeamB";
+    }
     console.log("Created Team : " + this.team);
     this.getTeam();
   },
@@ -89,11 +87,11 @@ export default {
       // getTeamOfSelectedOwner(this.team, this.ownersTeam);
       let obj = null;
       if (this.team == "TeamA") {
-        obj = require("../data/wc24T20OwnersTeamA.json");
+        obj = require("../data/ownersTeamA.json");
       }
-      // if (this.team == "TeamB") {
-      //   obj = require("../data/ipl24OwnersTeamB.json");
-      // }
+      if (this.team == "TeamB") {
+        obj = require("../data/ownersTeamB.json");
+      }
 
       // const map = new Map();
       for (const key in obj) {
