@@ -162,6 +162,7 @@
     "Rama": [
         {"id" :7909,"name" : "Mohammed Shami", "category" :"Bowler","team" : "SRH", "auctionPrice":17},
         {"id" :13190,"name" : "Mohsin Khan", "category" :"Bowler","team" : "LSG", "auctionPrice":5},
+        {"id" :8683,"name" : "Shardul Thakur", "category" :"All-Rounder","team" : "LSG", "auctionPrice":0},
         {"id" :6258,"name" : "Josh Hazlewood", "category" :"Bowler","team" : "RCB", "auctionPrice":14},
         {"id" :14700,"name" : "Sameer Rizvi", "category" :"Batter","team" : "DC", "auctionPrice":1},
         {"id" :12086,"name" : "Abhishek Sharma", "category" :"All-Rounder","team" : "SRH", "auctionPrice":34},
