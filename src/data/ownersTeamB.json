@@ -34,7 +34,7 @@
     "Charan": [
         {"id" :14504,"name" : "Tilak Varma", "category" :"Batter","team" : "MI", "auctionPrice":28},
         {"id" :14628,"name" : "Abdul Samad", "category" :"All-Rounder","team" : "LSG", "auctionPrice":3},
-        {"id" :369,"name" : "Arshad Khan", "category" :"All-Rounder","team" : "GT", "auctionPrice":1},
+        {"id" :18637,"name" : "Arshad Khan", "category" :"All-Rounder","team" : "GT", "auctionPrice":1},
         {"id" :12258,"name" : "Will Jacks", "category" :"All-Rounder","team" : "MI", "auctionPrice":5},
         {"id" :11813,"name" : "Ruturaj Gaikwad", "category" :"Batter","team" : "CSK", "auctionPrice":29},
         {"id" :8520,"name" : "Quinton De Kock", "category" :"Wicketkeeper/Batter","team" : "KKR", "auctionPrice":16},
