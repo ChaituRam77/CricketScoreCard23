@@ -37,6 +37,7 @@
         {"id" :18637,"name" : "Arshad Khan", "category" :"All-Rounder","team" : "GT", "auctionPrice":1},
         {"id" :12258,"name" : "Will Jacks", "category" :"All-Rounder","team" : "MI", "auctionPrice":5},
         {"id" :11813,"name" : "Ruturaj Gaikwad", "category" :"Batter","team" : "CSK", "auctionPrice":29},
+        {"id" :1431163,"name" : "Ayush Mhatre", "category" :"Batter","team" : "CSK", "auctionPrice":0},
         {"id" :8520,"name" : "Quinton De Kock", "category" :"Wicketkeeper/Batter","team" : "KKR", "auctionPrice":16},
         {"id" :11427,"name" : "Anrich Nortje", "category" :"Bowler","team" : "KKR", "auctionPrice":4},
         {"id" :8393,"name" : "Dushmantha Chameera", "category" :"Bowler","team" : "DC", "auctionPrice":1},
