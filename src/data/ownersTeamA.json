@@ -35,6 +35,7 @@
     ],
     "Rijo" : [
         {"id" :11813,"name" : "Ruturaj Gaikwad", "category" :"Batsman","team" : "CSK", "auctionPrice":28},
+        {"id" :1431163,"name" : "Ayush Mhatre", "category" :"Batsman","team" : "CSK", "auctionPrice":0},
         {"id" :11195,"name" : "Shivam Dube", "category" :"All-Rounder","team" : "CSK", "auctionPrice":13},
         {"id" :7736,"name" : "Andre Russell", "category" :"All-Rounder","team" : "KKR", "auctionPrice":6},
         {"id" :14659,"name" : "Ravi Bishnoi", "category" :"Bowler","team" : "LSG", "auctionPrice":12},
