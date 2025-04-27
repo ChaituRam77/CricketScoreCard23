@@ -30,7 +30,7 @@ import { computed } from '@vue/runtime-core'
     <table class="table table-borderless table-sm table-hover" id="scoresTable">
       <thead>
         <tr class="bg-secondary bg-gradient text-white">
-          <th scope="col"> </th>
+          <th scope="col"></th>
           <th scope="col">#</th>
           <th scope="col">Team</th>
           <th scope="col">Match Points</th>
@@ -58,22 +58,27 @@ import { computed } from '@vue/runtime-core'
 
           </td> -->
           <td>
-  <div style="display: flex; align-items: center;">
-    <img
-      v-if="team.rankChange.includes('⬆')"
-      :src="imgChevronUp"
-      alt="up arrow icon"
-    />
-    <img
-      v-else-if="team.rankChange.includes('⬇')"
-      :src="imgChevronDwn"
-      alt="down arrow icon"
-    />
-    <span style="font-size: 80%">
-      {{ team.rankChange.replace('⬆','').replace('⬇','').replace('➖','')}}
-    </span>
-  </div>
-</td>
+            <div style="display: flex; align-items: center">
+              <img
+                v-if="team.rankChange.includes('⬆')"
+                :src="imgChevronUp"
+                alt="up arrow icon"
+              />
+              <img
+                v-else-if="team.rankChange.includes('⬇')"
+                :src="imgChevronDwn"
+                alt="down arrow icon"
+              />
+              <span style="font-size: 80%">
+                {{
+                  team.rankChange
+                    .replace("⬆", "")
+                    .replace("⬇", "")
+                    .replace("➖", "")
+                }}
+              </span>
+            </div>
+          </td>
           <td>
             <!-- {{ team.no }} -->
             <router-link :to="teamLink(team.name)">
@@ -88,7 +93,9 @@ import { computed } from '@vue/runtime-core'
           <td>
             <!-- <p>{{ team.lastMatchPoints }}</p> -->
             <router-link :to="teamLink(team.name)">
-              <a>{{ team.lastMatchPoints }}</a>
+              <a :style="getMedalStyle(team.lastMatchPoints)">
+                {{ team.lastMatchPoints }}
+              </a>
             </router-link>
           </td>
           <td>
@@ -115,9 +122,7 @@ import { computed } from '@vue/runtime-core'
 </template>
 
 <script>
-import {
-  getMatchWisePoints,
-} from "../final-api-wrapper";
+import { getMatchWisePoints } from "../final-api-wrapper";
 
 import {
   getFieldDataFromDoc,
@@ -126,10 +131,18 @@ import {
 } from "../firebase-config";
 
 export default {
+  computed: {
+    topThreeMatchPoints() {
+      const points = this.teamWiseTotalPoints
+        .map((team) => team.lastMatchPoints)
+        .sort((a, b) => b - a);
+      return points.slice(0, 3);
+    },
+  },
   data() {
     return {
-      imgChevronUp: require('../images/chevron-up.svg'),
-      imgChevronDwn: require('../images/chevron-down.svg'),
+      imgChevronUp: require("../images/chevron-up.svg"),
+      imgChevronDwn: require("../images/chevron-down.svg"),
       apiScoreCardCollection: "ApiScoreCardNew",
       teamWiseTotalPoints: [],
       greeting: "",
@@ -160,6 +173,17 @@ export default {
       await this.getListOfMatches();
       await this.fetchScoresNew();
     },
+    getMedalStyle(points) {
+    if (points === this.topThreeMatchPoints[0]) {
+      return 'color: gold; font-weight: bold;';
+    } else if (points === this.topThreeMatchPoints[1]) {
+      return 'color: silver; font-weight: bold;';
+    } else if (points === this.topThreeMatchPoints[2]) {
+      return 'color: peru; font-weight: bold;'; // bronze-like color
+    } else {
+      return '';
+    }
+  },
     async getListOfMatches() {
       let lastMatch = null;
       this.allMatchDetailsArr = await getDocNmsFromColl(
@@ -201,7 +225,7 @@ export default {
           "_" +
           this.lastMatchInfo.teams
       );
-      debugPoint("TTTT")
+      debugPoint("TTTT");
       totalPoints.sort(
         (a, b) => parseFloat(b.totalPoints) - parseFloat(a.totalPoints)
       );
