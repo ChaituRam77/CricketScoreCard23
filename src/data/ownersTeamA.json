@@ -80,6 +80,7 @@
         {"id" :8181,"name" : "Mohit Sharma", "category" :"Bowler","team" : "DC", "auctionPrice":4},
         {"id" :14501,"name" : "Jake Fraser-Mcgurk", "category" :"Batsman","team" : "DC", "auctionPrice":6},
         {"id" :10693,"name" : "Glenn Phillips", "category" :"All-Rounder","team" : "GT", "auctionPrice":3},
+        {"id" :8422,"name" : "Dasun Shanaka", "category" :"All-Rounder","team" : "GT", "auctionPrice":0},
         {"id" :9693,"name" : "Rahul Tewatia", "category" :"All-Rounder","team" : "GT", "auctionPrice":3},
         {"id" :10100,"name" : "Mitchell Santner", "category" :"All-Rounder","team" : "MI", "auctionPrice":13},
         {"id" :14700,"name" : "Sameer Rizvi", "category" :"Batsman","team" : "DC", "auctionPrice":1},

@@ -26,6 +26,7 @@
         {"id" :13070,"name" : "Ryan Rickelton", "category" :"Wicketkeeper/Batter","team" : "MI", "auctionPrice":16},
         {"id" :12087,"name" : "Rahul Chahar", "category" :"Bowler","team" : "SRH", "auctionPrice":7},
         {"id" :19027,"name" : "Umran Malik", "category" :"Bowler","team" : "KKR", "auctionPrice":1},
+        {"id" :13494,"name" : "Chetan Sakariya", "category" :"Bowler","team" : "KKR", "auctionPrice":0},
         {"id" :8271,"name" : "Sanju Samson", "category" :"Wicketkeeper/Batter","team" : "RR", "auctionPrice":24},
         {"id" :13866,"name" : "Sai Sudharsan", "category" :"Batter","team" : "GT", "auctionPrice":20},
         {"id" :10945,"name" : "Washington Sundar", "category" :"All-Rounder","team" : "GT", "auctionPrice":3},
@@ -46,7 +47,8 @@
         {"id" :22566,"name" : "Angkrish Raghuvanshi", "category" :"Batter","team" : "KKR", "auctionPrice":6},
         {"id" :8733,"name" : "KL Rahul", "category" :"Wicketkeeper/Batter","team" : "DC", "auctionPrice":27},
         {"id" :9781,"name" : "Avesh Khan", "category" :"Bowler","team" : "LSG", "auctionPrice":8},
-        {"id" :10693,"name" : "Glenn Phillips", "category" :"All-Rounder","team" : "GT", "auctionPrice":8}
+        {"id" :10693,"name" : "Glenn Phillips", "category" :"All-Rounder","team" : "GT", "auctionPrice":8},
+        {"id" :8422,"name" : "Dasun Shanaka", "category" :"All-Rounder","team" : "GT", "auctionPrice":0}
     ],
     "Gokul": [
         {"id" :9428,"name" : "Shreyas Iyer", "category" :"Batter","team" : "PBKS", "auctionPrice":30},
@@ -123,6 +125,7 @@
         {"id" :14565,"name" : "Marco Jansen", "category" :"All-Rounder","team" : "PBKS", "auctionPrice":3},
         {"id" :8512,"name" : "Jamie Overton", "category" :"Bowler","team" : "CSK", "auctionPrice":1},
         {"id" :19807,"name" : "Gurjapneet Singh", "category" :"Bowler","team" : "CSK", "auctionPrice":1},
+        {"id" :20538,"name" : "Dewald Brevis", "category" :"Batter","team" : "CSK", "auctionPrice":0},
         {"id" :8117,"name" : "Trent Boult", "category" :"Bowler","team" : "MI", "auctionPrice":16},
         {"id" :13940,"name" : "Yashasvi Jaiswal", "category" :"Batter","team" : "RR", "auctionPrice":32},
         {"id" :1429626,"name" : "Vansh Bedi", "category" :"Wicketkeeper/Batter","team" : "CSK", "auctionPrice":1},
