@@ -329,26 +329,29 @@ export default {
         const hasOrangeCap = playerIds.includes(String(orangeCapPlayerId));
         const hasPurpleCap = playerIds.includes(String(purpleCapPlayerId));
 
-        let capIcons = "";        
+        let capIcons = "";
+        let capClass = "";
 
-        let ownerStyle = ""; // To store the style for the owner name
         if (hasOrangeCap && hasPurpleCap) {
           capIcons += "🧢🧢";
-          ownerStyle = "font-weight: bold; color: blue;"; 
-        }
-        if (hasOrangeCap) {
+          capClass = "blue-cap-owner";
+        } else if (hasOrangeCap) {
           capIcons += "🧢";
-          ownerStyle = "font-weight: 600; color: orange;"; // Make the owner name bold and orange
-        }
-        if (hasPurpleCap) {
+          capClass = "orange-cap-owner";
+        } else if (hasPurpleCap) {
           capIcons += "🧢";
-          ownerStyle = "font-weight: 600; color: purple;"; // Make the owner name bold and purple
+          capClass = "purple-cap-owner";
         }
 
         return {
           ...teamEntry,
           rawName: ownerName,
-          name: `<span style="${ownerStyle}">${ownerName}</span>${capIcons}`,
+          name: `
+            <span class="owner-with-cap">
+              <span class="owner-name ${capClass}">${ownerName}</span>
+              <span class="cap-icons">${capIcons}</span>
+            </span>
+          `,
         };
       });
     },
@@ -414,6 +417,38 @@ div {
 #matchDropDown option {
   background-color: #ffffff;
   color: #333333;
+}
+
+/* Wrapper to keep name and caps inline */
+.owner-with-cap {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 4px; /* Space between name and cap(s) */
+}
+
+/* Base owner name styling */
+.owner-name {
+  font-weight: 500;
+}
+
+/* Cap icon styling */
+.cap-icons {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* Specific cap colors */
+.orange-cap-owner {
+  color: orange;
+}
+
+.purple-cap-owner {
+  color: purple;
+}
+
+.blue-cap-owner {
+  color: blue;
 }
 
 </style>
