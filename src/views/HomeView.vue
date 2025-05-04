@@ -27,7 +27,7 @@ import { computed } from '@vue/runtime-core'
     ></div>
   </div>
   <div class="container well" v-else>
-    <table class="table table-borderless table-sm table-hover" id="scoresTable">
+    <table v-if="isDataReady" class="table table-borderless table-sm table-hover" id="scoresTable">
       <thead>
         <tr class="bg-secondary bg-gradient text-white">
           <th scope="col"></th>
@@ -67,15 +67,13 @@ import { computed } from '@vue/runtime-core'
             <!-- {{ team.no }} -->
             <router-link :to="teamLink(team.name)">
               <a>{{ team.no }}</a>
-              <!-- <span v-if="team.hasOrangeCap" class="orange-cap">🟧</span>
-              <span v-if="team.hasPurpleCap" class="purple-cap">🟪</span> -->
             </router-link>
           </td>
           <td>
-            <router-link :to="teamLink(team.name)">
-              <!-- <a>{{ team.name }}</a> -->
+            <router-link :to="teamLink(team.rawName)">
               <a v-html="team.name"></a>
             </router-link>
+
           </td>
           <td>
             <!-- <p>{{ team.lastMatchPoints }}</p> -->
@@ -120,6 +118,7 @@ import {
 export default {
   computed: {
     topThreeMatchPoints() {
+      debugPoint("topThreeMatchPoints")
       const points = this.teamWiseTotalPoints
         .map((team) => team.lastMatchPoints)
         .sort((a, b) => b - a);
@@ -140,10 +139,13 @@ export default {
       matchDetailsArr: [],
       allMatchDetailsArr: [],
       showScoreCardOfMatch: "recentMatch",
+      isDataReady: false
     };
   },
   mounted() {
-    this.mountMeethods();
+    debugPoint("start Mounted()")
+    this.mountMethods();
+    debugPoint("end Mounted()")
   },
   created() {
     let team = this.$route.params.teamId;
@@ -156,10 +158,12 @@ export default {
     console.log("Team : " + this.team);
   },
   methods: {
-    async mountMeethods() {
+    async mountMethods() {
+      debugPoint("start mountMethods()")
       await this.getListOfMatches();
       await this.fetchScoresNew();
       // await this.appendCapHoldersToOwners();
+      debugPoint("end mountMethods()")
     },
     getMedalStyle(points) {
       if (points === this.topThreeMatchPoints[0]) {
@@ -173,6 +177,7 @@ export default {
       }
     },
     async getListOfMatches() {
+      debugPoint("start getListOfMatches()")
       let lastMatch = null;
       this.allMatchDetailsArr = await getDocNmsFromColl(
         this.apiScoreCardCollection
@@ -192,6 +197,7 @@ export default {
         id: lastMatch[1],
         teams: lastMatch[2],
       };
+      debugPoint("end getListOfMatches()")
     },
     teamLink(teamNm) {
       // console.log("team.name : "+teamNm)
@@ -199,7 +205,8 @@ export default {
     },
     //GET OWNER SCORES FROM DB
     async fetchScoresNew() {
-      // this.lastMatchInfo = await getLastMatchInfo();
+      this.isDataReady = false; // Prevent premature rendering
+      debugPoint("start fetchScoresNew()")
 
       this.showScoreCardOfMatch =
         "Match No: " +
@@ -215,27 +222,23 @@ export default {
           "_" +
           this.lastMatchInfo.teams
       );
-      // debugPoint("TTTT");
+
 
       totalPoints.sort(
         (a, b) => parseFloat(b.totalPoints) - parseFloat(a.totalPoints)
       );
-
-      // debugPoint("totalPoints : " + JSON.stringify(totalPoints));
-      // await fetchTeamWiseTotalPoints(this.team);
-      debugPoint("TP OLD");
       this.teamWiseTotalPoints = JSON.parse(
         JSON.stringify(totalPoints).replaceAll("-", "")
       );
 
       this.teamWiseTotalPoints = await this.appendCapHoldersToOwners();
-
-      // debugPoint(this.lastMatchInfo);
-      debugPoint("appendCapHoldersToOwners");
+      this.isDataReady = true; // Now it's safe to render
+      debugPoint("end fetchScoresNew()")
+      
     },
     async getScoreCardOfMatch() {
       let matchInfoNeeded = null;
-      debugPoint("getScoreCardOfMatch()");
+      debugPoint("start getScoreCardOfMatch()");
       let matchInfoNo = this.showScoreCardOfMatch.match(/\d+/)[0];
       debugPoint(matchInfoNo);
       for (const m in this.allMatchDetailsArr) {
@@ -256,6 +259,7 @@ export default {
         teams: matchInfoNeeded[2],
       };
       this.fetchScoresNew();
+      debugPoint("start getScoreCardOfMatch()");
     },
 
     dynamicHeading(name) {
@@ -326,47 +330,24 @@ export default {
         const hasPurpleCap = playerIds.includes(String(purpleCapPlayerId));
 
         let capIcons = "";        
-        // if (hasOrangeCap) 
-        //   capIcons += " <span style='color: orange;'>🧢</span>";
-        // if (hasPurpleCap) capIcons += " <span style='color: purple;'>🧢</span>";
-        // let ownerClass = ""; // To store the class for the owner name
-        // let nameWithColor = ownerName;
-        // if (hasOrangeCap && hasPurpleCap) {
-        //  nameWithColor = `<span style="color: blue;">${ownerName}</span>`;
-        //  capIcons += " <span style='color: blue;'>🧢🧢</span>";
-        //  ownerClass = "blue-cap-owner";
-        // } else if (hasOrangeCap) {
-        //   nameWithColor = `<span style="color: orange;">${ownerName}</span>`;
-        //   capIcons += " <span style='color: orange;'>🧢</span>";
-        //   ownerClass = "orange-cap-owner"; // Add class for orange cap owner
-        // } else if (hasPurpleCap) {
-        //   nameWithColor = `<span style="color: purple;">${ownerName}</span>`;
-        //   capIcons += " <span style='color: purple;'>🧢</span>";
-        //   ownerClass = "purple-cap-owner"; // Add class for orange cap owner
-        // }
-
-        // return {
-        //   ...teamEntry,
-        //   name: nameWithColor + capIcons,
-        // };
 
         let ownerStyle = ""; // To store the style for the owner name
         if (hasOrangeCap && hasPurpleCap) {
-          capIcons += "  🧢🧢";
+          capIcons += "🧢🧢";
           ownerStyle = "font-weight: bold; color: blue;"; 
         }
         if (hasOrangeCap) {
-          // capIcons += " <span style='color: orange;'>🧢</span>";
-          capIcons += " 🧢";
-          ownerStyle = "font-weight: Semi Bold; color: orange;"; // Make the owner name bold and orange
+          capIcons += "🧢";
+          ownerStyle = "font-weight: 600; color: orange;"; // Make the owner name bold and orange
         }
         if (hasPurpleCap) {
-          capIcons += " 🧢";
-          ownerStyle = "font-weight: Normal; color: purple;"; // Make the owner name bold and purple
+          capIcons += "🧢";
+          ownerStyle = "font-weight: 600; color: purple;"; // Make the owner name bold and purple
         }
 
         return {
           ...teamEntry,
+          rawName: ownerName,
           name: `<span style="${ownerStyle}">${ownerName}</span>${capIcons}`,
         };
       });
