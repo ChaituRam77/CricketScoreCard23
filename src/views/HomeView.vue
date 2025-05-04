@@ -40,23 +40,7 @@ import { computed } from '@vue/runtime-core'
 
       <tbody class="team" v-for="team in teamWiseTotalPoints" :key="team">
         <tr>
-          <!-- <th scope="row">{{ team.no }} {{ team.rankChange }}</th> -->
-          <!-- <td>
-            <img
-              v-if="team.rankChange.includes('⬆')"
-              :src="imgChevronUp"
-              alt="up arrow icon"
-            />
-            <img
-              v-else-if="team.rankChange.includes('⬇')"
-              :src="imgChevronDwn"
-              alt="down arrow icon"
-            />            
-            <span style="font-size: 80%">
-              {{ team.rankChange.replace('⬆','').replace('⬇','').replace('➖','')}}
-            </span>
 
-          </td> -->
           <td>
             <div style="display: flex; align-items: center">
               <img
@@ -83,11 +67,14 @@ import { computed } from '@vue/runtime-core'
             <!-- {{ team.no }} -->
             <router-link :to="teamLink(team.name)">
               <a>{{ team.no }}</a>
+              <!-- <span v-if="team.hasOrangeCap" class="orange-cap">🟧</span>
+              <span v-if="team.hasPurpleCap" class="purple-cap">🟪</span> -->
             </router-link>
           </td>
           <td>
             <router-link :to="teamLink(team.name)">
-              <a>{{ team.name }}</a>
+              <!-- <a>{{ team.name }}</a> -->
+              <a v-html="team.name"></a>
             </router-link>
           </td>
           <td>
@@ -123,7 +110,7 @@ import { computed } from '@vue/runtime-core'
 
 <script>
 import { getMatchWisePoints } from "../final-api-wrapper";
-
+import axios from "axios";
 import {
   getFieldDataFromDoc,
   getDocNmsFromColl,
@@ -172,18 +159,19 @@ export default {
     async mountMeethods() {
       await this.getListOfMatches();
       await this.fetchScoresNew();
+      // await this.appendCapHoldersToOwners();
     },
     getMedalStyle(points) {
-    if (points === this.topThreeMatchPoints[0]) {
-      return 'color: gold; font-weight: bold;';
-    } else if (points === this.topThreeMatchPoints[1]) {
-      return 'color: silver; font-weight: bold;';
-    } else if (points === this.topThreeMatchPoints[2]) {
-      return 'color: peru; font-weight: bold;'; // bronze-like color
-    } else {
-      return '';
-    }
-  },
+      if (points === this.topThreeMatchPoints[0]) {
+        return "color: gold; font-weight: bold;";
+      } else if (points === this.topThreeMatchPoints[1]) {
+        return "color: silver; font-weight: bold;";
+      } else if (points === this.topThreeMatchPoints[2]) {
+        return "color: peru; font-weight: bold;"; // bronze-like color
+      } else {
+        return "";
+      }
+    },
     async getListOfMatches() {
       let lastMatch = null;
       this.allMatchDetailsArr = await getDocNmsFromColl(
@@ -209,8 +197,10 @@ export default {
       // console.log("team.name : "+teamNm)
       return "/" + this.$route.params.teamId + "/teamView/" + teamNm;
     },
+    //GET OWNER SCORES FROM DB
     async fetchScoresNew() {
       // this.lastMatchInfo = await getLastMatchInfo();
+
       this.showScoreCardOfMatch =
         "Match No: " +
         this.lastMatchInfo.matchNo +
@@ -225,18 +215,23 @@ export default {
           "_" +
           this.lastMatchInfo.teams
       );
-      debugPoint("TTTT");
+      // debugPoint("TTTT");
+
       totalPoints.sort(
         (a, b) => parseFloat(b.totalPoints) - parseFloat(a.totalPoints)
       );
 
-      debugPoint("totalPoints : " + JSON.stringify(totalPoints));
+      // debugPoint("totalPoints : " + JSON.stringify(totalPoints));
       // await fetchTeamWiseTotalPoints(this.team);
+      debugPoint("TP OLD");
       this.teamWiseTotalPoints = JSON.parse(
         JSON.stringify(totalPoints).replaceAll("-", "")
       );
 
-      debugPoint(this.lastMatchInfo);
+      this.teamWiseTotalPoints = await this.appendCapHoldersToOwners();
+
+      // debugPoint(this.lastMatchInfo);
+      debugPoint("appendCapHoldersToOwners");
     },
     async getScoreCardOfMatch() {
       let matchInfoNeeded = null;
@@ -271,6 +266,111 @@ export default {
       let points = getMatchWisePoints(teamName);
       this.matchWisePoints = points;
     },
+    async getCapHolders() {
+      const headers = {
+        "x-rapidapi-key": "427451b511msh07056d18c6e0adcp1dae07jsn577cf6594d98",
+        "x-rapidapi-host": "unofficial-cricbuzz.p.rapidapi.com",
+      };
+
+      const runOptions = {
+        method: "GET",
+        url: "https://unofficial-cricbuzz.p.rapidapi.com/series/get-stats",
+        params: { seriesId: "9237", statsType: "mostRuns" },
+        headers,
+      };
+
+      const wicketOptions = {
+        method: "GET",
+        url: "https://unofficial-cricbuzz.p.rapidapi.com/series/get-stats",
+        params: { seriesId: "9237", statsType: "mostWickets" },
+        headers,
+      };
+
+      try {
+        const [runRes, wicketRes] = await Promise.all([
+          axios.request(runOptions),
+          axios.request(wicketOptions),
+        ]);
+        debugPoint("HERE");
+        // Extract player ID of the top batsman and bowler
+        const orangeCapPlayerId =
+          runRes.data.t20Stats[0].values[0].values[0] || "";
+        const purpleCapPlayerId =
+          wicketRes.data.t20Stats[0].values[0].values[0] || "";
+        debugPoint("THERE");
+        console.log(
+          "orangeCapPlayerID : " +
+            orangeCapPlayerId +
+            " purpleCapPlayerID : " +
+            purpleCapPlayerId
+        );
+        return { orangeCapPlayerId, purpleCapPlayerId };
+      } catch (err) {
+        console.error("Error fetching cap data:", err);
+        return { orangeCapPlayer: "", purpleCapPlayer: "" };
+      }
+    },
+
+    async appendCapHoldersToOwners() {
+      // Dynamically require the owner's data
+      const { orangeCapPlayerId, purpleCapPlayerId } =
+        await this.getCapHolders();
+      const ownerData = require("../data/owners" + this.team + ".json");
+      // Loop through each team score entry and add cap badges to the owner's name
+      return this.teamWiseTotalPoints.map((teamEntry) => {
+        const ownerName = teamEntry.name;
+        const players = ownerData[ownerName] || [];
+        const playerIds = players.map((p) => String(p.id));
+
+        const hasOrangeCap = playerIds.includes(String(orangeCapPlayerId));
+        const hasPurpleCap = playerIds.includes(String(purpleCapPlayerId));
+
+        let capIcons = "";        
+        // if (hasOrangeCap) 
+        //   capIcons += " <span style='color: orange;'>🧢</span>";
+        // if (hasPurpleCap) capIcons += " <span style='color: purple;'>🧢</span>";
+        // let ownerClass = ""; // To store the class for the owner name
+        // let nameWithColor = ownerName;
+        // if (hasOrangeCap && hasPurpleCap) {
+        //  nameWithColor = `<span style="color: blue;">${ownerName}</span>`;
+        //  capIcons += " <span style='color: blue;'>🧢🧢</span>";
+        //  ownerClass = "blue-cap-owner";
+        // } else if (hasOrangeCap) {
+        //   nameWithColor = `<span style="color: orange;">${ownerName}</span>`;
+        //   capIcons += " <span style='color: orange;'>🧢</span>";
+        //   ownerClass = "orange-cap-owner"; // Add class for orange cap owner
+        // } else if (hasPurpleCap) {
+        //   nameWithColor = `<span style="color: purple;">${ownerName}</span>`;
+        //   capIcons += " <span style='color: purple;'>🧢</span>";
+        //   ownerClass = "purple-cap-owner"; // Add class for orange cap owner
+        // }
+
+        // return {
+        //   ...teamEntry,
+        //   name: nameWithColor + capIcons,
+        // };
+
+        let ownerStyle = ""; // To store the style for the owner name
+        if (hasOrangeCap && hasPurpleCap) {
+          capIcons += "  🧢🧢";
+          ownerStyle = "font-weight: bold; color: blue;"; 
+        }
+        if (hasOrangeCap) {
+          // capIcons += " <span style='color: orange;'>🧢</span>";
+          capIcons += " 🧢";
+          ownerStyle = "font-weight: Semi Bold; color: orange;"; // Make the owner name bold and orange
+        }
+        if (hasPurpleCap) {
+          capIcons += " 🧢";
+          ownerStyle = "font-weight: Normal; color: purple;"; // Make the owner name bold and purple
+        }
+
+        return {
+          ...teamEntry,
+          name: `<span style="${ownerStyle}">${ownerName}</span>${capIcons}`,
+        };
+      });
+    },
   },
 };
 </script>
@@ -291,14 +391,16 @@ div {
 
 .team th,
 .team-row td {
-  padding: 10px;
+  padding: 12px 15px; /* Increased padding for better spacing with larger font */
   text-align: center;
   font-weight: normal;
   vertical-align: middle;
+  font-size: 16px; /* Increased font size for table text */
 }
 
 .team-row th {
   font-weight: bold;
+  font-size: 18px; /* Increased font size for table headers */
 }
 
 .team-row td:first-child {
@@ -308,12 +410,12 @@ div {
 }
 
 .team-row td:first-child img {
-  height: 16px;
-  margin-right: 4px;
+  height: 20px; /* Slightly increased image size to match the larger font */
+  margin-right: 6px; /* Increased spacing between image and text */
 }
 
 .team-row td:first-child span {
-  font-size: 80%;
+  font-size: 90%; /* Slightly larger than before */
 }
 
 #matchDiv {
@@ -321,8 +423,8 @@ div {
 }
 
 #matchDropDown {
-  font-size: 16px;
-  padding: 8px;
+  font-size: 18px; /* Increased font size for the dropdown */
+  padding: 10px;
   border-radius: 4px;
   border: 1px solid #ccc;
   width: 300px;
@@ -330,7 +432,7 @@ div {
 
 #matchDropDown option {
   background-color: #ffffff;
-  /* color: #333333; */
-  color: #efe8e85d;
+  color: #333333;
 }
+
 </style>
