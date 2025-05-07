@@ -129,6 +129,7 @@
         {"id" :8117,"name" : "Trent Boult", "category" :"Bowler","team" : "MI", "auctionPrice":16},
         {"id" :13940,"name" : "Yashasvi Jaiswal", "category" :"Batter","team" : "RR", "auctionPrice":32},
         {"id" :1429626,"name" : "Vansh Bedi", "category" :"Wicketkeeper/Batter","team" : "CSK", "auctionPrice":1},
+        {"id" :13476,"name" : "Urvil Patel", "category" :"Wicketkeeper/Batter","team" : "CSK", "auctionPrice":0},
         {"id" :11195,"name" : "Shivam Dube", "category" :"All-Rounder","team" : "CSK", "auctionPrice":16}
     ],
     "Raja": [
