@@ -93,7 +93,7 @@
         {"id" :13088,"name" : "Devdutt Padikkal", "category" :"Batter","team" : "RCB", "auctionPrice":7},
         {"id" :10919,"name" : "Shashank Singh", "category" :"All-Rounder","team" : "PBKS", "auctionPrice":6},
         {"id" :7662,"name" : "Glenn Maxwell", "category" :"All-Rounder","team" : "PBKS", "auctionPrice":16},
-        {"id" :18568,"name" : "Mitchell Owen", "category" :"All-Rounder","team" : "PBKS", "auctionPrice":0}
+        {"id" :18568,"name" : "Mitchell Owen", "category" :"All-Rounder","team" : "PBKS", "auctionPrice":0},
         {"id" :1447,"name" : "Ajinkya Rahane", "category" :"Batter","team" : "KKR", "auctionPrice":23},
         {"id" :14606,"name" : "Shahbaz Ahmed", "category" :"All-Rounder","team" : "LSG", "auctionPrice":5},
         {"id" :19243,"name" : "Tristan Stubbs", "category" :"Wicketkeeper/Batter","team" : "DC", "auctionPrice":13},
