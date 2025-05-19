@@ -231,7 +231,7 @@ export default {
         JSON.stringify(totalPoints).replaceAll("-", "")
       );
 
-      this.teamWiseTotalPoints = await this.appendCapHoldersToOwners();
+      // this.teamWiseTotalPoints = await this.appendCapHoldersToOwners();
       this.isDataReady = true; // Now it's safe to render
       debugPoint("end fetchScoresNew()")
       
