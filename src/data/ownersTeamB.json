@@ -181,6 +181,7 @@
         {"id" :24326,"name" : "Abishek Porel", "category" :"Wicketkeeper/Batter","team" : "DC", "auctionPrice":3},
         {"id" :14689,"name" : "Priyansh Arya", "category" :"Batter","team" : "PBKS", "auctionPrice":3},
         {"id" :8642,"name" : "Adam Zampa", "category" :"Bowler","team" : "SRH", "auctionPrice":3},
+        {"id" :14695,"name" : "Harsh Dubey", "category" :"Bowler","team" : "SRH", "auctionPrice":0},
         {"id" :7736,"name" : "Andre Russell", "category" :"All-Rounder","team" : "KKR", "auctionPrice":17},
         {"id" :12305,"name" : "Riyan Parag", "category" :"All-Rounder","team" : "RR", "auctionPrice":16},
         {"id" :36139,"name" : "Naman Dhir", "category" :"Batter","team" : "MI", "auctionPrice":6}
